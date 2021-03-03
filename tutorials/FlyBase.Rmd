@@ -1,0 +1,142 @@
+---
+title: "FlyBase"
+output:
+  learnr::tutorial:
+    progressive: true
+    version: 1.0
+subtitle: |
+  | ![](https://raw.githubusercontent.com/C-MOOR/clovis-biol11a/master/assets/images/cmoor_logo_notext.png){width=60%} ![](https://raw.githubusercontent.com/C-MOOR/clovis-biol11a/master/assets/images/Clovis_logo.jpg){width=38%}
+runtime: shiny_prerendered
+---
+
+
+```{r setup, include=FALSE}
+library(learnr)
+library(tidyverse)
+tutorial_options(exercise.completion=TRUE)
+knitr::opts_chunk$set(echo = FALSE)
+options(scipen=5)
+
+```
+
+## Welcome {.splashpage}
+
+![](https://raw.githubusercontent.com/C-MOOR/clovis-biol11a/master/assets/images/cmoor_logo_text_horizontal.png){width=100%}
+
+![](https://raw.githubusercontent.com/C-MOOR/clovis-biol11a/master/assets/images/Clovis_logo_wide.jpg){width=100%}
+
+```{r}
+# Extract the tutorial version from the YAML data and store it so we can print it using inline r code below.  This can't be done directly inline because the code for extracting the YAML data uses backticks
+tv <- rmarkdown::metadata$output$`learnr::tutorial`$version
+```
+
+#### Introduction: FlyBase
+
+This tutorial will introduce you FlyBase ([flybase.org](http://flybase.org)).  FlyBase (short for fly database) is a website for the *Drosophila* scientific community that organizes research results about *Drosophila*.
+
+#### Learning Goals
+
+1. Use FlyBase to look up information about genes by name, gene symbol, or FlyBase ID number.
+
+#### Authors:
+* [Dr. Katherine Cox](https://c-moor.github.io/portfolio/coxkatherine/)
+* [Dr. Rosa Alcazar](https://c-moor.github.io/portfolio/alcazarrosa/)
+
+
+#### Version: `r tv`
+
+
+## Introduction
+
+![](https://raw.githubusercontent.com/C-MOOR/clovis-biol11a/master/assets/images/FlyBase_home.png){width=100%}
+
+FlyBase ([flybase.org](http://flybase.org)) is a website for the *Drosophila* scientific community that organizes research results about *Drosophila*.  We can use it to find out what has been discovered about genes we're interested it.
+
+There are many species of *Drosophila*.  Most research is done using *Drosophila melanogaster* (abbreviated Dmel), but FlyBase also has information about other species of flies.
+
+## FlyBase Gene Pages
+
+### FlyBase ID
+
+As genes are discovered, the scientists who discover them get to name them and give them a gene symbol.  Usually the gene name tells you something about what the gene does.  This system works pretty well, but sometimes there are problems - two scientists might both discover the same gene and give it two different names, or there might be two genes with similar functions that are given the same name.  In order to keep accurate track of all these genes, each gene is given a unique ID number.
+
+Every gene on FlyBase has a **FlyBase ID** number that looks like this: `FBgnXXXXXXX`, with the X's being different numbers.  FB stands for FlyBase and gn stands for gene.  There are ~17000 *Drosophila melanogaster* genes.  Each known *Drosophila* gene has its own FlyBase ID, and you can use the FlyBase ID to find information about the genes such as what they do and whether they are related to any human genes.
+
+### Look up a gene on FlyBase
+
+Go to FlyBase, and enter `FBgn0000024` in the search bar ("Jump to Gene").
+
+![](https://raw.githubusercontent.com/C-MOOR/clovis-biol11a/master/assets/images/FlyBase_home.png){width=100%}
+
+This page has a ton of useful information for finding out more about this gene!  We'll highlight a few important things to start with
+
+![](https://raw.githubusercontent.com/C-MOOR/clovis-biol11a/master/assets/images/FlyBase_Ace_summary.png){width=100%}
+
++ The gene **Symbol** and **Name**.  Genes are usually named after what they do, and their symbol is a usually shortened version of the name.  In this case, gene `FBgn0000024` is named Acetylcholine esterase, and is abbreviated *Ace*.
++ The **Gene Snapshot** gives a quick summary of what we know about this gene.  In this case, it's an enzyme involved in neurotransmission.
+
+### Gene Ontology
+
+Further down the page are the **Gene Ontology** or **GO** terms.  There are 3 categories of GO terms:
+
++ **Molecular Function**: What does this gene do at a molecular level?  How does it interact with other molecules? (Examples: enzyme - catalyzes a reaction, DNA binding - binds to DNA, transporter - moves something across a membrane)
++ **Biological Process**: What does this gene do for the organism?  What's the "big picture"? (Examples: involved in development, reproduction, immune system, etc.)
++ **Cellular Component**: Where in a cell is the gene found?  (Examples: the nucleus, mitochondria, cell membrane, etc.)
+
+![](https://raw.githubusercontent.com/C-MOOR/clovis-biol11a/master/assets/images/FlyBase_Ace_GO.png){width=100%}
+
+For the *Ace* gene, we can see its **molecular functions** include acetylcholinesterase activity (it's an enzyme).  You can click on these terms to find out more about them.  For example, if you click on "acetylcholinesterase activity" you can find out more about the reaction that is being catalyzed, and find other genes that carry out this same reaction.
+
+You can also see from this table how we know this information - it tells you what kind of evidence we have to prove it, and it links to the paper where that evidence came from.
+
+### Other information
+
+This page contains a lot of other information, including any known interactions of this gene with other genes, information about similar genes in other organisms (orthologs), and whether related genes are relevant to any human diseases.  As you explore *Drosophila* data and find genes that you want to learn more about, FlyBase is a good place to start.
+
+### Some genes are unknowns
+
+There are some genes that we still don't know anything about.  We can tell from the DNA sequence that there is a protein encoded there because we can see a long string of codons for amino acids.  But we've never discovered what that protein does.  More research is needed!
+
+Here's an example of an unknown gene:
+
+![](https://raw.githubusercontent.com/C-MOOR/clovis-biol11a/master/assets/images/FlyBase_unknown_gene.png){width=100%}
+
+As you can see, it doesn't have a name - we don't know what to name it since we don't know anything about it.  There is also no information for the gene snapshot.
+
+Unknown genes can be frustrating or disappointing, since they don't provide us with any information.  But they can also be exciting - maybe this data is a step towards finding out what they do!
+
+## Use FlyBase to investigate *labial*
+
+The *labial* gene (gene symbol: *lab*) gene is a gene involved in the copper region of the *Drosophila* midgut, as well as controling the identity of segments that contribute to the head and the anterior thorax.  We can use FlyBase to learn more about this gene.
+
+### Find the FlyBase ID
+In most datasets, genes will be listed by an ID number rather than their name, such as the FlyBase ID number (FBgn number).  We can use Flybase to find these IDs and match them up to data in the dataset we're investigating.  Go to FlyBase and search for "lab" in the "Jump to Gene" searchbar.
+
+```{r, flybase-lab, echo=FALSE}
+quiz(caption = "Look up the *lab* gene on FlyBase",
+  question("What is the FlyBase ID number for *lab*?",
+    answer("FBgn0002522", correct=TRUE),
+    answer("FBgn0000024"),  
+    answer("FBgn0000003"),
+    answer("FBgn0001264"),
+    allow_retry = TRUE,
+    random_answer_order = TRUE
+  ),
+  question("What biological processes is the *lab* gene involved in? HINT: Choose more than one answer.",
+    answer("brain development", correct=TRUE),
+    answer("midgut development", correct=TRUE),
+    answer("immune system"),
+    answer("cell cycle"),
+    allow_retry = TRUE,
+    random_answer_order = TRUE
+  )
+)
+```
+
+## Learn More
+
+FlyBase is designed to help scientists do research, so it has *a lot* of information, and we've just looked at a few of the basic features.  Here are some resources if you'd like to learn more:
+
++ Check out the "Help" tab on FlyBase
++ Visit [FlyBase TV](https://www.youtube.com/c/FlyBaseTV), the FlyBase YouTube channel
++ Look at the FlyBase "[New to Flies](https://wiki.flybase.org/wiki/FlyBase:New_to_Flies?)" wiki page
