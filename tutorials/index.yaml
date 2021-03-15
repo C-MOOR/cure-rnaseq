@@ -1,0 +1,12 @@
+---
+Day 1:
+  name: "Introduction to Course"
+  due_date: 03-06-2021
+  tutorial_dir:
+    - "Intro_R"
+    - "FlyBase"
+Day 2:
+  name: "Introduction to R"
+  due_date: 03-08-2021
+  tutorial_dir:
+    - "EmbedFeedbackForm"
