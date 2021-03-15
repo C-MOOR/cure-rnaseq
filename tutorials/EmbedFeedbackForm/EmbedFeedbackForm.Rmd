@@ -1,0 +1,36 @@
+---
+title: "Tutorial with poll"
+output: learnr::tutorial
+runtime: shiny_prerendered
+---
+
+```{r setup, include=FALSE}
+library(learnr)
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+
+## Topic 1
+
+### Quiz
+
+Some questions to verify that you understand the purposes of various base and recommended R packages:
+
+```{r quiz}
+quiz(
+  question("Which package contains functions for installing other R packages?",
+    answer("base"),
+    answer("tools"),
+    answer("utils", correct = TRUE),
+    answer("codetools")
+  )
+)
+```
+
+#### Summary
+
+Here's what you learned today
+
+#### Feedback
+
+<iframe src="https://docs.google.com/forms/d/e/1FAIpQLScyEwXk7MmT6ZCPSRVSxCbBQ1iQFo_sRMJNkkWthC-G-WkqZQ/viewform?embedded=true" width="640" height="713" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>
