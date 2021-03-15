@@ -15,7 +15,7 @@ runtime: shiny_prerendered
 # For summary, all new lines must be indented to the same level as the first line.
 # The image must be surrounded with quotes
 summary: |
-  Welcome!  This tutorial will show you how to run your first R code.  You will get a little taste of some of the things that R can do and how you can create your own R code.
+  Welcome!!  This tutorial will show you how to run your first R code.  You will get a little taste of some of the things that R can do and how you can create your own R code.
 image: "![](images/replace_me.png)"
 image_caption: "Welcome page image"
 author:
