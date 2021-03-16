@@ -16,8 +16,8 @@ runtime: shiny_prerendered
 # The image must be surrounded with quotes
 summary: |
   Welcome!!  This tutorial will show you how to run your first R code.  You will get a little taste of some of the things that R can do and how you can create your own R code.
-image: "![](images/replace_me.png)"
-image_caption: "Welcome page image"
+image: "![Logo for R](images/Rlogo.png)"
+image_caption: "The R Foundation (2016) The R logo. https://www.r-project.org/logo/ License: [CC-BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)"
 author:
   - "[Katherine Cox](https://c-moor.github.io/portfolio/coxkatherine/)"
 learning_goals:
