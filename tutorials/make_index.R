@@ -32,14 +32,24 @@ make_day <- function(day_info, base_url) {
   
   # Day (h2)
   date <- format(as.Date(day_info$due_date, "%m-%d-%Y"), "%B %d, %Y")
-  h2 <- paste0("  <h2>", day_info$name, " -- Due ", date, "  </h2>\n")
+  day <- paste0("  <h2>", day_info$name, " -- Due ", date, "  </h2>\n")
+  
+  # Message
+  if (!is.null(day_info$message)) {
+    if (!(day_info$message=="")) {
+      m <- paste0("    <p class=\"message\">", day_info$message, "</p>\n")
+      day <- paste0(day, m)
+    }
+  }
   
   # Tutorials
-  ol <- lapply(day_info$tutorial_dir, make_tutorial_link, base_url)
-  ol <- paste0("      <li>", ol, "</li>\n", collapse="")
-  ol <- paste0("    <ol>\n", ol, "    </ol>\n\n")
-
-  paste0(h2, ol)
+  if (!is.null(day_info$tutorial_dir)) {
+    ol <- lapply(day_info$tutorial_dir, make_tutorial_link, base_url)
+    ol <- paste0("      <li>", ol, "</li>\n", collapse="")
+    ol <- paste0("    <ol>\n", ol, "    </ol>\n\n")
+    day <- paste0(day, ol)
+  }
+  day
 }
 
 #### BUILD HTML ####
@@ -49,6 +59,11 @@ make_day <- function(day_info, base_url) {
 <html>
 <head>
   <title>",TITLE,"</title>
+  <style type=\"text/css\">
+  .message {
+    padding-inline-start: 20px;
+  }
+  </style>
 </head>\n\n")
 
 
