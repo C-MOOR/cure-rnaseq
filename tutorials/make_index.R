@@ -5,7 +5,7 @@ BASE_URL = "./"
 
 # read yaml
 y <- yaml::yaml.load_file(YAML_FILE)
- 
+
 
 #### HELPER FUNCTIONS ####
 
@@ -23,17 +23,17 @@ get_tuturial_url <- function(dir_name, base_url) {
 
 # build tutorial link tag
 make_tutorial_link <- function(dir_name, base_url) {
-  paste0("<a href=\"", get_tuturial_url(dir_name, base_url), "\">", 
+  paste0("<a href=\"", get_tuturial_url(dir_name, base_url), "\" target=\"_blank\">",
          get_tutorial_metadata(dir_name), "</a>")
 }
 
-# build html for a single day 
+# build html for a single day
 make_day <- function(day_info, base_url) {
-  
+
   # Day (h2)
   date <- format(as.Date(day_info$due_date, "%m-%d-%Y"), "%B %d, %Y")
   day <- paste0("  <h2>", day_info$name, " -- Due ", date, "  </h2>\n")
-  
+
   # Message
   if (!is.null(day_info$message)) {
     if (!(day_info$message=="")) {
@@ -41,7 +41,7 @@ make_day <- function(day_info, base_url) {
       day <- paste0(day, m)
     }
   }
-  
+
   # Tutorials
   if (!is.null(day_info$tutorial_dir)) {
     ol <- lapply(day_info$tutorial_dir, make_tutorial_link, base_url)
@@ -67,7 +67,7 @@ make_day <- function(day_info, base_url) {
 </head>\n\n")
 
 
-#start body  
+#start body
 body <- c("<body>\n\n")
 
 # add title
@@ -78,7 +78,7 @@ body <- c(body, title)
 tutorials <- lapply(y, make_day, BASE_URL)
 tutorials <- paste0(tutorials)
 body <- c(body, tutorials)
-  
+
 
 # make footer
 footer <- "\n</body>
