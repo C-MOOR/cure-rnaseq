@@ -54,8 +54,11 @@ plotAcrossRegions <- function( x ) {
 }
 
 midgut_tsv <- read.table("/home/idies/workspace/c_moor_data/marianes-regions/htseq/midgut.tsv", header=TRUE)
-midgut <- DESeqDataSetFromHTSeqCount(midgut_tsv, "/home/idies/workspace/c_moor_data/marianes-regions/htseq/", design = ~condition)
-midgut <- DESeq(midgut)
+
+# Retrieve and rename cached DESeq results
+load("~/workspace/c_moor_data/instructors/preprocessed_data/marianes/marianes_htseq_DESeq.rda")
+midgut <- marianes_htseq_DESeq
+rm(marianes_htseq_DESeq)
 ```
 
 ## Welcome {.splashpage}
