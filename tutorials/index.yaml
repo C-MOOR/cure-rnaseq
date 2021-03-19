@@ -1,4 +1,11 @@
 ---
+Dev:
+  name: "Under Development"
+  due_date: 08-01-2021
+  message: "Things we're experimenting with.  This section will be removed for students"
+  tutorial_dir:
+    - "EmbedFeedbackForm"
+    - "Differential_Expression"
 Day 1:
   name: "Introduction to Course"
   due_date: 08-12-2021
@@ -15,4 +22,3 @@ Day 3:
   due_date: 08-19-2021
   tutorial_dir:
     - "Intro_R"
-    - "EmbedFeedbackForm"
