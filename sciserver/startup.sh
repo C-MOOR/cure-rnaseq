@@ -12,12 +12,12 @@ if [[ ! -d /home/idies/workspace/c_moor_data ]]; then
 <h2> Error: C-MOOR data volume not mounted!</h2>
 <p> please delete this container and create a new one with data volume attached </p>
 </body></html>" > $CONTAINERDIR/index.html
+else
+    # get the latest code tutorials
+    cd /home/idies/cure-rnaseq
+    git fetch origin
+    git reset --hard origin/master
+    mv tutorials/* $CONTAINERDIR/
 fi
-
-# get the latest code tutorials
-cd /home/idies/
-git clone https://github.com/C-MOOR/cure-rnaseq.git
-mv cure-rnaseq/tutorials/* $CONTAINERDIR/
-rm -rf cure-rnaseq
 
 exec /usr/bin/shiny-server
