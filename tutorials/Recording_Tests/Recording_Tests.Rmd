@@ -105,7 +105,7 @@ output$`user-files` <- renderPrint(list.files("~/workspace/Storage/klovett2/pers
 ```
 
 ```{r context="server"}
-KATIE_STORAGE = "~/workspace/Storage/klovett2/persistent/katie-test/"
+KATIE_STORAGE = "~/workspace/Storage/klovett2/katie-test/"
 
 export_events <- function(event_location = ".", event_destination = KATIE_STORAGE) {
   # print("session end")
