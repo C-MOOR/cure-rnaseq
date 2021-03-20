@@ -100,16 +100,19 @@ output$`view-detail` <- renderPrint(session$user)
 #output$`view-detail` <- renderPrint(session$userData$learnr_state)
 output$`view-detail` <- renderPrint(system("whoami", intern=TRUE))
 output$`container-files` <- renderPrint(list.files())
-output$`user-files` <- renderPrint(list.files("~/workspace/klovett2/Storage/"))
+output$`user-files` <- renderPrint(list.files("~/workspace/Storage/klovett2/persistent/katie-test"))
 
 ```
 
 ```{r context="server"}
-export_events <- function(event_location = ".", event_destination = ".") {
-  print("session end")
-  print(list.files(event_location))
-  print(list.files(event_destination))
+KATIE_STORAGE = "~/workspace/Storage/klovett2/persistent/katie-test/"
+
+export_events <- function(event_location = ".", event_destination = KATIE_STORAGE) {
+  # print("session end")
+  # list.files(event_location)
+  # list.files(KATIE_STORAGE)
+  file.copy(list.files(event_location), KATIE_STORAGE)
 }
 
-#onSessionEnded(export_events, session = getDefaultReactiveDomain())
+onSessionEnded(export_events, session = getDefaultReactiveDomain())
 ```
