@@ -16,5 +16,7 @@ COPY sciserver/startup.sh /opt/startup.sh
 EXPOSE 8888
 
 USER idies
+RUN cd /home/idies && \
+    git clone https://github.com/C-MOOR/cure-rnaseq
 
 CMD /bin/bash
