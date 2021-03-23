@@ -5,6 +5,7 @@ Dev:
   message: "Things we're experimenting with.  This section will be removed for students"
   tutorial_dir:
     - "EmbedFeedbackForm"
+    - "EdPuzzleTest"
     - "Differential_Expression"
 Day 1:
   name: "Introduction to Course"
