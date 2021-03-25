@@ -106,10 +106,10 @@ The boxes below the search bar ("Tissue Atlas", "Cell Atlas", etc.) provide expl
 People sometimes use the names of a gene and the protein it "codes for" interchangeably, which can be a bit confusing.
 
 - A **gene** is a DNA sequence (made of **nucleotides**).  It contains the instructions for how to make a specific protein
-- A **protein** is an **amino acid** sequence.  Proteins fold up into specific shapes that let them do their jobs.  Proteins are the workhorses of the cell, they perform most cellular functions in living organisms.  Proteins do things like:
-    - Carry out chemical reactions
-    - Move materials around inside the cell
-    - Transport things in and out of a cell
+- A **protein** is an **amino acid** sequence.  Proteins fold up into specific shapes that let them do their jobs.  Proteins perform the majority of functions in cells, including things like:
+    - Carrying out chemical reactions
+    - Moving materials around inside the cell
+    - Transporting things in and out of a cell
 
 Mutations in a *gene* can cause the *protein* to be made incorrectly, resulting in a protein that does not do its job properly.
 
@@ -123,11 +123,11 @@ Every protein in the Human Protein Atlas has its own page with a large collectio
 At the top of the page there is a summary:
 ![Human Protein Atlas summary for insulin](images/HPA_insulin_summary.png){width=100%}
 
-- **Gene name** - The name of the gene that codes for the protein.  If multiple names have been used for this gene, they will be listed in parentheses.  The gene for insulin is named “INS”
+- **Gene name** - The name of the gene that codes for the protein.  If multiple names have been used for this gene, they will be listed in parentheses.  The gene for insulin is named “INS”.
 - **Gene summary** (at the bottom) - A summary of what we know about this gene.  For insulin, it contains a description of how it is processed, and then an explanation of how it binds to the insulin receptor and stimulates glucose uptake.
-- **Where is it located?** (Tissue specificity, Extracellular location, Brain specificity, Blood specificity, Predicted location) - The Human Protein Atlas has several types of information about the protein’s location.  More information is available further down on the page
+- **Where is it located?** (Tissue specificity, Extracellular location, Brain specificity, Blood specificity, Predicted location) - The Human Protein Atlas has several types of information about the protein’s location.  More information is available further down on the page.
 - **What does it do?** (Protein function, Molecular function, Biological process) - What molecular, chemical, and biological processes does it carry out?  Insulin is a hormone involved in carbohydrate metabolism.
-- **Disease involvement** - Is it associated with any diseases?  Insulin is associated with diabetes as well as cancer
+- **Disease involvement** - Is it associated with any diseases?  Insulin is associated with diabetes as well as cancer.
 
 Further down the page we can see diagrams depicting where the protein is located:
 ![Human Protein Atlas graphical summaries of insulin localization: Tissue Atlas (enriched in pancreas), Brain Atlas (not detected), Cell Atlas (not available), and Blood Atlas (secreted to blood)](images/HPA_insulin_localization.png){width=100%}
