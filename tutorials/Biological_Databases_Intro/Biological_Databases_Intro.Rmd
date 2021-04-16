@@ -8,7 +8,7 @@ output:
 subtitle: |
   ![](images/cmoor_logo_notext.png){width=60%}
   
-  [Get Help](https://help.c-moor.org/)
+  [Get Help](https://help.c-moor.org/){target="_blank"}
 runtime: shiny_prerendered
 
 # The fields below will be used to create the first page of the tutorial.  You can use markdown.
