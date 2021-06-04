@@ -1,7 +1,7 @@
 TITLE = "C-MOOR CURE CCC FA21"
 YAML_FILE = "index.yaml"
 MD_FILE = "README.md"
-BASE_URL = "tutorials/"
+BASE_URL = "./"
 
 # read yaml
 y <- yaml::yaml.load_file(YAML_FILE)
