@@ -1,7 +1,7 @@
 TITLE = "C-MOOR CURE CCC FA21"
 YAML_FILE = "index.yaml"
 MD_FILE = "README.md"
-BASE_URL = "./"
+BASE_URL = "http://mybinder.org/v2/gh/c-moor/cure-rnaseq/master?urlpath=shiny/tutorials/"
 
 # read yaml
 y <- yaml::yaml.load_file(YAML_FILE)

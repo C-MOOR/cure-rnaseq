@@ -4,9 +4,9 @@
 
 Things we're experimenting with.  This section will be removed for students
 
-- [Tutorial with poll](./EmbedFeedbackForm/)
-- [EdPuzzle Test](./EdPuzzleTest/)
-- [Differential Expression with DESeq2](./Differential_Expression/)
+- [Tutorial with poll](http://mybinder.org/v2/gh/c-moor/cure-rnaseq/master?urlpath=shiny/tutorials/EmbedFeedbackForm/)
+- [EdPuzzle Test](http://mybinder.org/v2/gh/c-moor/cure-rnaseq/master?urlpath=shiny/tutorials/EdPuzzleTest/)
+- [Differential Expression with DESeq2](Differential_Expression/)
 
 ## Introduction to Course -- Due August 12, 2021
 
@@ -14,11 +14,11 @@ No tutorials - first week of class. Welcome!
 
 ## Genes and Biological Databases -- Due August 17, 2021
 
-- [Introduction to Model Organisms](./Model_Organisms_Intro/)
-- [Introduction to Biological Databases](./Biological_Databases_Intro/)
-- [Biological Databases: Human Protein Atlas](./Biological_Databases_HPA/)
+- [Introduction to Model Organisms](http://mybinder.org/v2/gh/c-moor/cure-rnaseq/master?urlpath=shiny/tutorials/Model_Organisms_Intro/)
+- [Introduction to Biological Databases](http://mybinder.org/v2/gh/c-moor/cure-rnaseq/master?urlpath=shiny/tutorials/Biological_Databases_Intro/)
+- [Biological Databases: Human Protein Atlas](http://mybinder.org/v2/gh/c-moor/cure-rnaseq/master?urlpath=shiny/tutorials/Biological_Databases_HPA/)
 
 ## Introduction to R -- Due August 19, 2021
 
-- [Meet R!](./Intro_R/)
+- [Meet R!](http://mybinder.org/v2/gh/c-moor/cure-rnaseq/master?urlpath=shiny/tutorials/Intro_R/)
 
