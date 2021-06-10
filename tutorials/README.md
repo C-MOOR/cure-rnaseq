@@ -12,11 +12,12 @@ Things we're experimenting with.  This section will be removed for students
 
 No tutorials - first week of class. Welcome!
 
-## Biological Databases -- Due August 17, 2021
+## Model Organisms and Biological Databases -- Due August 17, 2021
 
 - [Introduction to Model Organisms](http://mybinder.org/v2/gh/c-moor/cure-rnaseq/master?urlpath=shiny/tutorials/Model_Organisms_Intro/)
 - [Model Organisms: *Drosophila melanogaster* (fruit fly)](http://mybinder.org/v2/gh/c-moor/cure-rnaseq/master?urlpath=shiny/tutorials/Model_Organisms_Drosophila/)
 - [Introduction to Biological Databases](http://mybinder.org/v2/gh/c-moor/cure-rnaseq/master?urlpath=shiny/tutorials/Biological_Databases_Intro/)
+- [Biological Databases: FlyBase](http://mybinder.org/v2/gh/c-moor/cure-rnaseq/master?urlpath=shiny/tutorials/Biological_Databases_FlyBase/)
 - [Biological Databases: Human Protein Atlas](http://mybinder.org/v2/gh/c-moor/cure-rnaseq/master?urlpath=shiny/tutorials/Biological_Databases_HPA/)
 
 ## Introduction to R -- Due August 19, 2021
