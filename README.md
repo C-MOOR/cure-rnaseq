@@ -149,13 +149,16 @@ Note: Rendered previews are provided where possible, but tutorials that involve 
 
 ## Student Professional Development
 
-### Web Portfolios Using GitHub [[demo](http://www.c-moor.org/cmoor_website_template/)]
+### Web Portfolios Using GitHub [[repo](https://github.com/C-MOOR/cmoor_website_template)][[demo](http://www.c-moor.org/cmoor_website_template/)]
 
-- Create GitHub Account [[video](https://drive.google.com/file/d/1ce_hqr8BptQUjJDKyDGc8OYDhQ2IeBee)][[slides](https://docs.google.com/presentation/d/1c4sb5CLpvKjgnTVIuNGYTSr8WWNgeSfC8TUGrxktu64)]
-- Setup Website [[video](https://drive.google.com/file/d/11yytK_VA2OSylIbhKNqncJbO-6gXCvnn)][[slides](https://docs.google.com/presentation/d/13chl2zYU1NbWCZmD_daqiKcLoJZAtILMqjXgew3TR6c/edit#slide=id.g35f391192_00)]
+- Create GitHub Account [[video](https://link.c-moor.org/video-join-github)][[slides](https://docs.google.com/presentation/d/1c4sb5CLpvKjgnTVIuNGYTSr8WWNgeSfC8TUGrxktu64)]
+- Setup Website [[video](https://link.c-moor.org/video-student-website-setup)][[slides](https://docs.google.com/presentation/d/13chl2zYU1NbWCZmD_daqiKcLoJZAtILMqjXgew3TR6c/edit#slide=id.g35f391192_00)]
 - Personalize Website
+  -  Profile [[video](https://link.c-moor.org/video-student-website-personalize-profile)][[slides](https://docs.google.com/presentation/d/1Fvf-pp35kzthJawqHwNVg8fTA5YDOWSOD88hVBFs840/)]
+  -  About [[video](https://link.c-moor.org/video-student-website-personalize-about)][[slides](https://docs.google.com/presentation/d/1qg3i5WhpqiPrLPdLdJoiVaCmZALNpPrlbHwBigbtfYo/)]
+  -  Languages [[video](https://link.c-moor.org/video-student-website-personalize-languages)][[slides](https://docs.google.com/presentation/d/1jLbdARLPvVnEl0HA18Jli0qQ90Bg9JFbenRqLBSeovk/)]
+  -  Site Preview [[video](https://link.c-moor.org/video-student-website-personalize-preview)][[slides](https://docs.google.com/presentation/d/1r3PPXaHUnZfzeKe4hZisaVM7Edz5VLw6hnKHzvifoWE/)]
 - Add First Post
-- Add R Notebook
 
 ## Getting Help
 
