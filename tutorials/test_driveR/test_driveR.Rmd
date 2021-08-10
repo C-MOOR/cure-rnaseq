@@ -34,8 +34,7 @@ library(learnr)
 library( "tidyverse" )
 knitr::opts_chunk$set(echo = FALSE)
 
-# df <- read_tsv( "/home/idies/workspace/c_moor_data/test-driveR/test-driveR.tsv" )
-df <- read_tsv( "~/git/carnegie-online-learning/test-driveR.tsv" )
+df <- read_tsv( "/home/idies/workspace/c_moor_data/test-driveR/test-driveR.tsv" )
 df_long <- pivot_longer( df, 3:9, names_to="region", values_to="count" )
 ```
 
