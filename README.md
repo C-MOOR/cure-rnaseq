@@ -62,30 +62,30 @@ Note: Rendered previews are provided where possible, but tutorials that involve 
 
 #### In Class
 
-- Lecture: Welcome to Your Genomics Adventure!
-- Lecture: The Scientific Process
+- Lecture: Welcome to Your Genomics Adventure! [[slides](https://docs.google.com/presentation/d/1tRqM8gW9NeQIghiu9v32Ybs0RySGfGTSE-bvV2KJ52c)]
+- Lecture: The Scientific Process [[slides](https://docs.google.com/presentation/d/1Bty11v0qZ_zw5mbZBOby1AtGoTbC2tQoPCf92wN5SFA)]
 - Activity: Create Accounts
   - Join SciServer [[assignment](https://docs.google.com/document/d/1EcJTjhfxAcRw66gUjQqEuogTvjBFatxEhrqxcWBOc4o)][[video](https://link.c-moor.org/video-join-sciserver)][[slides](https://docs.google.com/presentation/d/1kxbnBLoRsdPW4ZkjwNsAHS1XFPuJpQZ8I1aVqyZISW0)]
   - Join Discourse
 
 #### Homework
 
-- Assignment: Post to Discourse Forums [[assignment](https://docs.google.com/document/d/1XDT0i0aNsEBDXPzW-nd8o7VZWrNr49u2LDzS25JmpEs/)]
+- Assignment: Post to Discourse Forums [[assignment](https://docs.google.com/document/d/1XDT0i0aNsEBDXPzW-nd8o7VZWrNr49u2LDzS25JmpEs)]
 
 ### Day 2
 
 #### In Class
 
-- Lecture: What Makes Cells Different? [[slides](https://docs.google.com/presentation/d/1kqXcTyi9Fh8wfsrg-JWEiRIlfMPooCUZLXw-VEnNaBE/edit#slide=id.g35f391192_00)]
-- Activity: Spreadsheet of Gene Expression [[slides](https://docs.google.com/presentation/d/1ZjXpkZl69ULDi2f4HzT9BW2yd8DBoUQGjc-0BASQen8/edit)]
-- Assignment: First learnR Tutorial [[assignment](https://docs.google.com/document/d/1nvMfvOTwwFIhub4aoTX3bGrY0AIDceT8SXA93FUBt5A)]
+- Lecture: What Makes Cells Different? [[slides](https://docs.google.com/presentation/d/1kqXcTyi9Fh8wfsrg-JWEiRIlfMPooCUZLXw-VEnNaBE)]
+- Activity: Spreadsheet of Gene Expression [[slides](https://docs.google.com/presentation/d/1ZjXpkZl69ULDi2f4HzT9BW2yd8DBoUQGjc-0BASQen8)]
+- Activity: First learnR Tutorial [[assignment](https://docs.google.com/document/d/1nvMfvOTwwFIhub4aoTX3bGrY0AIDceT8SXA93FUBt5A)]
   - Join Group [[video](https://link.c-moor.org/video-join-sciserver-group)][[slides](https://docs.google.com/presentation/d/1codot9UeUO7l0EDcEre7dJgyXurD_xyxpw6IJL_aEjM)]
   - Start learnR [[video](https://drive.google.com/file/d/1WkhzNiTJqDk8oqrcSvu2C49TIhrfJVXh)][[slides](https://docs.google.com/presentation/d/1Oaq8RzhaDANxkNh-tTKwme7e095pGgoiq5iZHbt7PLg)]
   - Introduction to Model Organisms [[source](https://github.com/C-MOOR/cure-rnaseq/tree/master/tutorials/Model_Organisms_Intro)][[preview](http://mybinder.org/v2/gh/c-moor/cure-rnaseq/master?urlpath=shiny/tutorials/Model_Organisms_Intro/)]
 
 #### Homework
 
-- Assignment: Biological Databases [[assignment](https://docs.google.com/document/d/12DBD771jNr4H96Drsxc62KBllYQ5gzE33BiNdAzDbmw/edit)]
+- Assignment: Biological Databases [[assignment](https://docs.google.com/document/d/12DBD771jNr4H96Drsxc62KBllYQ5gzE33BiNdAzDbmw)]
   - Model Organisms: Drosophila [[source](https://github.com/C-MOOR/cure-rnaseq/tree/master/tutorials/Model_Organisms_Drosophila)][[preview](http://mybinder.org/v2/gh/c-moor/cure-rnaseq/master?urlpath=shiny/tutorials/Model_Organisms_Drosophila/)]
   - Introduction to Biological Databases [[source](https://github.com/C-MOOR/cure-rnaseq/tree/master/tutorials/Biological_Databases_Intro)][[preview](http://mybinder.org/v2/gh/c-moor/cure-rnaseq/master?urlpath=shiny/tutorials/Biological_Databases_Intro/)]
   - Biological Databases: FlyBase [[source](https://github.com/C-MOOR/cure-rnaseq/tree/master/tutorials/Biological_Databases_FlyBase)][[preview](http://mybinder.org/v2/gh/c-moor/cure-rnaseq/master?urlpath=shiny/tutorials/Biological_Databases_FlyBase/)]
@@ -95,20 +95,20 @@ Note: Rendered previews are provided where possible, but tutorials that involve 
 
 #### In Class
 
-- Discussion: Biological Databases [[assignment](https://docs.google.com/document/d/12DBD771jNr4H96Drsxc62KBllYQ5gzE33BiNdAzDbmw/edit)]
-- Assignment: Data Exploration Project (Start) [[assignment](https://docs.google.com/document/d/1qnJBz3iAN12nAX0OFaxqZZZWs1qWLYxt_HWaBdfFEk8/edit#heading=h.km7myf8dtaah)][[gene list](https://docs.google.com/spreadsheets/d/16ltU53DkwYlYbcq8P_EzXSXidFaMkod75hyOAxTesw0/edit#gid=1158265355)]
-- Activity: Test DriveR
+- Discussion: Biological Databases [[assignment](https://docs.google.com/document/d/12DBD771jNr4H96Drsxc62KBllYQ5gzE33BiNdAzDbmw)]
+- Assignment: Data Exploration Project (Start) [[assignment](https://docs.google.com/document/d/1qnJBz3iAN12nAX0OFaxqZZZWs1qWLYxt_HWaBdfFEk8)][[gene list](https://docs.google.com/spreadsheets/d/16ltU53DkwYlYbcq8P_EzXSXidFaMkod75hyOAxTesw0)]
+- Activity: Test DriveR [[source](https://github.com/C-MOOR/cure-rnaseq/blob/master/tutorials/test_driveR)]
 
 #### Homework
 
-- Assignment: Meet R! [[assignment](https://docs.google.com/document/d/1rxucOSJW_6OyYj_RJx9lp1f-cL7k5U2COZfpdl7mQ0A/)][[source](https://github.com/C-MOOR/cure-rnaseq/tree/master/tutorials/Intro_R)][[preview](http://mybinder.org/v2/gh/c-moor/cure-rnaseq/master?urlpath=shiny/tutorials/Intro_R/)]
-- Assignment: Data Exploration Project (Finish) [[assignment](https://docs.google.com/document/d/1qnJBz3iAN12nAX0OFaxqZZZWs1qWLYxt_HWaBdfFEk8/edit#heading=h.km7myf8dtaah)][[gene list](https://docs.google.com/spreadsheets/d/16ltU53DkwYlYbcq8P_EzXSXidFaMkod75hyOAxTesw0/edit#gid=1158265355)]
+- Assignment: Meet R! [[assignment](https://docs.google.com/document/d/1rxucOSJW_6OyYj_RJx9lp1f-cL7k5U2COZfpdl7mQ0A)][[source](https://github.com/C-MOOR/cure-rnaseq/tree/master/tutorials/Intro_R)][[preview](http://mybinder.org/v2/gh/c-moor/cure-rnaseq/master?urlpath=shiny/tutorials/Intro_R/)]
+- Assignment: Data Exploration Project (Finish) [[assignment](https://docs.google.com/document/d/1qnJBz3iAN12nAX0OFaxqZZZWs1qWLYxt_HWaBdfFEk8)][[gene list](https://docs.google.com/spreadsheets/d/16ltU53DkwYlYbcq8P_EzXSXidFaMkod75hyOAxTesw0)]
 
 ### Day 4
 
 #### In Class
 
-- Presentation: Data Exploration Project [[assignment](https://docs.google.com/document/d/1qnJBz3iAN12nAX0OFaxqZZZWs1qWLYxt_HWaBdfFEk8/edit#heading=h.km7myf8dtaah)][[gene list](https://docs.google.com/spreadsheets/d/16ltU53DkwYlYbcq8P_EzXSXidFaMkod75hyOAxTesw0/edit#gid=1158265355)]
+- Presentation: Data Exploration Project [[assignment](https://docs.google.com/document/d/1qnJBz3iAN12nAX0OFaxqZZZWs1qWLYxt_HWaBdfFEk8)][[gene list](https://docs.google.com/spreadsheets/d/16ltU53DkwYlYbcq8P_EzXSXidFaMkod75hyOAxTesw0)]
 - Lecture: What Does Single Cell Enable?
 - Assignment: Introduction to RStudio [[assignment](https://docs.google.com/document/d/1eXaBhhVz7AVe0A2QZFP8EMCOQh-qPgOUeuajZkZsPrI)]
   - Start RStudio [[video](https://drive.google.com/file/d/1TibezD0uVdI6uxd6y5e3Q71jCN8V4fDr)][[slides](https://docs.google.com/presentation/d/1xo-R10YmhhaTnXswOShjlFzRyLwlJs0ZtALZo-8tSR8)]
@@ -152,12 +152,12 @@ Note: Rendered previews are provided where possible, but tutorials that involve 
 ### Web Portfolios Using GitHub [[repo](https://github.com/C-MOOR/cmoor_website_template)][[demo](http://www.c-moor.org/cmoor_website_template/)]
 
 - Create GitHub Account [[video](https://link.c-moor.org/video-join-github)][[slides](https://docs.google.com/presentation/d/1c4sb5CLpvKjgnTVIuNGYTSr8WWNgeSfC8TUGrxktu64)]
-- Setup Website [[video](https://link.c-moor.org/video-student-website-setup)][[slides](https://docs.google.com/presentation/d/13chl2zYU1NbWCZmD_daqiKcLoJZAtILMqjXgew3TR6c/edit#slide=id.g35f391192_00)]
+- Setup Website [[video](https://link.c-moor.org/video-student-website-setup)][[slides](https://docs.google.com/presentation/d/13chl2zYU1NbWCZmD_daqiKcLoJZAtILMqjXgew3TR6c)]
 - Personalize Website
-  -  Profile [[video](https://link.c-moor.org/video-student-website-personalize-profile)][[slides](https://docs.google.com/presentation/d/1Fvf-pp35kzthJawqHwNVg8fTA5YDOWSOD88hVBFs840/)]
-  -  About [[video](https://link.c-moor.org/video-student-website-personalize-about)][[slides](https://docs.google.com/presentation/d/1qg3i5WhpqiPrLPdLdJoiVaCmZALNpPrlbHwBigbtfYo/)]
-  -  Languages [[video](https://link.c-moor.org/video-student-website-personalize-languages)][[slides](https://docs.google.com/presentation/d/1jLbdARLPvVnEl0HA18Jli0qQ90Bg9JFbenRqLBSeovk/)]
-  -  Site Preview [[video](https://link.c-moor.org/video-student-website-personalize-preview)][[slides](https://docs.google.com/presentation/d/1r3PPXaHUnZfzeKe4hZisaVM7Edz5VLw6hnKHzvifoWE/)]
+  -  Profile [[video](https://link.c-moor.org/video-student-website-personalize-profile)][[slides](https://docs.google.com/presentation/d/1Fvf-pp35kzthJawqHwNVg8fTA5YDOWSOD88hVBFs840)]
+  -  About [[video](https://link.c-moor.org/video-student-website-personalize-about)][[slides](https://docs.google.com/presentation/d/1qg3i5WhpqiPrLPdLdJoiVaCmZALNpPrlbHwBigbtfYo)]
+  -  Languages [[video](https://link.c-moor.org/video-student-website-personalize-languages)][[slides](https://docs.google.com/presentation/d/1jLbdARLPvVnEl0HA18Jli0qQ90Bg9JFbenRqLBSeovk)]
+  -  Site Preview [[video](https://link.c-moor.org/video-student-website-personalize-preview)][[slides](https://docs.google.com/presentation/d/1r3PPXaHUnZfzeKe4hZisaVM7Edz5VLw6hnKHzvifoWE)]
 - Add First Post
 
 ## Getting Help
