@@ -1,0 +1,270 @@
+---
+title: "test-driveR"
+output:
+  learnr::tutorial:
+    css: css/cmoor.css
+    progressive: true
+    version: 1.0
+subtitle: |
+  ![](images/cmoor_logo_notext.png){width=60%}
+  
+  [Get Help](https://help.c-moor.org/){target="_blank"}
+runtime: shiny_prerendered
+
+# The fields below will be used to create the first page of the tutorial.  You can use markdown.
+# For summary, all new lines must be indented to the same level as the first line.
+# The image must be surrounded with quotes
+summary: |
+  Welcome to your Genomics Adventure!  This tutorial provides a short introduction to the world of genomic data science using R.  You will work with a real world dataset to experience first hand what it is like to sort, extract, and plot data programatically.  Don't worry if you don't understand each command completely at this point.  Upcoming videos, readings, and exercises will explain these commands in more depth.
+image: "![](https://raw.githubusercontent.com/C-MOOR/rnaseq/master/assets/images/elife-00886-fig2D.jpg)"
+image_caption: "RNA-seq analysis of the Drosophila midgut from Marianes and Spradling 2013"
+author:
+  - "[Katherine Cox](https://c-moor.github.io/portfolio/coxkatherine/)"
+  - "Frederick Tan"
+learning_goals:
+  - "Explore a real world genomics dataset"
+  - "Get a taste of how to analyze data using R"
+
+time: "25 min"
+prerequisites: "None"
+---
+
+```{r setup, include=FALSE}
+library(learnr)
+library( "tidyverse" )
+knitr::opts_chunk$set(echo = FALSE)
+
+# df <- read_tsv( "/home/idies/workspace/c_moor_data/test-driveR/test-driveR.tsv" )
+df <- read_tsv( "~/git/carnegie-online-learning/test-driveR.tsv" )
+df_long <- pivot_longer( df, 3:9, names_to="region", values_to="count" )
+```
+
+
+<!---
+Don't edit the Welcome page, it will be filled in automatically using the information from the YAML header
+Edit the rest of the document as you like
+There are some suggested sections to provide a standard order across our tutorials, but they may not all be needed/appropriate for all tutorials.
+Section 1. Content 1 has example quizes and exercises
+-->
+
+## Welcome {.splashpage}
+
+### `r rmarkdown::metadata$title`
+
+<div class="splashpage-container">
+  <figure class="splashpage-image">
+  `r rmarkdown::metadata$image`{width=100%}
+  <figcaption class="caption">`r rmarkdown::metadata$image_caption`</figcaption>
+  </figure>
+
+  `r rmarkdown::metadata$summary`
+  
+
+</div>
+
+
+#### Learning Goals
+
+```{r}
+# Extract learning goals from YAML and add HTML tags to make an ordered list
+learningGoals <- rmarkdown::metadata$learning_goals
+learningGoals <- paste("<li>", learningGoals, "</li>", sep="", collapse="")
+
+```
+
+<ol>
+`r learningGoals`
+</ol>
+
+#### Authors:
+
+```{r}
+# Extract authors from YAML and add HTML tags to make a list
+authorList <- rmarkdown::metadata$author
+authorList <- paste("<li>", authorList, "</li>", sep="", collapse="")
+
+```
+
+<ul>
+`r authorList`
+</ul>
+
+
+```{r}
+# Extract the tutorial version from the YAML data and store it so we can print it using inline r code below.  This can't be done directly inline because the code for extracting the YAML data uses backticks
+tv <- rmarkdown::metadata$output$`learnr::tutorial`$version
+```
+
+#### Version: `r tv`
+
+## Genomic Data Science
+
+Listen as [Rafa Irizarry](https://rafalab.github.io) explains how data science was born out of people analyzing data, trying to solve real problems.
+
+> it's much more efficient to show data first and see what the challenges are so that we can then understand why we're learning the theory and actually put the whole thing in context
+
+![](https://www.youtube.com/watch?v=CZp6530gjIg){width=75%}
+
+Note that this video comes from the introduction to a [different course](http://genomicsclass.github.io/book/).  While we won't cover entire pipelines, we will show real data, not toy examples, that people are challenged with day in and day out across the research world.
+
+## Show Me the Data!
+
+### Preface
+
+Here we introduce you to a real world (rectangular) dataset that you will use to work through three exercises to give you a taste of some useful commands. Don't worry if you don't understand them completely at this point.  Upcoming videos, readings, and exercises will explain these commands in more depth.
+
+```{r question-problem-0}
+question("What is the goal of these exercises?",
+  answer("To see how much you already know"),
+  answer("To give you a taste of some useful commands", correct=TRUE),
+  answer("To daze and confuse you"),
+  allow_retry = TRUE
+)
+```
+
+### Dataset: Marianes and Spradling, 2013 (1/2)
+
+Now that you've learnt a little about R and data science, let's get some practice!  We'll explore data from [Marianes and Spradling, 2013](https://elifesciences.org/articles/00886) which found ten distinct subregions along the anterior-posterior axis of the *Drosophila* midgut.
+
+![](https://raw.githubusercontent.com/C-MOOR/rnaseq/master/assets/images/elife-00886-fig2A.jpg){width=100%}
+
+### Dataset: Marianes and Spradling, 2013 (2/2)
+
+RNA-seq analysis of these subregions revealed differential "expression of hundreds of genes with likely tissue functions."
+
+![](https://raw.githubusercontent.com/C-MOOR/rnaseq/master/assets/images/elife-00886-fig2D.jpg){width=100%}
+
+## Exercise 1: Sort Data
+
+### Sort genes based on read counts (1/2)
+
+This `arrange()` command arranges genes based on read counts in region `a1` (in descending order thanks to the `desc()` function).  `Amy-p` is an amylase gene that has the 10th highest read counts in `a1`.
+
+```{r, echo=TRUE}
+arrange( df, desc( a1 ) )
+```
+
+### Sort genes based on read counts (2/2)
+
+Now it's your turn to sort the genes!  To arrange the genes based on read counts in region `Cu`:
+
+- Modify this command and replace `a1` with `Cu` (case sensitive)
+- Click `Run Code`
+
+```{r problem-1, exercise=TRUE, exercise.eval=FALSE}
+arrange( df, desc( a1 ) )
+```
+
+```{r question-problem-1}
+question("What gene has the highest read count in Cu?",
+  answer("Amy-p"),
+  answer("Vha16-1", correct=TRUE),
+  answer("CG12374"),
+  allow_retry = TRUE
+)
+```
+
+## Exercise 2: Extract Data
+
+### Extract genes of interest (1/2)
+
+Peptidoglycan recognition proteins (PGRPs) are key components of the innate immune system and mediate interactions between the host and gut microbiome.  This `filter()` command filters for any row where the `gene_name` contains `PGRP` (thanks to the `str_detect()` function).
+
+```{r, echo=TRUE}
+filter( df, str_detect( gene_name, "PGRP" ) )
+```
+
+### Extract genes of interest (2/2)
+
+Now it's your turn to filter the genes!  This simpler command filters for rows where `gene_name` is exactly `lab`, a homeobox transcription factor highly expressed in the `Cu` region involved in copper cell differentiation.
+
+```{r, echo=TRUE}
+filter( df, gene_name == "lab" )
+```
+
+Note that here we use the simpler construct `gene_name == "lab"` to filter for any row where `gene_name` is **exactly** equal to `lab`.
+
+To examine the regional expression of the acyl transferase `CG3106`:
+
+- Modify this command and replace `lab` with `CG3106`
+- Click `Run Code`
+
+```{r problem-2, exercise=TRUE, exercise.eval=FALSE}
+filter( df, gene_name == "lab" )
+```
+
+```{r question-problem-2}
+question("What region has the highest expression of `CG3106`?",
+  answer("a1"),
+  answer("Cu"),
+  answer("p1", correct=TRUE),
+  allow_retry = TRUE
+)
+```
+
+## Exercise 3: Plot Data
+
+### Plot genes across regions (1/2)
+
+Finally, let's visualize the regional expression of two genes along the anterior-posterior axis using a bar plot.  We'll dive deeper into this `ggplot()` command in the next tutorial.
+
+```{r, echo=TRUE}
+goi <- c( "lab", "CG3106" )
+ggplot( filter( df_long, gene_name %in% goi ) ) +
+    geom_bar( aes( region, count, fill=region ), stat="identity" ) +
+    facet_wrap( ~ gene_name, scales="free_y" )
+```
+
+### Plot genes across regions (2/2)
+
+Now it's your turn to add more genes to this plot!  Try this by adding another gene to the `goi` list (`goi` for "genes of interest").  For example, to also plot `PGRP-SC1b` add `, "PGRP-SC1b"` e.g.
+
+- `goi <- c( "lab", "CG3106", "PGRP-SC1b" )`
+
+Importantly, note that:
+
+- Gene names need to be surrounded by double quotes (`"`PGRP-SC1b`"`)
+- R is case sensitive (e.g. "PGRP-SC1`b`" not "PGRP-SC1`B`")
+- A comma in required between each gene ("CG3106"`,` "PGRP-SC1b")
+
+Other genes to try are: `PGRP-SC1b`, `PGRP-SC2`, `betaTry`, and `Gal`
+
+```{r problem-3, exercise=TRUE, exercise.eval=FALSE}
+goi <- c( "lab", "CG3106" )
+ggplot( filter( df_long, gene_name %in% goi ) ) +
+    geom_bar( aes( region, count, fill=region ), stat="identity" ) +
+    facet_wrap( ~ gene_name, scales="free_y" )
+```
+
+```{r question-problem-3}
+question("Which gene has the most total read counts across all regions?",
+  answer("lab"),
+  answer("CG3106", correct=TRUE),
+  answer("PGRP-SC1b"),
+  allow_retry = TRUE
+)
+```
+
+## Try it Out!
+
+Now that we've taken a few looks at RNA-seq data together, go ahead and try some things on your own!
+
+As a reminder, here is an image from the Marianes and Spradling (2013) paper showing 3 large regions (top) and 7 smaller subregions (bottom) of the *Drosophila* midgut.
+
+![Marianes, A., & Spradling, A. C. (2013). Physiological and stem cell compartmentalization within the Drosophila midgut. eLife, 2, e00886. http://doi.org/10.7554/eLife.00886.  Figure 3.](https://iiif.elifesciences.org/lax:00886/elife-00886-fig3-v1.tif/full/1234,/0/default.jpg){ width=100% }
+
+You can read more about these different regions and subsections in the  [paper](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3755342/).
+
+There are several blocks for your convenience, use as many as you like.  **You can always look back at other tabs and use the R cheat sheet to remind yourself how to set up a particular command.**
+
+```{r freeplay-exercise, exercise=TRUE, exercise.eval=FALSE}
+
+```
+
+```{r freeplay2-exercise, exercise=TRUE, exercise.eval=FALSE}
+
+```
+
+```{r freeplay3-exercise, exercise=TRUE, exercise.eval=FALSE}
+
+```
