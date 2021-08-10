@@ -32,6 +32,7 @@ prerequisites: "None"
 
 ```{r setup, include=FALSE}
 library(learnr)
+library( "tidyverse" )
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
