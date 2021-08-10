@@ -33,8 +33,9 @@ make_tutorial_link_md <- function(dir_name, base_url) {
 make_day_md <- function(day_info, base_url) {
 
   # Day (h2)
-  date <- format(as.Date(day_info$due_date, "%m-%d-%Y"), "%B %d, %Y")
-  day <- paste0("## ", day_info$name, " -- Due ", date, "\n\n")
+  # date <- format(as.Date(day_info$due_date, "%m-%d-%Y"), "%B %d, %Y")
+  # day <- paste0("## ", day_info$name, " -- Due ", date, "\n\n")
+  day <- paste0("## ", day_info$name, "\n\n")
   
   # Message
   if (!is.null(day_info$message)) {

@@ -31,8 +31,9 @@ make_tutorial_link <- function(dir_name, base_url) {
 make_day <- function(day_info, base_url) {
 
   # Day (h2)
-  date <- format(as.Date(day_info$due_date, "%m-%d-%Y"), "%B %d, %Y")
-  day <- paste0("  <h2>", day_info$name, " -- Due ", date, "  </h2>\n")
+  # date <- format(as.Date(day_info$due_date, "%m-%d-%Y"), "%B %d, %Y")
+  # day <- paste0("  <h2>", day_info$name, " -- Due ", date, "  </h2>\n")
+  day <- paste0("  <h2>", day_info$name, "</h2>\n")
 
   # Message
   if (!is.null(day_info$message)) {

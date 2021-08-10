@@ -1,19 +1,6 @@
 ---
-Dev:
-  name: "Under Development"
-  due_date: 08-01-2021
-  message: "Things we're experimenting with.  This section will be removed for students"
-  tutorial_dir:
-    - "EmbedFeedbackForm"
-    - "EdPuzzleTest"
-    - "Differential_Expression"
-Day 1:
-  name: "Introduction to Course"
-  due_date: 08-12-2021
-  message: "No tutorials - first week of class. Welcome!"
 Day 2:
-  name: "Model Organisms and Biological Databases"
-  due_date: 08-17-2021
+  name: "Aug 12 -- Model Organisms and Biological Databases"
   tutorial_dir:
     - "Model_Organisms_Intro"
     - "Model_Organisms_Drosophila"
@@ -21,7 +8,7 @@ Day 2:
     - "Biological_Databases_FlyBase"
     - "Biological_Databases_HPA"
 Day 3:
-  name: "Introduction to R"
-  due_date: 08-19-2021
+  name: "Aug 17 -- Introduction to R"
   tutorial_dir:
+    - "test_driveR"
     - "Intro_R"
