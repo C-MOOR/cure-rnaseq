@@ -12,3 +12,16 @@ Day 3:
   tutorial_dir:
     - "test_driveR"
     - "Intro_R"
+Day 4:
+  name: "Aug 19 -- Base R"
+  tutorial_dir:
+    - "reviewR"
+
+Day 5:
+  name: "Aug 24 -- R for Data Science"
+  tutorial_dir:
+    - "r4ds"
+
+Day 6:
+  name: "Aug 26 -- R Notebooks"
+  tutorial_dir:

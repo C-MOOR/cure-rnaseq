@@ -1,0 +1,260 @@
+---
+title: "reviewR"
+output:
+  learnr::tutorial:
+    css: css/cmoor.css
+    progressive: true
+    version: 1.0
+subtitle: |
+  ![](images/cmoor_logo_notext.png){width=60%}
+  
+  [Get Help](https://help.c-moor.org/){target="_blank"}
+runtime: shiny_prerendered
+
+# The fields below will be used to create the first page of the tutorial.  You can use markdown.
+# For summary, all new lines must be indented to the same level as the first line.
+# The image must be surrounded with quotes
+summary: |
+  This short tutorial reviews some of the basic concepts covered in [swirl](https://github.com/swirldev/swirl_courses#swirl-courses) and [r4ds](https://r4ds.had.co.nz).  Feel free to come back as often as you need to review the material and check your understanding.
+
+  To set you up for the rest of the tutorial we will review some R basics (5 minute video) and then discuss the structure of the R commands you've been using.
+image: "![Logo for R](https://raw.githubusercontent.com/C-MOOR/cure-rnaseq/master/tutorials/Intro_R/images/Rlogo.png)"
+image_caption: "The R Foundation (2016) The R logo. https://www.r-project.org/logo/ License: [CC-BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)"
+author:
+  - "[Katherine Cox](https://c-moor.github.io/portfolio/coxkatherine/)"
+  - "Frederick Tan"
+learning_goals:
+  - "Review R basics"
+  - "Discuss functions"
+  - "Introduce packages"
+time: "15 min"
+prerequisites: "None"
+---
+
+```{r setup, include=FALSE}
+library(learnr)
+library( "tidyverse" )
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+
+<!---
+Don't edit the Welcome page, it will be filled in automatically using the information from the YAML header
+Edit the rest of the document as you like
+There are some suggested sections to provide a standard order across our tutorials, but they may not all be needed/appropriate for all tutorials.
+Section 1. Content 1 has example quizes and exercises
+-->
+
+## Welcome {.splashpage}
+
+### `r rmarkdown::metadata$title`
+
+<div class="splashpage-container">
+  <figure class="splashpage-image">
+  `r rmarkdown::metadata$image`{width=100%}
+  <figcaption class="caption">`r rmarkdown::metadata$image_caption`</figcaption>
+  </figure>
+
+  `r rmarkdown::metadata$summary`
+  
+
+</div>
+
+
+#### Learning Goals
+
+```{r}
+# Extract learning goals from YAML and add HTML tags to make an ordered list
+learningGoals <- rmarkdown::metadata$learning_goals
+learningGoals <- paste("<li>", learningGoals, "</li>", sep="", collapse="")
+
+```
+
+<ol>
+`r learningGoals`
+</ol>
+
+#### Authors:
+
+```{r}
+# Extract authors from YAML and add HTML tags to make a list
+authorList <- rmarkdown::metadata$author
+authorList <- paste("<li>", authorList, "</li>", sep="", collapse="")
+
+```
+
+<ul>
+`r authorList`
+</ul>
+
+
+```{r}
+# Extract the tutorial version from the YAML data and store it so we can print it using inline r code below.  This can't be done directly inline because the code for extracting the YAML data uses backticks
+tv <- rmarkdown::metadata$output$`learnr::tutorial`$version
+```
+
+#### Version: `r tv`
+
+## R basics
+
+Let's start with the following video for a quick reminder of some R basics.  Towards the end of the video he discusses using R *scripts* as a way to record and reuse your code.  Today you will learn how to do this using R Notebooks.
+
+![](https://www.youtube.com/watch?v=SWxoJqTqo08)
+
+## Functions
+
+### Using R functions (1/4)
+
+We have used several R commands, but have not really discussed the structure of these commands.  The next few sections explicitly describe the format of the R commands you have been working with.
+
+Most R commands are **functions** - they take some input (a number, a vector, a dataframe...) and produce some output (a summary, a plot, a new vector...).  You've already seen some R functions in action; the `mean()` function takes a vector as its input, and produces a single number - the mean of that vector - as its output.
+
+To run a function in R, you type the name of the function followed by parentheses, and you put the input(s) to the function inside the parentheses, separated by commas:
+
+`functionName( INPUT1, INPUT2 )`
+
+"Inputs" are usually called **arguments** (or sometimes **parameters**), and they tell the function how to run.  For example, the `plot()` command needs two arguments: what should go on the x axis and what should go on the y axis:
+
+`plot( x, y )`
+
+Functions typically have some **required arguments** (such as what data to use) and may also have some **optional arguments**.  For example, the `plot()` command requires the `x` and `y` arguments, and then has several optional arguments that can modify the look of the plot (such as changing the title or axes labels).
+
+Try running the `plot()` command without giving `x` and `y` arguments:
+
+```{r required-arguments, exercise=TRUE}
+
+```
+
+```{r require-arguments-quiz}
+quiz(
+  question("What happens if you run the `plot()` command without giving `x` and `y` arguments?",
+    answer("R makes an empty plot"),
+    answer("R complains that there is no x argument", correct=TRUE),
+    answer("R tells you all the required parameters for `plot()`"),
+    answer("R sets your computer on fire"),
+    allow_retry = TRUE
+  )
+)
+```
+
+### Using R functions (2/4)
+
+Function arguments can be set using their **position** (the order they are listed in the function command).  We've seen this with the `plot()` command, where the first argument is `x` and the second argument is `y`.
+
+Function arguments can also be set by **name**.  We could instead write the plot command as `plot( x=x, y=y )`.  If we set arguments using their names, order doesn't matter.  We could just as easily write the plot commands as `plot( y=y, x=x )`!
+
+Setting arguments by position is a convenient shorthand, particulary if there are only a few arguments (e.g. `mean(x)`).  It can get confusing or impossible if there is a long list of arguments and some of them are optional.  Setting arguments by name helps your code be **self-documenting** - it's easy to read the command and know what it's doing.  This is useful for sharing code with others, and for helping your future self when you need to edit or reuse your code.
+
+### Using R functions (3/4)
+
+Frequently, you will want to run multiple functions in a row on your data.  For example, you might want to log-transform your data before plotting it.  One way to do this is by storing the results of the first function in a variable, and then passing that variable as an argument to the next function.
+
+For example, say we have two vectors, `xdata` and `ydata`, and we would like to plot `xdata` vs. the log of `ydata`.
+
+Here we calculate the log of `ydata` and store that in the (clearly named!) variable `log_ydata`.  We then pass this variable as an argument to the `plot()` function:
+
+```{r eval=FALSE, echo=TRUE}
+log_ydata <- log(ydata)
+plot( xdata, log_ydata )
+```
+
+Alternatively, functions can be **nested** inside each other, so that **the results of the inner function are used as an argument to the outer function**.  For example, we can plot the log of some data by putting the `log()` function *inside* the `plot()` function:
+
+```{r eval=FALSE, echo=TRUE}
+plot( xdata, log(ydata) )
+```
+
+This way, we don't have to run `log(ydata)` and store the output in a variable; we can just send it straight to the `plot()` function.  
+
+This will work as long as the output of the inner function is acceptable as input to the outer function.
+
+Either approach will work just fine.  Nesting can be more convenient (less typing, fewer variables cluttering up your workspace) as long as you don't need the intermediate results for anything else.
+
+### Using R functions (4/4)
+
+You can learn about the arguments for any R function using the help (`?plot()`).
+
+The **Usage** section shows how to set up the command:
+
++ It lists the possible arguments, by name, in order.
+    + If you want to pass arguments by name, use the names listed here.
+    + If you want to pass arguments using their position, put them in the same order as they are listed here.
++ It shows the default value, if there is one (required arguments might not have a default value, optional arguments always do).  This is what the function will use if you don't set the argument yourself.
+
+The **Arguments** section gives detailed information about each of the possible arguments to the function.
+
+At the bottom of the help there is an **Examples** section which shows some example uses of the function.  This can be helpful if you're having trouble figuring it out.
+
+Look at the help for the `log()` function:
+
+```{r log-help, exercise=TRUE}
+
+```
+
+```{r log-help-quiz}
+quiz(
+  question("What does the `log()` command need as input?",
+    answer("A vector", correct=TRUE),
+    answer("A dataframe"),
+    allow_retry = TRUE
+  ),
+   question("What is the default value for the `base` argument?",
+    answer("1"),
+    answer("10"),
+    answer("exp(1)", correct=TRUE),
+    answer("exp(10)"),
+    allow_retry = TRUE
+  )
+)
+```
+
+## R packages and the `library()` command
+
+Many of the R functions that you will want to use are not part of "base" R but are instead found in **packages**.
+
+Packages are organized collections of R code with a specific purpose - for example the `ggplot2` package is all about plotting.
+
+In order to use an R package you must:
+
+1. Install the package - this downloads the package and makes it available for R to access.  **This only has to be done once**.
+    + If you're working on a centrally managed RStudio Server instance, many packages have already been installed for you.  Send a message by clicking on "Get Help" in the left hand column of this tutorial if you need help installing a package that is not already available, or if you need help installing packages on your own computer.
+2. "Attach" the package to your R session using the `library()` command (e.g. `library("ggplot2")`).  **This must be done every time you start a new R session**.  This lets R "see" the functions in the package so you can use them.  R does not automatically attach all your packages everytime you start R - that could cause problems, and you usually only need a subset of the installed packages.
+    + If you see an Error message that says `could not find function` then you might have not attached the package that contains the function.
+
+You can see the packages that you have currently attached using the `sessionInfo()` command.  This can be helpful for troubleshooting.
+
+If you're having trouble getting your code to run on another computer (or even on the same computer after not having worked on it for a while), try to figure out what packages your code is using (and sometimes what version of the package).  As we go over how to use R Notebooks, we will also discuss some strategies for organizing your code and keeping track of the packages you're using to make things easier.
+
+## `ggplot2` and the `mpg` dataset
+
+Weuse `ggplot2` to make `mpg` plots early in the tutorials.
+
+As a reminder, this is what the `mpg` dataset looks like:
+
+```{r}
+mpg
+```
+
+And you can use `ggplot2` to plot `displ` vs `hwy` and color by `class` (as in [Chapter 3.3](https://r4ds.had.co.nz/data-visualisation.html#aesthetic-mappings){target="_blank"} of R for Data Science).
+
+```{r, echo=TRUE}
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy, color = class))
+```
+
+## Try it Out!
+
+Once again, here are several blocks for your convenience, use as many as you like.  **You can always look back at other tabs and use the [R cheat sheet](https://github.com/C-MOOR/cure-rnaseq/blob/master/tutorials/Rcheatsheet.md) to remind yourself how to set up a particular command.**
+
+```{r freeplay-exercise, exercise=TRUE, exercise.eval=FALSE}
+
+```
+
+```{r freeplay2-exercise, exercise=TRUE, exercise.eval=FALSE}
+
+```
+
+```{r freeplay3-exercise, exercise=TRUE, exercise.eval=FALSE}
+
+```
+

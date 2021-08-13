@@ -1,0 +1,558 @@
+---
+title: "r4ds"
+output:
+  learnr::tutorial:
+    css: css/cmoor.css
+    progressive: true
+    version: 1.0
+subtitle: |
+  ![](images/cmoor_logo_notext.png){width=60%}
+  
+  [Get Help](https://help.c-moor.org/){target="_blank"}
+runtime: shiny_prerendered
+
+# The fields below will be used to create the first page of the tutorial.  You can use markdown.
+# For summary, all new lines must be indented to the same level as the first line.
+# The image must be surrounded with quotes
+summary: |
+  This tutorial introduces the **R for Data Science** online learning track that teaches how to do data science with R.  Based on the free [R for Data Science](https://r4ds.had.co.nz) website, this track focuses on the popular [tidyverse](https://www.tidyverse.org), a collection of opinionated tools that "share an underlying design philosophy, grammar, and data structures."  Today you will see how the curriculum is organized and begin your hands-on R, RStudio, and R Notebooks learning.
+image: "![](https://d33wubrfki0l68.cloudfront.net/b88ef926a004b0fce72b2526b0b5c4413666a4cb/24a30/cover.png)"
+image_caption: "*R for Data Science* by Wickham and Grolemund 2017"
+author:
+  - "[Katherine Cox](https://c-moor.github.io/portfolio/coxkatherine/)"
+  - "Frederick Tan"
+learning_goals:
+time: "75 min"
+prerequisites: "None"
+---
+
+```{r setup, include=FALSE}
+library(learnr)
+library( "tidyverse" )
+knitr::opts_chunk$set(echo = FALSE)
+
+url <- "https://github.com/opencasestudies/ocs-bp-diet/blob/master/data/raw/dietary_risk_exposure_sep_ages_2017.csv?raw=true"
+df_diet <- read_csv( url ) %>%
+  select( location=location_name, food=rei_name, age=age_group_name, sex, mean, unit ) %>%
+  mutate( food = str_remove( food, "Diet low in |Diet high in " ) )
+```
+
+
+<!---
+Don't edit the Welcome page, it will be filled in automatically using the information from the YAML header
+Edit the rest of the document as you like
+There are some suggested sections to provide a standard order across our tutorials, but they may not all be needed/appropriate for all tutorials.
+Section 1. Content 1 has example quizes and exercises
+-->
+
+## Welcome {.splashpage}
+
+### `r rmarkdown::metadata$title`
+
+<div class="splashpage-container">
+  <figure class="splashpage-image">
+  `r rmarkdown::metadata$image`{width=100%}
+  <figcaption class="caption">`r rmarkdown::metadata$image_caption`</figcaption>
+  </figure>
+
+  `r rmarkdown::metadata$summary`
+  
+
+</div>
+
+
+#### Learning Goals
+
+```{r}
+# Extract learning goals from YAML and add HTML tags to make an ordered list
+learningGoals <- rmarkdown::metadata$learning_goals
+learningGoals <- paste("<li>", learningGoals, "</li>", sep="", collapse="")
+
+```
+
+<!-- <ol> -->
+<!-- `r learningGoals` -->
+<!-- </ol> -->
+
+1. Understand the focus of this **R for Data Science** track
+    - Explain how the book is organized
+    - State some goals of the `tidyverse`
+1. Carry out basic R tasks
+    - Explore `data.frame`s
+    - Plot with ggplot2 `aes()`
+1. Apply strategies for working efficiently
+    - Manage multiple web browser tabs
+    - Write good questions
+
+#### Authors:
+
+```{r}
+# Extract authors from YAML and add HTML tags to make a list
+authorList <- rmarkdown::metadata$author
+authorList <- paste("<li>", authorList, "</li>", sep="", collapse="")
+
+```
+
+<ul>
+`r authorList`
+</ul>
+
+
+```{r}
+# Extract the tutorial version from the YAML data and store it so we can print it using inline r code below.  This can't be done directly inline because the code for extracting the YAML data uses backticks
+tv <- rmarkdown::metadata$output$`learnr::tutorial`$version
+```
+
+#### Version: `r tv`
+
+## 1. Introduction
+
+### R for Data Science
+
+> This book will teach you how to do data science with R: You’ll learn how to get your data into R, get it into the most useful structure, transform it, visualise it and model it. In this book, you will find a practicum of skills for data science. [(ref)](https://r4ds.had.co.nz)
+
+![](https://d33wubrfki0l68.cloudfront.net/571b056757d68e6df81a3e3853f54d3c76ad6efc/32d37/diagrams/data-science.png)
+
+```{r question-1}
+question("What will you learn in this track?",
+  answer("How to analyze RNA-seq data starting with raw sequencing data"),
+  answer("How count-based statistics are used in RNA-seq analysis"),
+  answer("How to do many of the things that can be done in Excel", correct=TRUE),
+  answer("How to take over the world"),
+  allow_retry = TRUE
+)
+```
+
+### Exploratory Data Anlysis
+
+The track starts with data visualization "because the payoff is so clear: you get to make elegant and informative plots that help you understand data."  Thus, these tutorials will
+
+> get you up to speed with the basic tools of data exploration as quickly as possible. Data exploration is the art of looking at your data, rapidly generating hypotheses, quickly testing them, then repeating again and again and again. The goal of data exploration is to generate many promising leads that you can later explore in more depth. [(ref)](https://r4ds.had.co.nz/explore-intro.html)
+
+Below is a [DataCamp](https://www.datacamp.com) video introducing data visualization.  While this video is for a different course, it provides nice examples of how visualizing data can provide insights that you might otherwise miss.
+
+![](https://youtube.com/watch?v=YxKr2a-Y1WE){width=75%}
+
+```{r question-2}
+question("What will we *not* spend a lot of time on?",
+  answer("Visualizing data"),
+  answer("Communicating results"),
+  answer("Performing statistical tests", correct=TRUE),
+  answer("Exploring different datasets"),
+  allow_retry = TRUE
+)
+```
+
+### Rectangular Data
+
+> This book focuses exclusively on rectangular data: collections of values that are each associated with a variable and an observation. There are lots of datasets that do not naturally fit in this paradigm: including images, sounds, trees, and text. But rectangular data frames are extremely common in science and industry, and we believe that they are a great place to start your data science journey. [(ref)](https://r4ds.had.co.nz/introduction.html#non-rectangular-data)
+
+```{r question-3}
+question("What kind of data will we learn to analyze?",
+  answer("Raw sequencing data"),
+  answer("Every kind of data found in an Excel spreadsheet"),
+  answer("Only rectangular data where every column has the same number of rows", correct=TRUE),
+  allow_retry = TRUE
+)
+```
+
+### Chapter 1 Introduction
+
+Read the introductory chapter of **R 4 Data Science** to understand what you will learn, how this book is organized, how to get help, and more!
+
+- [Chapter 1 Introduction](https://r4ds.had.co.nz/introduction.html)
+    - **NOTE:** You do **not** have to install R or RStudio at this time
+
+```{r question-7}
+question("How is this book organized?",
+  answer("Importing, Transforming, Visualizing"),
+  answer("Importing, Visualizing, Transforming"),
+  answer("Transforming, Visualizing, Importing"),
+  answer("Visualizing, Transforming, Importing", correct=TRUE),
+  allow_retry = TRUE
+)
+```
+
+## 2. Pre-requisites
+
+### RStudio Server
+
+As we just mentioned, you do **not** have to install R or RStudio to complete this tutorial.  Rather, we will use a centralized [RStudio Server](https://rstudio.com/products/rstudio/#rstudio-server) to get you started as quickly as possible.  A centralized RStudio Server provides the following advantages:
+
+- Software -- many of the commonly used software packages are pre-installed
+- Data -- datasets generated by the sequencing core or other lab members are readily accessible
+- Compute -- access to more CPU, memory, and disk space than is available on a typical laptop
+- Server -- long running computations run on the server rather than your laptop (even if you lose internet connection)
+
+Before continuing with this tutorial, please ensure that you are able to log into an RStudio Server instance
+
+```{r question-11}
+question("Are you able to log into RStudio Server (and see something *similar* to the screenshot below)?",
+  answer("No"),
+  answer("Yes", correct=TRUE),
+  allow_retry = TRUE
+)
+```
+
+![](https://d33wubrfki0l68.cloudfront.net/9a23d664f0f49bc2ef8e78bed6277dd48bd2b96d/af132/diagrams/rstudio-console.png){width=75%}
+
+### Web Browser Tabs
+
+Throughout these tutorials, you will have to manage multiple web browser tabs including:
+
+- The tutorial
+- RStudio Server
+- *R for Data Science* website
+- Google searches
+
+Please practice organizing and switching between your tabs.  One strategy that you may find useful is to clean your "workspace" before working on a tutorial by quitting and restarting your web browser so that the only tabs you have open are related to the tutorial.  If you are having difficulty and need help, don't hesistate to ask in Slack!
+
+**NOTE**: Some links will open a new tab in your browser while other links will replace your current tab.  For the links that replace your current tab, you can force it to open in a new tab by holding the `<CONTROL>` key while you click on the link and selecting `Open Link in New Tab`
+
+![](https://drive.google.com/uc?id=1Vk9QRG3POWW_bD97-han2toidrpaVZKW){width=75%}
+
+## 3. `data.frame`s
+
+### Video
+
+Many of the datasets you will work with in these tutorials are stored in `data.frame`s.  Watch this video describing how `data.frame`s are organized, in particular how the data in **rows** and **columns** differ.  Don't worry about all of the jargony R code (e.g. creating `data.frames`) as we will discuss them later.
+
+![](https://www.youtube.com/watch?v=9f2g7RN5N0I)
+
+```{r question-1-1}
+question("What is one feature of `data.frame`s?",
+  answer("Columns only contain numbers"),
+  answer("Columns only contain strings of characters"),
+  answer("All data in a given column must be the same type", correct=TRUE),
+  answer("Data must be derived from a database"),
+  allow_retry = TRUE
+)
+```
+
+### Reading
+
+Read the two **short** sections describing the `mpg` dataset
+
+- [Chapter 3.2 First Steps](https://r4ds.had.co.nz/data-visualisation.html#first-steps){target="_blank"}
+- [Chapter 3.2.1 The `mpg` data frame](https://r4ds.had.co.nz/data-visualisation.html#the-mpg-data-frame){target="_blank"}
+
+### Exercise 1: Page and tab through a `data.frame` (1/2)
+
+These tutorials provide a convenient interface to explore the `mpg` dataset.  In particular, when you explore `data.frame`s you can:
+
+* Page down and up through the 234 rows by clicking on `Next` and `Previous`
+* Tab right and left through the 11 columns by clicking on the small black triangles at the top
+
+```{r, echo=TRUE}
+mpg
+```
+
+```{r question-1-2}
+question("What is the first car of class `suv` to appear in the `mpg` dataset? ... *Remember you may have to click on the small black triangles to see additional columns*",
+  answer("a4"),
+  answer("a4 quattro"),
+  answer("c1500 suburban 2wd", correct=TRUE),
+  answer("k1500 tahoe 4wd"),
+  allow_retry = TRUE
+)
+```
+
+### Exercise 1: Page and tab through a `data.frame` (2/2)
+
+Activating this feature is as simple as executing a command that returns a `data.frame`.  Try this yourself by:
+
+- Typing `mpg` into the "sandbox" exercise area below
+- Clicking on `Run Code`
+
+```{r problem-1-1, exercise=TRUE, exercise.eval=FALSE}
+```
+
+### Exercise 2: Identify `data.frame` dimension information (1/2)
+
+Another way to find cars of class `suv` is to filter for the **62 rows** where `class` equals `suv` using a command such as
+
+```{r, echo=TRUE, eval=FALSE}
+filter( mpg, class=="suv" )
+```
+
+Notice how the filtered `data.frame` indicates how many rows (and columns) exist by displaying in the bottom left corner `1-10 of 62 rows | 1-10 of 11 columns`.
+
+```{r, echo=TRUE, eval=TRUE}
+filter( mpg, class=="suv" )
+```
+
+### Exercise 2: Identify `data.frame` dimension information (2/2)
+
+Now it's your turn to find cars where `manufacturer` equals `ford`:
+
+- Modify this command and replace `class=="suv"` with `manufacturer=="ford"`
+- Click `Run Code`
+
+```{r problem-1-2, exercise=TRUE, exercise.eval=FALSE}
+filter( mpg, class=="suv" )
+```
+
+```{r question-problem-1-2}
+question("How many rows are in the filtered `data.frame`?",
+  answer("11"),
+  answer("25", correct=TRUE),
+  answer("62"),
+  answer("234"),
+  allow_retry = TRUE
+)
+```
+
+### Exercise 3: Summarize `data.frame` columns (1/2)
+
+Recall that in the `mpg` dataset:
+
+- Rows represent different instances of cars (observations)
+- Columns represent different properties of cars (variables)
+
+We can calculate the average (and median, min, max, etc.) miles per gallon on the highway by:
+
+- Extracting data in the `hwy` column using the `select()` function
+- Invoking the `summary()` function
+
+```{r echo=TRUE}
+x <- select( mpg, hwy )
+summary( x )
+```
+
+While we could try `summary()` with the `class` column to summarize the "type" of car
+
+```{r echo=TRUE}
+x <- select( mpg, class )
+summary( x )
+```
+
+... a better way is to use `table()` to count each category
+
+```{r echo=TRUE}
+x <- select( mpg, class )
+table( x )
+```
+
+### Exercise 3: Summarize `data.frame` columns (2/2)
+
+Now it's your turn to find:
+
+- Mean engine displacement in the `displ` column (answer: 3.472)
+- Number of 4-wheel drives `drv` column (answer: 103)
+
+Replace `class` with the name of the column you wish to summarize and click `Run Code`
+
+```{r problem-1-3, exercise=TRUE, exercise.eval=FALSE}
+x <- select( mpg, class )
+summary( x )
+table( x )
+```
+
+## 4. Troubleshooting
+
+### Common Problems
+
+Before going further, let's read about some common problems that even experienced R users encounter **every day** so you start building some intuition on what to pay attention to:
+
+- [Chapter 3.4 Common problems](https://r4ds.had.co.nz/data-visualisation.html#common-problems){target="_blank"}
+
+As you proceed through this tutorial, here are a few things to check if your code is broken:
+
+- Mismatched parentheses and quotes
+- Incorrect spelling and capitalization
+- Missing (or extra!) commas
+
+### Writing a good question
+
+While it's important to *try* and fix your code yourself, please don't struggle too much but rather ask for help over Slack!  And just as important, please try and help others who are asking for help ;)
+
+To increase the chances that someone can help fix your code, please read this advice on writing a good question
+
+- Stack Overflow's [How to create a Minimal, Reproducible Example](https://stackoverflow.com/help/minimal-reproducible-example){target="_blank"}
+
+```{r question-2-1}
+question("What is *not* a recommendation for a good quesion?",
+  answer("Minimal"),
+  answer("Complete"),
+  answer("Reproducible"),
+  answer("Correct", correc=TRUE),
+  allow_retry = TRUE
+)
+```
+
+## 5. ggplot2 `aes()`
+
+### Video
+
+Armed with a basic idea of what data is stored in each column of `mpg`, let us now visualize the data to gain insight into the relationships between each variable.
+
+> R has several systems for making graphs, but ggplot2 is one of the most elegant and most versatile. ggplot2 implements the grammar of graphics, a coherent system for describing and building graphs. With ggplot2, you can do more faster by learning one system and applying it in many places. [(ref)](https://r4ds.had.co.nz/data-visualisation.html#introduction)
+
+![](https://www.youtube.com/watch?v=uiTc55clwuA)
+
+```{r question-3-1}
+question("What are the essential grammatical elements in ggplot2?",
+  answer("data, statistics, coordinates"),
+  answer("data, aesthetics, geometries", correct=TRUE),
+  answer("data, geometries, coordinates"),
+  answer("geometries, statistics, coordinates"),
+  allow_retry = TRUE
+)
+```
+
+### Reading 1
+
+Read the following two sections introducting how to create a `ggplot` using the `ggplot2` package.  You will have an opportunity to run the code in **next** section of this tutorial.
+
+- [Chapter 3.2.2 Creating a ggplot](https://r4ds.had.co.nz/data-visualisation.html#creating-a-ggplot){target="_blank"}
+- [Chapter 3.2.3 A graphing template](https://r4ds.had.co.nz/data-visualisation.html#a-graphing-template){target="_blank"}
+
+### Exercise in 3.2.2
+
+Here is the code presented at the beginning of Chapter 3.2.2
+
+```{r echo=TRUE, eval=FALSE}
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy))
+```
+
+Type this code into the "sandboxed" exercise area below.  Do not just copy and paste but rather **be sure to type the code** to practice typing R code.
+
+```{r problem-3-1, exercise=TRUE, exercise.eval=FALSE}
+```
+
+### Exercises in 3.2.4
+
+Here is another exercise sandbox to work through 3.2.4 Exercises (reproduced below)
+
+1. Run `ggplot(data = mpg)`. What do you see?
+1. How many rows are in `mpg`? How many columns?
+1. What does the `drv` variable describe? Read the help for `?mpg` to find out.
+1. Make a scatterplot of `hwy` vs `cyl`.
+1. What happens if you make a scatterplot of `class` vs `drv`? Why is the plot not useful?
+
+```{r problem-3-2, exercise=TRUE, exercise.eval=FALSE}
+```
+
+### Reading 2
+
+Now that you've warmed up with `ggplot()`, read about how `aes()`thetics map data **variables** to visual **properties** of objects in your plot.
+
+- [Chapter 3.3 Aesthetic mappings](https://r4ds.had.co.nz/data-visualisation.html#aesthetic-mappings){target="_blank"}
+
+Below is an exercise sandbox with the code presented at the beginning of Chapter 3.2.2.  Follow along with Chapter 3.3 and modify it so that the `class` variable is mapped to the following properties:
+
+- `color`
+- `size`
+- `alpha`
+- `shape`
+
+Don't forget that you need a **comma** to separate each aesthetic, and that all aesthetics should be **inside** the `aes()` parentheses
+
+i.e. `aes(` x = displ`,` y = hwy`,` color = class `)`
+
+```{r problem-3-3, exercise=TRUE, exercise.eval=FALSE}
+ggplot(data = mpg) +
+  geom_point(mapping = aes(x = displ, y = hwy))
+```
+
+### Exercises in 3.3.1
+
+Here is one more exercise sandbox to work through [3.3.1 Exercises](https://r4ds.had.co.nz/data-visualisation.html#exercises-1){target="_blank"} (reproduced below)
+
+1. What’s gone wrong with this code? Why are the points not blue?
+
+    ```{r echo=TRUE, eval=FALSE}
+    ggplot(data = mpg) +
+      geom_point(mapping = aes(x = displ, y = hwy, color = "blue"))
+    ```
+
+1. Which variables in `mpg` are categorical? Which variables are continuous? (Hint: type `?mpg` to read the documentation for the dataset). How can you see this information when you run `mpg`?
+1. Map a continuous variable to `color`, `size`, and `shape`. How do these aesthetics behave differently for categorical vs. continuous variables?
+1. What happens if you map the same variable to multiple aesthetics?
+1. What does the `stroke` aesthetic do? What shapes does it work with? (Hint: use `?geom_point`)
+1. What happens if you map an aesthetic to something other than a variable name, like `aes(colour = displ < 5)`? Note, you’ll also need to specify x and y.
+
+```{r problem-3-4, exercise=TRUE, exercise.eval=FALSE}
+```
+
+## Optional: OCS - Global Diets
+
+### Dataset (1/2)
+
+Congratulations!  You now have some basic tools to explore datasets in R!  Here is a different dataset to practice with if you have time remaining.  If not, come back another time and you can skip to this section by clicking on the left hand navigation menu.
+
+The previous exercises dealt with the `mpg` dataset containing 234 rows.  Let's now apply what we've learnt to the `df_diet` dataset containing **88,200 rows**.  This dataset is from a study published by the [Global Burden of Disease Study](https://www.ncbi.nlm.nih.gov/pubmed/30954305) and cleaned by the [Open Case Studies](https://opencasestudies.github.io) project at the Johns Hopkins School of Public Health.  In particular,
+
+> This article evaluated food consumption patterns in 195 countries for 15 different dietary risk factors that have probable associations with non-communicable disease (NCD).
+
+Briefly explore the `data.frame` in the exercise area below using the tools we've discussed:
+
+- What is in the `df_diet` dataset?
+    - HINT: Entering the name of the `data.frame` and click `Run Code`
+- What are the column variable names?
+- Which column variables are strings (`chr`) and which are numbers (`dbl`)?
+- For the `chr` variables, what are some of the categories?
+- For the `dbl` variables, what are the average / min / max?
+
+```{r problem-4-1, exercise=TRUE, exercise.eval=FALSE}
+```
+
+### Dataset (2/2)
+
+At this point, we unfortunately don't have enough tools to properly explore all 195 countries.  Thus, we will focus on just one country.  Click `Run Code` to first see how each country is **spelled** (and **capitalized**!)  Note that the resulting output is in a box that can be scrolled:
+
+```{r problem-4-2, exercise=TRUE, exercise.eval=FALSE}
+x <- select( df_diet, location )
+table( x )
+```
+
+Run this code to see how we can filter for the 450 rows where `location` equals `United States`:
+
+```{r problem-4-3, exercise=TRUE, exercise.eval=FALSE}
+df_diet_us <- filter( df_diet, location=="United States" )
+df_diet_us
+```
+
+### Plot age vs mean (vs food vs sex)
+
+Now let's visualize how food consumption varies between `Female` and `Male`.  Everything in the code below should be familiar except for `facet_wrap( ~ sex )`.  Two questions:
+
+1. What does `facet_wrap()` do?  See what comes up on [google.com](https://www.google.com)
+2. Which foods show a difference based on `sex`?
+
+```{r problem-4-4, exercise=TRUE, exercise.eval=FALSE}
+df_diet_us <- filter( df_diet, location=="United States" )
+
+ggplot( df_diet_us ) +
+  geom_point( aes( age, mean, color=food ) ) +
+  facet_wrap( ~ sex )
+```
+
+### Plot age vs mean (vs sex vs food)
+
+Now it's your turn to create the plot below that more easily compares `Female` vs `Male`.  Modify the code to:
+
+  - `color` based on `sex`
+  - `facet` based on `food`
+  - Scale the y-axis independently by passing `facet_wrap()` the `scales="free"` option
+
+    i.e. `facet_wrap(` ~ column_name`, scales="free"` `)`
+
+```{r problem-4-5, exercise=TRUE, exercise.eval=FALSE}
+df_diet_us <- filter( df_diet, location=="United States" )
+
+ggplot( df_diet_us ) +
+  geom_point( aes( age, mean, color=food ) ) +
+  facet_wrap( ~ sex )
+```
+
+#### This is what your plot should look like
+
+```{r echo=FALSE, eval=TRUE}
+df_diet_us <- filter( df_diet, location=="United States" )
+
+ggplot( df_diet_us ) +
+  geom_point( aes( age, mean, color=sex ) ) +
+  facet_wrap( ~ food, scales="free" )
+```

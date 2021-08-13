@@ -13,3 +13,13 @@
 - [test-driveR](http://mybinder.org/v2/gh/c-moor/cure-rnaseq/master?urlpath=shiny/tutorials/test_driveR/)
 - [Meet R!](http://mybinder.org/v2/gh/c-moor/cure-rnaseq/master?urlpath=shiny/tutorials/Intro_R/)
 
+## Aug 19 -- Base R
+
+- [reviewR](http://mybinder.org/v2/gh/c-moor/cure-rnaseq/master?urlpath=shiny/tutorials/reviewR/)
+
+## Aug 24 -- R for Data Science
+
+- [r4ds](http://mybinder.org/v2/gh/c-moor/cure-rnaseq/master?urlpath=shiny/tutorials/r4ds/)
+
+## Aug 26 -- R Notebooks
+
