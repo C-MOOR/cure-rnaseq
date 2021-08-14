@@ -254,7 +254,15 @@ As a reminder, here is an image from the Marianes and Spradling (2013) paper sho
 
 You can read more about these different regions and subsections in the  [paper](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3755342/).
 
-There are several blocks for your convenience, use as many as you like.  **You can always look back at other tabs and use the [R cheat sheet](https://github.com/C-MOOR/cure-rnaseq/blob/master/tutorials/Rcheatsheet.md) to remind yourself how to set up a particular command.**
+Here are some additional reminders that may be helpful
+
+- Click on the left hand navigation menu to see what commands you have already tried
+- Run the command `df` to explore the contents of the data.frame
+- Possible `region`s are `a1`, `a2_3`, `Cu`, `LFCFe`, `Fe`, `p1`, and `p2_4`
+- Example `gene_name`s are `a`, `abd-A`, `Abd-B`, `Egfr`, `N`, `hh`, `bsk`, and `Akt1`
+- Find more tips in our [R cheat sheet](https://github.com/C-MOOR/cure-rnaseq/blob/master/tutorials/Rcheatsheet.md)
+
+There are several blocks for your convenience, use as many as you like!
 
 ```{r freeplay-exercise, exercise=TRUE, exercise.eval=FALSE}
 
