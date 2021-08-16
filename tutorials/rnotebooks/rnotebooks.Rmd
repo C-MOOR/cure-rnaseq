@@ -1,0 +1,348 @@
+---
+title: "R Notebooks"
+output:
+  learnr::tutorial:
+    css: css/cmoor.css
+    progressive: true
+    version: 1.0
+subtitle: |
+  ![](images/cmoor_logo_notext.png){width=60%}
+  
+  [Get Help](https://help.c-moor.org/){target="_blank"}
+runtime: shiny_prerendered
+
+# The fields below will be used to create the first page of the tutorial.  You can use markdown.
+# For summary, all new lines must be indented to the same level as the first line.
+# The image must be surrounded with quotes
+summary: |
+  In this tutorial you will learn the basics of working with [R Notebooks](https://bookdown.org/yihui/rmarkdown/notebook.html){target="_blank"} and will create R Notebooks of your own.  You will practice using R Notebooks to work through exercises, recording your code and comments so you can take notes for your future reference and share your answers with each other.
+image: "![](https://bookdown.org/yihui/rmarkdown/images/notebook-demo.png)"
+image_caption: "An R Notebook example"
+author:
+  - "[Katherine Cox](https://c-moor.github.io/portfolio/coxkatherine/)"
+  - "Frederick Tan"
+learning_goals:
+  - "Describe the benefits of R Notebooks"
+  - "Perform basic R Notebook operations"
+  - "Share an R Notebook with others"
+time: "50 min"
+prerequisites: "None"
+---
+
+```{r setup, include=FALSE}
+library(learnr)
+library( "tidyverse" )
+
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+
+<!---
+Don't edit the Welcome page, it will be filled in automatically using the information from the YAML header
+Edit the rest of the document as you like
+There are some suggested sections to provide a standard order across our tutorials, but they may not all be needed/appropriate for all tutorials.
+Section 1. Content 1 has example quizes and exercises
+-->
+
+## Welcome {.splashpage}
+
+### `r rmarkdown::metadata$title`
+
+<div class="splashpage-container">
+  <figure class="splashpage-image">
+  `r rmarkdown::metadata$image`{width=100%}
+  <figcaption class="caption">`r rmarkdown::metadata$image_caption`</figcaption>
+  </figure>
+
+  `r rmarkdown::metadata$summary`
+  
+
+</div>
+
+
+#### Learning Goals
+
+```{r}
+# Extract learning goals from YAML and add HTML tags to make an ordered list
+learningGoals <- rmarkdown::metadata$learning_goals
+learningGoals <- paste("<li>", learningGoals, "</li>", sep="", collapse="")
+
+```
+
+<ol>
+`r learningGoals`
+</ol>
+
+#### Authors:
+
+```{r}
+# Extract authors from YAML and add HTML tags to make a list
+authorList <- rmarkdown::metadata$author
+authorList <- paste("<li>", authorList, "</li>", sep="", collapse="")
+
+```
+
+<ul>
+`r authorList`
+</ul>
+
+
+```{r}
+# Extract the tutorial version from the YAML data and store it so we can print it using inline r code below.  This can't be done directly inline because the code for extracting the YAML data uses backticks
+tv <- rmarkdown::metadata$output$`learnr::tutorial`$version
+```
+
+#### Version: `r tv`
+
+## Introduction
+
+### Reproducible Research
+
+It is likely that most of the work that you have done thus far for these tutorials have not been recorded in a lab notebook.  Reasons for this are manyfold but primary is the lack of a good tool.  Before getting into the nitty gritty of our favorite tool, R Notebooks, let's briefly discuss what is needed to reproduce computational research.
+
+![](https://www.youtube.com/watch?v=GXSRP--d3Q4)
+
+```{r reproducble-research-quiz}
+question("What do authors *not* need to share?",
+  answer("Data"),
+  answer("Code"),
+  answer("Computers", correct=TRUE),
+  answer("Documentation"),
+  allow_retry = TRUE
+)
+```
+
+### Why R Notebooks? (1/2)
+
+An R Notebook is a way to use R to easily create clean reports that **combine R code and output with explanations and comments**.  They are convenient for creating:
+
++ **Digital "lab notebooks"** for yourself, recording the day's work - what code you used and why, what the results were.
++ **Sharable data analysis documents**, for collaborating with other data scientists.
++ **Reports** for colleagues, collaborators, supervisors, etc.
+
+Here are links to a couple of example R Notebooks, so you can see them in action:
+
++ [Explore SingleCellExperiment using tidyverse](http://www.c-moor.org/rnotebooks/retina.nb.html){target="_blank"}
++ [Process pbmc3k using Bioconductor OSCA](http://www.c-moor.org/rnotebooks/osca-pbmc3k.nb.html){target="_blank"}
++ [RNA velocity using Bioconductor](http://www.c-moor.org/rnotebooks/velocity.nb.html){target="_blank"}
++ [Explore marianes-regions using DESeq2](http://www.c-moor.org/rnotebooks/marianes-regions.nb.html){target="_blank"}
+
+### Why R Notebooks? (2/2)
+
+Watch the following video, introducing some of the great features of R Notebooks: 
+
+![](https://www.youtube.com/watch?v=pTDd5VP9V10)
+
+```{r why-r-notebooks-quiz}
+question("What is *not* a feature of R Notebooks?",
+  answer("Organizes code with the corresponding results and prose"),
+  answer("Facilitates cycles of editing code and viewing results"),
+  answer("Guarantees that analyses are inerrant", correct=TRUE),
+  answer("Creates a self-contained .html report that can be easily shared"),
+  allow_retry = TRUE
+)
+```
+
+### RStudio Server
+
+For this tutorial, you will work on a centralized [RStudio Server](https://rstudio.com/products/rstudio/#rstudio-server){target="_blank"} so that you do **not** have to install R or RStudio.  To get you started as quickly as possible, use one of the following:
+
+- [SciServer](https://docs.google.com/document/d/1eXaBhhVz7AVe0A2QZFP8EMCOQh-qPgOUeuajZkZsPrI){target="_blank"} -- for C-MOOR students
+- [MyBinder](http://mybinder.org/v2/gh/c-moor/rstudio-binder/master?urlpath=rstudio){target="_blank"} -- we've configured this for anyone to use
+- Institutional Resource -- ask your local informatics group if this is an option
+- [RStudio.cloud](https://rstudio.cloud/plans/free){target="_blank"} -- try for free, pay for more
+- [AnVIL](https://jhudatascience.org/AnVIL_Book_Getting_Started/tools.html){target="_blank"} -- NHGRI's Genomic Data Science Analysis, Visualization, and Informatics Lab-Space
+
+A centralized RStudio Server provides the following advantages:
+
+- Software -- many of the commonly used software packages are pre-installed
+- Data -- datasets generated by the sequencing core or other lab members are readily accessible
+- Compute -- access to more CPU, memory, and disk space than is available on a typical laptop
+- Server -- long running computations run on the server rather than your laptop (even if you lose internet connection)
+
+Before continuing with this tutorial, please ensure that you are able to log into an RStudio Server instance
+
+```{r question-11}
+question("Are you able to log into RStudio Server (and see something *similar* to the screenshot below)?",
+  answer("No"),
+  answer("Yes", correct=TRUE),
+  allow_retry = TRUE
+)
+```
+
+![](https://d33wubrfki0l68.cloudfront.net/9a23d664f0f49bc2ef8e78bed6277dd48bd2b96d/af132/diagrams/rstudio-console.png){width=75%}
+
+## 1. First R Notebook
+
+### Anatomy of an R Notebook
+
+Read [Anatomy of an R Notebook](https://docs.google.com/document/d/1Pg78Jvh6frO-Um1JWSo1GkQhcIYU730HBnwzlzNxb34){target="_blank"} to learn about the components of an R Notebook and how they fit together.
+
+```{r anatomy-of-an-r-notebooks-quiz}
+question("Generally, where does code go and where does prose go?",
+  answer("Code goes in the `.Rmd`, prose goes in the `.nb.html`"),
+  answer("Code goes in the YAML, prose goes in the body"),
+  answer("Code goes in the grey background, prose goes in the white background", correct=TRUE),
+  answer("Code goes in the white background, prose goes in the grey background"),
+  allow_retry = TRUE
+)
+```
+
+### Video: R Notebook Workflow
+
+This is a basic workflow for working with R Notebooks:
+
+1. **Create a new R Notebook** (or open an existing one)
+2. **Insert a code chunk** (add and run code)
+3. **Add narrative** (notes, explanations, conclusions)
+4. **Preview output report** (edit until you're happy)
+5. **Repeat steps 2-4** (adding code and narrative and Previewing until you're done)
+6. **Share R Notebook**
+
+The following video demonstrates these steps in action.
+
+![](https://www.youtube.com/watch?v=Aom57-yVI_g)
+
+### Assignment: my_first_r_notebook.Rmd (1/2)
+
+Now it's your turn!  Create an R Notebook to explore the `Puromycin` dataset that is included as part of base R (more detailed instructions are below).  This is a fairly simple dataset that gives the reaction rates of galactosyltransferase at different substrate concentrations, with and without treatment with puromycin:
+
+```{r}
+Puromycin
+```
+
+### Assignment: my_first_r_notebook.Rmd (2/2)
+
+Your R Notebook will accomplish two goals:
+
++ Print out the `Puromycin` dataset
++ Plot substrate concentration vs. reaction velocity (as you would for Michaelis-Menten kinetics, though we won't do the calculations)
+
+Now get to work!  Inside RStudio:
+
+1. Create a new R Notebook
+    + File > New File > R Notebook
+    + Save it with an informative title
+    + Delete the example code (everything below the three dashes (`---`) on line 4)
+        + You can leave it for now if it's helpful, but there's no need to keep it 
+2. Insert a code chunk
+    + Insert a new code chunk (Insert > R)
+    + In your new code chunk type `Puromycin` to print out the dataset
+    + Run the code chunk (click the play button at the top of the code chunk)
+        + You should see the data show up below the code chunk
+3. Add narrative
+    + In the white space above the code chunk, add a description of the dataset, e.g. "Galactosyltransferase reaction rates at different substrate concentrations, with and without treatment with puromycin"
+4. Preview output report
+    + Click either the Preview or the Save button
+    + The output will probably pop up in a new tab or window - you may need to give it permission
+    + In the output, you should see:
+        + Your Title
+        + Your description
+        + A grey box with the code `Puromycin`
+        + A printout of the dataset
+5. Repeat steps 2-4 to add a plot
+    + Insert a new code chunk (Insert > R)
+    + In your new code chunk type `plot(Puromycin$conc, Puromycin$rate, col=Puromycin$state)` to plot substrate concentration vs. rate, colored by whether or not the sample was treated with puromycin
+        + This is using base R plotting rather than ggplot2 - we will discuss how to load packages such as `ggplot2` into an R Notebook in the next section
+    + Run the code chunk (click the play button at the top of the code chunk)
+    + Click either the Preview or the Save button
+    + In the output, you should see:
+        + Your Title
+        + Your description
+        + A grey box with the code `Puromycin`
+        + A printout of the dataset
+        + Another grey box with the plotting code
+        + The plot
+
+## 2. Loading Packages
+
+### Reading: R Notebook Workflow
+
+Read [Basic R Notebook Workflow](https://docs.google.com/document/d/1-Akr9hlPE6LpNcyNCpVSTSAol2zr9ugG5-q6In1yCjg){target="_blank"} which covers each of these steps in more detail.
+
+### Assignment: R Notebook with Packages (1/2)
+
+Create your own R Notebook and use it to plot the `mpg` dataset with `ggplot2`.
+
+Note that to work with `ggplot2` (or any package that is not included in base R) you will need to run the `library()` command to make the package available for your R Notebook. `library()` commands can be placed in code chunks just like any other R code.  It's generally a good idea to put `library()` commands at the top of your R Notebook  so you can easily see what packages are needed for the Notebook.
+
+Here is a refresher video, demonstrating the steps for this assignment (including `library(ggplot2)`) .  It also shows a bit of *R Markdown* (adding headers and lists), which we will cover in the next section.
+
+![](https://www.youtube.com/watch?v=8gfzg-9K2r8)
+
+### Assignment: R Notebook with Packages (2/2)
+
+Here is a  `ggplot2` command to get you started:
+
+```{r, echo=TRUE, eval=FALSE}
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy, color = class))
+```
+
+Now, get to work!  Inside RStudio:
+
+1. Create a new R Notebook
+    + File > New File > R Notebook
+    + Save it with an informative title
+    + Delete the example code
+    + Click Preview (adjust your settings so it appears in the browser or view pane, whichever you prefer)
+2. Insert a code chunk (add and run code)
+    + Insert a new code chunk (Insert > R)
+    + In your new code chunk, attach the ggplot2 package (using the command `library( "ggplot2" )`)
+    + Run the code chunk
+    + Insert a new code chunk (Insert > R)
+    + Copy the ggplot code above (plotting the mpg dataset) into your new code chunk
+    + Run the code chunk
+3. Add narrative (notes, explanations, conclusions)
+    + Add prose in "white section" commenting on what you plotted.
+4. Preview output report
+    + If there's anything you'd like to change, edit the R Markdown file and then Preview again
+5. Repeat steps 2-4 (adding code and narrative and Previewing until you're done)
+    + Add another code chunk, and set color equal to a different variable from `mpg`
+    + Add prose
+    + Preview
+6. Share R Notebook
+    + Hold off on sharing for now, since you'll be adding to this R Notebook in the next section
+
+## 3. Stylized Reports
+
+### R Markdown
+
+Now that you've got the basics of R Notebooks down, it's time to learn a bit of R Markdown so you can organize and style your R Notebook to produce more readable reports.
+
+Read [R Markdown Basics](https://docs.google.com/document/d/1vsy1tXpBjWof5Fv1FUaFLa6-D-7TL2tfu4dweIjnm7k){target="_blank"} to learn how to
+
++ Add section headers
++ Format text (**bold**, *italics*, `code`)
++ Create numbered and bulleted lists
+
+In the next section you will add some R Markdown to the R Notebook you just created.
+
+```{r r-markdown-quiz}
+question("How do you make text appear `like code`?",
+  answer("Surround it with single asterisks (`*`)"),
+  answer("Surround it with double asterisks (`**`)"),
+  answer("Surround it with backticks (`\``)", correct=TRUE),
+  answer("Prefix it with a hash symbol (`#`)"),
+  allow_retry = TRUE
+)
+```
+
+### Assignment: Add R Markdown to an R Notebook
+
+Go back to the R Notebook you created plotting the `mpg` dataset with ggplot.
+
+1. At the top of the document (just under the `---` that marks the end of the YAML header) add a short statement about the purpose of the notebook (e.g. "Practicing plotting with ggplot2")
+    + Bonus points if you style the word "ggplot2" as `code`
+2. Add a *Heading 2* section header "Attach packages" above the code chunk that runs `library(ggplot2)`
+3. Add a *Heading 2* section header (e.g. "Exploring the mpg dataset with ggplot2") above your plots.
+4. Add an explanation of what you're working on in this section.  Let's include a bulleted list of the data you plotted. For example:
+    + `mpg` is a dataset about cars from the `ggplot2` package
+        + `displ`: engine displacement, in litres
+        + `hwy`: highway miles per gallon
+        + `class`: "type" of car
+5. Run and Preview your document.  Did your headers, lists, and text styling come out correctly?
+6. Continue cleaning up and organizing your R Notebook as much as you would like - for example, explain what variables you're plotting and why, or explain something about the ggplot code.  Is it showing what you want to show your audience - in this case, the future you who wants to remember how to use `ggplot`? ;)
+7. Share your finished document
+    + Upload your `.nb.html` file to Discourse or Slack
+
