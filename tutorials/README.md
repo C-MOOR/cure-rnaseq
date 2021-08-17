@@ -25,3 +25,7 @@
 
 - [R Notebooks](http://mybinder.org/v2/gh/c-moor/cure-rnaseq/master?urlpath=shiny/tutorials/rnotebooks/)
 
+## Aug 31 -- R Notebooks 2
+
+- [R Notebooks 2](http://mybinder.org/v2/gh/c-moor/cure-rnaseq/master?urlpath=shiny/tutorials/rnotebooks2/)
+

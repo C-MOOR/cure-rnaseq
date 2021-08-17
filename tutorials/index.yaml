@@ -26,3 +26,8 @@ Day 6:
   name: "Aug 26 -- R Notebooks"
   tutorial_dir:
     - "rnotebooks"
+
+Day 7:
+  name: "Aug 31 -- R Notebooks 2"
+  tutorial_dir:
+    - "rnotebooks2"
