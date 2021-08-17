@@ -21,9 +21,10 @@
 
 - [r4ds](http://mybinder.org/v2/gh/c-moor/cure-rnaseq/master?urlpath=shiny/tutorials/r4ds/)
 
-## Aug 26 -- R Notebooks
+## Aug 26 -- R Notebooks and R for Data Science 2
 
 - [R Notebooks](http://mybinder.org/v2/gh/c-moor/cure-rnaseq/master?urlpath=shiny/tutorials/rnotebooks/)
+- [r4ds2](http://mybinder.org/v2/gh/c-moor/cure-rnaseq/master?urlpath=shiny/tutorials/r4ds2/)
 
 ## Aug 31 -- R Notebooks 2
 

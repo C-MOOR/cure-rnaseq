@@ -1,0 +1,729 @@
+---
+title: "r4ds2"
+output:
+  learnr::tutorial:
+    css: css/cmoor.css
+    progressive: true
+    version: 1.0
+subtitle: |
+  ![](images/cmoor_logo_notext.png){width=60%}
+  
+  [Get Help](https://help.c-moor.org/){target="_blank"}
+runtime: shiny_prerendered
+
+# The fields below will be used to create the first page of the tutorial.  You can use markdown.
+# For summary, all new lines must be indented to the same level as the first line.
+# The image must be surrounded with quotes
+summary: |
+  This tutorial focuses on [ggplot2](https://ggplot2.tidyverse.org){target="_blank"}, a popular R package for creating beautiful, reproducible plots.  
+  You will practice using [R Notebooks](https://blog.rstudio.com/2016/10/05/r-notebooks/){target="_blank"}, a useful way of organizing your R code and figures.  
+  You will continue working with the `mpg` dataset and will explore the [US Contagious Diseases](https://www.rdocumentation.org/packages/dslabs/versions/0.7.3/topics/us_contagious_diseases){target="_blank"} dataset from the [dslabs](https://www.rdocumentation.org/packages/dslabs/versions/0.7.3){target="_blank"} package.
+  In the next tutorials you will begin learning how to transform data and gain more practice using R Notebooks.
+image: "![](https://ggplot2.tidyverse.org/logo.png)"
+image_caption: "ggplot2 is a system for declaratively creating graphics, based on [The Grammar of Graphics](https://vita.had.co.nz/papers/layered-grammar.html)."
+author:
+  - "[Katherine Cox](https://c-moor.github.io/portfolio/coxkatherine/)"
+  - "Frederick Tan"
+learning_goals:
+  - "Construct basic `ggplot()` commands"
+  - "Create computational notebooks of code, results, and narrative"
+  - "Customize plots with geoms, facets, and labs"
+time: "100 min"
+prerequisites: "None"
+---
+
+```{r setup, include=FALSE}
+library(learnr)
+library( "tidyverse" )
+
+data_url <- "https://github.com/rafalab/dslabs/raw/master/data/us_contagious_diseases.rda"
+data_file <- "us_contagious_diseases.rda"
+download.file( data_url, data_file )
+load( data_file )
+
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+
+<!---
+Don't edit the Welcome page, it will be filled in automatically using the information from the YAML header
+Edit the rest of the document as you like
+There are some suggested sections to provide a standard order across our tutorials, but they may not all be needed/appropriate for all tutorials.
+Section 1. Content 1 has example quizes and exercises
+-->
+
+## Welcome {.splashpage}
+
+### `r rmarkdown::metadata$title`
+
+<div class="splashpage-container">
+  <figure class="splashpage-image">
+  `r rmarkdown::metadata$image`{width=100%}
+  <figcaption class="caption">`r rmarkdown::metadata$image_caption`</figcaption>
+  </figure>
+
+  `r rmarkdown::metadata$summary`
+  
+
+</div>
+
+
+#### Learning Goals
+
+```{r}
+# Extract learning goals from YAML and add HTML tags to make an ordered list
+learningGoals <- rmarkdown::metadata$learning_goals
+learningGoals <- paste("<li>", learningGoals, "</li>", sep="", collapse="")
+
+```
+
+<ol>
+`r learningGoals`
+</ol>
+
+#### Authors:
+
+```{r}
+# Extract authors from YAML and add HTML tags to make a list
+authorList <- rmarkdown::metadata$author
+authorList <- paste("<li>", authorList, "</li>", sep="", collapse="")
+
+```
+
+<ul>
+`r authorList`
+</ul>
+
+
+```{r}
+# Extract the tutorial version from the YAML data and store it so we can print it using inline r code below.  This can't be done directly inline because the code for extracting the YAML data uses backticks
+tv <- rmarkdown::metadata$output$`learnr::tutorial`$version
+```
+
+#### Version: `r tv`
+
+## 1. Our dataset for today is...
+
+### Preface
+
+Here we introduce the *US Contagious Diseases* dataset, which we will use to practice with `ggplot2` in this tutorial and in the final R Notebook assignment.
+
+```{r}
+us_contagious_diseases
+```
+
+This dataset is part of the `dslabs` package, a collection of datasets for practicing data analysis assembled by Rafael Irizarry and Amy Gill.
+
+You can look at the documentation [documentation](https://cran.r-project.org/web/packages/dslabs/dslabs.pdf){target="_blank"} to find out more about this dataset (also feel free to try out other R commands, like `summary( us_contagious_diseases )` and `table( us_contagious_diseases$disease )`.
+
+```{r us_contagious_diseases_help, exercise=TRUE, eval=FALSE}
+
+```
+
+### Preparing our data for plotting
+
+This is a complex dataset with several variables, making it difficult to plot when we take it as a whole.  There are actually some convenient commands that you will learn about soon (Chapter 5 of R for Data Science) that will allow us to easily select certain rows and columns of datasets for plotting, but for now we will just create some mini `data.frame`s containing the data we want to plot.  These mini `data.frame`s let us narrow our focus to specific diseases and states, for example, `measles_MD` contains all measles cases in Maryland. We will use these smaller dataframes to practice with `ggplot2` later in the tutorial - the names should make it fairly obvious what subset of the data they contain.
+
+```{r, echo=TRUE, results="hide"}
+all_diseases_MD <- filter(us_contagious_diseases, state=="Maryland")
+measles <- filter(us_contagious_diseases, disease=="Measles")
+measles_MD <- filter(measles, state=="Maryland")
+measles_VA <- filter(measles, state=="Virginia")
+measles_DMV <- filter(measles, state %in% c("Maryland", "District Of Columbia", "Virginia"))
+mumps <- filter(us_contagious_diseases, disease=="Mumps")
+mumps_MD <- filter(mumps, state=="Maryland")
+```
+
+## 2. Introduction to `ggplot2`
+
+### Preface
+
+While there are several ways to create plots in R, one of the most popular is the `ggplot2` package.
+
+`ggplot2` (and its predecessor `ggplot`) is built around the idea that plots can be described (and programmed) using a common set of features - the "grammar of graphics".  If you'd like to read more about this underlying philosophy, you can read [this paper](http://vita.had.co.nz/papers/layered-grammar.pdf) by Hadley Wickham (author of `ggplot2` as well as the "R for Data Science" book).
+
+
+### Required Components
+
+In `ggplot2`, there are 3 required components for each plot:
+
++ **DATA**: The data that will be plotted.
+    + If we compare this to working with a spreadsheet program, this is the equivalent of opening up the sheet you want to work on.  Just like graphing with a spreadsheet program, you have to tell R which "sheet" to look at.  In R, instead of "sheets", we have `data.frame`s.
++ **GEOMETRIC OBJECTS**: The shapes that will be used to draw the data.
+    + This is the equivalent of choosing the type of plot (scatter, line, bar, histogram, etc.) you want to create.  One of the great things about `ggplot2` is that you can add as many GEOMs as you like to your plot.  Many types of GEOM can be plotted on the same axes (e.g. jitter points on top of a boxplot).
++ **AESTHETIC MAPPINGS**: How the data relates to the plot.
+    + This is where we tell R how to connect ("map") our data to the *aesthetics* (color, size, shape, etc., but also what goes on the x and y axes) of our plot.  If we compare this to working with a spreadsheet program, this is the equivalent of selecting the cells that you want to plot.
+
+There are also several optional components that allow you to further customize your plots (for example, changing the axes range and scale, adding error bars, or splitting the data across multiple related plots). `ggplot2` will make reasonable guesses about what you want for these settings, and you can adjust them if you need to.
+
+### ggplot layers (1/6): Introduction
+
+`ggplot2` is built around the idea of adding "layers" to your plot.
+
++ Each layer changes one thing about your plot
++ You can easily add and remove layers and regenerate the plot
+
+### ggplot layers (2/6): Start with the `ggplot()` command
+
+You always start a plot with the `ggplot()` command, followed by `+` (a plus sign). This is the first layer. 
+
++ This tells R "I want to make a `ggplot`"
++ The plus sign says "keep listening, I haven't given all the instructions yet".
+    + If you forget the plus sign and just run the `ggplot()` command by itself, R will make you a nice empty grey box :)
+    
+```{r echo=TRUE, message=FALSE}
+ggplot( data = measles_MD )
+```
+
+### ggplot layers (3/6): Add a `geom` function
+
+Next you add a shape - perhaps some points, if you want to make a scatterplot, or bars if you're building a barplot.
+
++ This is the next layer, a "geom" layer.
++ This may be all you need to make a simple plot
+
+Here is a simple `ggplot` of the `measles_MD` data.  We are using `geom_point()` to make a scatterplot:
+```{r echo=TRUE, message=FALSE}
+ggplot( data = measles_MD ) +        
+  geom_point( mapping = aes(x=year, y=count) )
+```
+
+### ggplot layers (4/6): Add additional geoms if desired
+You can add more shapes if you like, perhaps a trendline through your points.  This would be another "geom" layer.
+
++ If you want to make more changes to your plot, then you need another plus sign after each line so R knows to keep listening
+
+Here we add a trendline (notice that we need a plus sign after the `geom_point()` command):
+```{r echo=TRUE, message=FALSE}
+ggplot( data = measles_MD ) +        
+  geom_point( mapping = aes(x=year, y=count) ) +
+  geom_smooth( mapping = aes(x=year, y=count) )
+```
+
+### ggplot layers (5/6): Adjust style and aesthetic details
+
+You can use additional commands to change things like the scale, style, legend, axes labels, etc.
+
+Here we add a title:
+```{r echo=TRUE, message=FALSE}
+ggplot( data = measles_MD ) +        
+  geom_point( mapping = aes(x=year, y=count) ) +
+  geom_smooth( mapping = aes(x=year, y=count) ) +
+  labs( title = "Number of Measles Cases in Maryland by Year")
+```
+
+### ggplot layers (6/6): Optionally, add a theme
+
+Finally, we add a theme, which changes the look of the plot:
+```{r echo=TRUE, message=FALSE}
+ggplot( data = measles_MD ) +        
+  geom_point( mapping = aes(x=year, y=count) ) +
+  geom_smooth( mapping = aes(x=year, y=count) ) +
+  labs( title = "Number of Measles Cases in Maryland by Year") +
+  theme_classic() 
+```
+
+There are a few themes included in the `ggplot2` package, and many more are available online or in other R packages, including themes for academic journals.  You can also design your own, although this requires some ggplot ninja skills ;).  It may be easiest to find a theme that's close to what you want and then make a few modifications.
+
+## 3. `aes()`: Map Data to Plot Attributes
+
+### Preface
+
+Plots can communicate information through several properties - the location (i.e. x and y coordinates) comes first to mind, but other properties can be used to convey additional information; here are just a few examples:
+
++ Different shapes on a scatterplot can group data into different categories (e.g. untreated vs. one or more treatment types)
++ The size of a point can convey additional numeric information (e.g. concentration or dosage of a treatment)
++ A color scale can represent a range (e.g. a heatmap, where x and y represent genes and samples, and the color represents expression level)
+
+In ggplot, these properties of a plot are called **aesthetics**.
+
+### Set aesthetics with the `aes()` function
+
+At the heart of a ggplot is the `aes()` function, or **aesthetic mapping**.  This is where we tell R how to connect ("map") our data to the *aesthetics* (color, size, shape, etc., but also what goes on the x and y axes) of our plot.  If we compare this to working with a spreadsheet program, this is roughly the equivalent of selecting the cells that you want to plot.  Inside the `aes()` function, you tell ggplot **which columns of the data.frame** to look at.
+
+Some examples of possible aesthetic mappings include:
+
++ `x`: what's on the x-axis
++ `y`: what's on the y-axis
++ `color`
++ `alpha`: opacity
++ `shape` (for points)
++ `linetype` (for lines)
+
+### Aesthetics go hand-in-hand with geoms
+
+The second required component of a ggplot is a GEOM, or geometric object.  If we compare this to working with a spreadsheet program, this is the equivalent of choosing the type of plot (scatter, line, bar, etc.) you want to create.
+
+Aesthetics go hand-in-hand with geoms - geoms need aesthetics to specify how they should be drawn.  For example, `geom_point()` needs to know what data should be used for the x and y coordinates of the points, and what color, shape, size, etc. those points should be.
+
+Aesthetic mappings are set within the `aes()` function, which is given as the `mapping` parameter to geom functions
+
+`geom_point( mapping=aes(INSERT, MAPPED, AESTHETICS), NONMAPPED, AESTHETICS )`
+
++ **INSIDE aes()** -- The `aes()` function should contain all aesthetic properties that you want to **connect to your data**
+    + For example, if we have multiple diseases in our dataframe, we can make the color of the points match the disease by setting `color` in the `aes()` function: `geom_point( mapping=aes(x=year, y=count, color=disease) )`
++ **OUTSIDE aes()** -- Aesthetic properties that you want to **set yourself but not connect to your data** should go outside the `aes()` function (but still inside the parentheses of the geom function)
+    + For example, to make all the points red: `geom_point( mapping=aes(x=year, y=count), color="red")` (note that "red" needs to be in quotes)
+
+
+```{r aes-mappings-quiz}
+quiz(
+  question("Which of these commands will make a scatter plot where the year is on the x axis, the case count is on the y axis, all points are colored blue, and the shape of the points indicates the disease?",
+    answer('`geom_point( x=year, y=count, color="blue", shape = disease)`'),
+    answer('`geom_point( mapping=aes(x=year, y=count), color="blue", shape=disease)`'),
+    answer('`geom_point( mapping=aes(x=year, y=count, color="blue"), shape=disease)`'),
+    answer('`geom_point( mapping=aes(x=year, y=count, color="blue", shape=disease))`'),
+    answer('`geom_point( mapping=aes(x=year, y=count), shape=disease, color="blue")`'),
+    answer('`geom_point( mapping=aes(x=year, y=count, shape=disease), color="blue")`', correct=TRUE ),
+    answer('`geom_point( mapping=aes(x=year, y=count, shape=disease, color="blue"))`'),
+    allow_retry = TRUE
+  )
+)
+```
+
+
+### What aesthetics should you use?
+
+Geometric layers require a `mapping` paramenter - ggplot can't draw points if it doesn't know what data columns to use for the coordinates.  Often the mapping parameter requires just the `x` and `y` coordinates, with other optional aesthetics available.
+
+Different aesthetic properties are available for different geometric objects - lines have a `linetype`, points have a `shape`, etc.  You can learn what aesthetics are available (and which ones are required vs. optional) for a particular geom using the help (e.g. `?geom_point`) - scroll down until you find the **Aesthetics** section.
+
+Use the codebox to look up the Aesthetics for `geom_bar()`
+
+```{r aes-options-exercise, exercise=TRUE}
+```
+
+```{r aes-options-quiz}
+quiz(
+  question("Which of the following aesthetics are **available** for `geom_bar()`? (You must select them all to get the correct answer)",
+    answer("`x`", correct=TRUE),
+    answer("`y`", correct=TRUE),
+    answer("`alpha`", correct=TRUE),
+    answer("`color`", correct=TRUE),
+    answer("`fill`", correct=TRUE),
+    answer("`group`", correct=TRUE),
+    answer("`linetype`", correct=TRUE),
+    answer("`shape`"),
+    answer("`size`", correct=TRUE),
+    answer("`stroke`"),
+    allow_retry = TRUE
+  ),
+  question("Which of the following aesthetics are **required** for `geom_bar()`? (You must select them all to get the correct answer)",
+    answer("`x`", correct=TRUE),
+    answer("`y`", correct=TRUE),
+    answer("`alpha`"),
+    answer("`color`"),
+    answer("`fill`"),
+    answer("`group`"),
+    answer("`linetype`"),
+    answer("`shape`"),
+    answer("`size`"),
+    answer("`stroke`"),
+    allow_retry = TRUE
+  )
+)
+```
+
+## 4. Structure of a `ggplot()` command
+
+### Preface
+
+The beauty of a "grammar of graphics" is that it gives a common command structure for creating many types of plots.  In this section we will:
+
+1. Look at how this common grammar of graphics allows us to easily modify a plot (e.g. change the plot type, or recreate the plot using different data) by making small changes to the code.
+2. Examine the pieces of a ggplot command.
+
+### Modify a ggplot (1/5): Introduction
+
+The common command structure means we can easily repurpose our code to create a different plot.
+
+Previously, we created a scatterplot of the Maryland measles data:
+```{r echo=TRUE, message=FALSE}
+ggplot( data = measles_MD ) +        
+  geom_point( mapping = aes(x=year, y=count) ) +
+  labs( title = "Number of Measles Cases in Maryland by Year") +
+  theme_classic() 
+```
+
+
+### Modify a ggplot (2/5): Change the geom
+
+What if we'd prefer a barplot of the data?  We can essentially reuse the same code, just choosing a different geom function.  For a barplot, we replace `geom_point()` with `geom_col()`:
+
+```{r echo=TRUE, message=FALSE}
+ggplot( data = measles_MD ) +        
+  geom_col( mapping = aes(x=year, y=count) ) +
+  labs( title = "Number of Measles Cases in Maryland by Year") +
+  theme_classic() 
+```
+
+
+### Modify a ggplot (3/5): Change the data
+
+We can also easily repurpose the code for a new dataset, assuming it has the same column names as the original.
+
+Here we plot the mumps data for Maryland.  The only thing we needed to change was to set `data=mumps_MD` (and update our title):
+
+```{r echo=TRUE, message=FALSE}
+ggplot( data = mumps_MD ) +        
+  geom_col( mapping = aes(x=year, y=count) ) +
+  labs( title = "Number of Mumps Cases in Maryland by Year") +
+  theme_classic() 
+```
+
+
+### Modify a ggplot (4/5): Example
+
+This can be particularly useful if you've spent some time and effort customizing your graph - you can easily transfer those customizations to a new plot.  For example, say we made our Maryland measles graph a little more interesting - here we've made the labels a little prettier and added a line marking the introduction of the measles vaccine:
+
+```{r echo=TRUE, message=FALSE}
+ggplot( data = measles_MD ) +        
+  geom_point( mapping = aes(x=year, y=count) ) +
+  labs( title = "Maryland Measles Cases Per Year", x=
+          "Year", y = "Number of Cases") +
+  theme_classic() +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  theme(axis.title = element_text(face="bold")) +
+  geom_vline(xintercept = 1963, col = "black") +
+  annotate(geom = "text", x = 1964, y = 28000, label = "Vaccine introduced", size = 3, hjust = 0)
+```
+
+### Modify a ggplot (5/5): Exercise
+
+Modify the code below to recreate the graph for Virginia and change it to a barplot.
+
++ Change the data to `measles_VA`
++ Change the geom to `geom_col()` (keeping the same x and y axes)
++ Change the title text, replacing "Maryland" with "Virginia"
+
+That's it!  You can leave the rest of the code alone, and you should get a graph for Virginia with the same styling and "Vaccine introduced" line (if you've correctly selected the Virginia data, you will see values above 20,000 cases in the 1950s which are not present in the Maryland data).
+
+```{r modify-ggplot, exercise=TRUE, exercise.eval=FALSE}
+ggplot( data = measles_MD ) +        
+  geom_point( mapping = aes(x=year, y=count) ) +
+  labs( title = "Maryland Measles Cases Per Year", x=
+          "Year", y = "Number of Cases") +
+  theme_classic() +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  theme(axis.title = element_text(face="bold")) +
+  geom_vline(xintercept = 1963, col = "black") +
+  annotate(geom = "text", x = 1964, y = 28000, label = "Vaccine introduced", size = 3, hjust = 0)
+```
+
+### ggplot command structure (1/8): Introduction
+
+The `ggplot2` syntax can seem a bit confusing at first (where do I set the x-axis again? why are there all these plus signs?) but is easier to understand once you realize there is a hierarchy.
+
+As a reminder, for `ggplot2`
+
++ There are 3 required components: data, geom, and aesthetic mapping
+    + There are many more optional components, including facets, stats, etc.
++ ggplot commands are built by adding layers
+    + The first layer is always the `ggplot()` command
+    + Subsequent layers add geoms and optional components
+    + As long as you add a `+` (plus sign) at the end, R will keep listening for the next layer.  If you don't add a `+`, R will think you are done giving instructions and will create your plot.
+
+These layered commands form a hierarchy
+
++ Settings in the main `ggplot()` command will become the default for subsequent layers
++ Settings in individual layers (e.g. geoms) can override the default
+
+
+We will look at some examples of this by setting the `data` parameter in different layers of a ggplot.
+
+### ggplot command structure (2/8): Set `data` in the main `ggplot()` command
+
+As a reminder, the `data` parameter is the equivalent of selecting which "sheet" of data to plot - it tells R what `data.frame` to look at.  You can then use the `aes()` function to specify which columns of that `data.frame` you want to plot.
+
+Most often, you will set `data` in the main `ggplot()` command: 
+
+```{r echo=TRUE}
+ggplot( data = measles_MD )
+```
+
+### ggplot command structure (2.5/8): Don't forget to add layers!
+
+Note that nothing showed up because we did not add any geom layers.  Let's add a geom to make a scatterplot (remember we need a `+` to tell ggplot to keep listening for the next layer):
+
+```{r echo=TRUE}
+ggplot( data = measles_MD ) +        
+  geom_point( mapping = aes(x=year, y=count) )
+```
+
+By setting the dataset in the main `ggplot()` command, all the subsequent layers will use this dataset by default (although you can override it).  In this case, the `geom_point()` command knew to look for the columns `year` and `count` in a `data.frame` named `measles_MD`
+
+### ggplot command structure (3/8): Set `data` in the geom commands
+
+Alternatively, you can set the data inside the geom command (note that we need a comma after `data=measles_MD` to separate it from the mapping parameter)  This produces exactly the same plot:
+
+```{r echo=TRUE}
+ggplot() +        
+  geom_point( data = measles_MD, mapping = aes(x=year, y=count) )
+```
+
+### ggplot command structure (4/8): Why set `data` in the geom commands?
+
+Setting the data in the geom is useful if you have more than one dataset you'd like to put on the same plot, for example:
+
+```{r echo=TRUE}
+ggplot() +        
+  geom_point( data = measles_MD, mapping = aes(x=year, y=count) ) +
+  geom_point( data = mumps_MD, mapping = aes(x=year, y=count), color="red")
+```
+
+### ggplot command structure (5/8): Why set `data` in the `ggplot()` command?
+
+Setting the data in the main `ggplot()` command is useful if you have more than one layer that uses the same data (so you don't have to type `data=measles_MD` for every layer):
+
+```{r echo=TRUE, message=FALSE}
+ggplot( data = measles_MD ) +        
+  geom_point( mapping = aes(x=year, y=count) ) +
+  geom_smooth( mapping = aes(x=year, y=count) )
+```
+
+### ggplot command structure (6/8): Set aesthetic mappings
+
+We can likewise set aesthetic mappings either in the main `ggplot()` command (to set a default for all layers) or in individual layers.
+
+We can simplify the previous plot by setting the mapping parameter in the main `ggplot()` command, since we want to use the same mapping for both geoms:
+
+```{r echo=TRUE, message=FALSE}
+ggplot( data = measles_MD, mapping = aes(x=year, y=count) ) +        
+  geom_point() +
+  geom_smooth()
+```
+
+### ggplot command structure (7/8): Overiding defaults
+
+We can overide defaults set in the `ggplot()` command in individual layers.
+
+If we want to add mumps data to the previous plot, we can add another `geom_point()` command with `data` set to `mumps_MD`.  Note that the aesthetic mapping `aes(x=year, y=count)` is still passed down from the main `ggplot()` command to our new geom since we did not set a new `aes()` (although we could overide this as well if we wanted):
+
+```{r echo=TRUE, message=FALSE}
+ggplot( data = measles_MD, mapping = aes(x=year, y=count) ) +        
+  geom_point() +
+  geom_smooth() +
+  geom_point(data = mumps_MD, color="red")
+```
+
+### ggplot command structure (8/8): Exercises
+
+The following exercise blocks contain some broken ggplot code for you to fix.  These include some common mistakes that will inevitably come up as you're using ggplot - forgetting arguments, putting arguments in the wrong place, extra/missing commas, plus signs, parenthesis...  They can be a bit finicky to figure out, but will give you some practice interpreting the error messages and realizing what went wrong.  That's a big part of working with R - not getting every line of code perfect the first time, but getting practiced at realizing that the confusing error message means "Oh! I forgot quotation marks".
+
+If you're getting stuck, try Googling first, then try asking on Discourse or Slack.  Try to figure them out yourself, but if you're getting frustrated don't hesitate to ask for help!
+
+Why can't R find the data?
+
+```{r ggplot-exercise-1, exercise=TRUE, eval=FALSE}
+ggplot() +        
+  geom_point( mapping = aes(x=year, y=count) )
+```
+
+What's the error?
+Hint: Sometimes R's error messages aren't very helpful.  It's always a good idea to check for missing commas, parentheses, and quotation marks as well as misspellings.
+
+```{r ggplot-exercise-2, exercise=TRUE, eval=FALSE}
+ggplot() +        
+  geom_point( data = measles_MD mapping = aes(x=year, y=count) )
+```
+
+What's the error?
+Hint: "unexpected end of input" or "incomplete expression" usually mean you have an unpaired parenthesis or quotation mark
+
+```{r ggplot-exercise-3, exercise=TRUE, eval=FALSE}
+ggplot() +        
+  geom_point( data = measles_MD, mapping = aes(x=year, y=count)
+```
+
+What's the error?
+Hint: "object not found" sometimes means you forgot quotation marks.
+
+```{r ggplot-exercise-4, exercise=TRUE, eval=FALSE}
+ggplot() +        
+  geom_point( data = measles_MD, mapping = aes(x=year, y=count), color=blue)
+```
+
+Why aren't the points blue?
+```{r ggplot-exercise-5, exercise=TRUE, eval=FALSE}
+ggplot() +        
+  geom_point( data = measles_MD, mapping = aes(x=year, y=count, color="blue"))
+```
+
+Why doesn't `geom_smooth()` show up?
+
+```{r ggplot-exercise-6, exercise=TRUE, eval=FALSE}
+ggplot() +        
+  geom_point( data = measles_MD, mapping = aes(x=year, y=count) ) +
+  geom_smooth()
+```
+
+Again, why doesn't `geom_smooth()` show up?
+
+```{r ggplot-exercise-7, exercise=TRUE, eval=FALSE}
+ggplot() +        
+  geom_point( data = measles_MD, mapping = aes(x=year, y=count) )
+  geom_smooth( data = measles_MD, mapping = aes(x=year, y=count) )
+```
+
+## 5. Geoms: What kind of plot?
+
+### Reading
+
+Read [Chapter 3.6 Geometric objects](https://r4ds.had.co.nz/data-visualisation.html#geometric-objects){target="_blank"}, and then use an **R Notebook** to complete the exercises ([Chapter 3.6.1 Exercises](https://r4ds.had.co.nz/data-visualisation.html#exercises-3){target="_blank"}).
+
+I would suggest copying over the exercise questions into your R Notebook, and using section headers to organize your work.  Remember that you will need to attach the `ggplot2` package.
+
+Reminder: R Notebook Workflow
+
+1. Create a new R Notebook (or open an existing one)
+2. Insert a code chunk (add and run code)
+3. Add narrative (notes, explanations, conclusions)
+4. Preview output report (edit until you're happy)
+5. Repeat steps 2-4 (adding code and narrative and Previewing until you're done)
+6. Share R Notebook
+
+### Some useful GEOMs
+
+Here are a few useful GEOMs.  There are many more available; you can see them on the ggplot cheatsheet (found at the [RStudio cheatsheet collection](https://rstudio.com/resources/cheatsheets/)).
+
+### Scatterplot with `geom_point()`
+
+```{r echo=TRUE}
+ggplot( data = measles_MD ) +        
+  geom_point( mapping = aes(x=year, y=count) ) +
+  labs( title = "Number of Measles Cases in Maryland by Year", y = "Annual Case Count")
+```
+
+### Line plot with `geom_smooth()`:
+
+```{r echo=TRUE}
+ggplot( data = measles_MD ) +        
+  geom_smooth( mapping = aes(x=year, y=count) ) +
+  labs( title = "Number of Measles Cases in Maryland by Year", y = "Annual Case Count")
+```
+
+### Barplot with `geom_col()`:
+
+```{r echo=TRUE}
+ggplot( data = measles_MD ) +        
+  geom_col( mapping = aes(x=year, y=count) ) +
+  labs( title = "Number of Measles Cases in Maryland by Year", y = "Annual Case Count")
+```
+
+### Histogram with `geom_histogram()`:
+
+```{r echo=TRUE}
+ggplot( data = measles_MD ) +        
+  geom_histogram( mapping = aes(x=count) ) +
+  labs( title = "Number of Measles Cases in Maryland by Year", x = "Annual Case Count", y="Number of Years")
+```
+
+### Boxplot with `geom_boxplot()`:
+
+```{r echo=TRUE}
+ggplot( data = measles_DMV ) +        
+  geom_boxplot( mapping = aes(x=state, y=count) )
+```
+
+
+## 6. Facets: Split Across Multiple Plots
+
+### Preface
+
+Faceting is an optional component of a ggplot, but it is a particularly useful one, so we will take time to highlight it.  Faceting lets us easily split data across multiple plots based on a categorical variable (for example, you may want to plot male data and female data separately).
+
+We can plot data for all diseases and facet by disease:
+```{r echo=TRUE, message=FALSE}
+ggplot( data = all_diseases_MD, mapping = aes(x=year, y=count) ) +        
+  geom_point() +
+  geom_smooth()+
+  facet_wrap(~disease)
+```
+
+### Reading
+
+Read [Chapter 3.5 Facets](https://r4ds.had.co.nz/data-visualisation.html#facets){target="_blank"}, and then use an **R Notebook** to complete the exercises ([Chapter 3.5.1 Exercises](https://r4ds.had.co.nz/data-visualisation.html#exercises-2){target="_blank"}).
+
+## 7. Customizing a ggplot (basics)
+
+### Preface
+`ggplot2` gives you a great deal of control over your plots if you know how to use it.
+
+Check out [this blog post](https://simplystatistics.org/2019/08/28/you-can-replicate-almost-any-plot-with-ggplot2/){target="_blank"} for some nice examples of just how versatile `ggplot2` can be.
+
+For today we will just cover how to customize your plot labels (e.g. title, axes labels, caption), as clear labeling is essential for producing an understandable report.  The next ggplot tutorial will go into a bit more depth on further plot customization and creating figures in R.
+
+### Reading
+
+Read the first couple of sections of *Chapter 28 Graphics for communication*, covering labeling:
+
++ [Chapter 28.1 Introduction](https://r4ds.had.co.nz/graphics-for-communication.html#introduction-19){target="_blank"}
+    + You do not need to worry about installing the packages mentioned in *28.1.1 Prerequisites*
++ [Chapter 28.2 Label](https://r4ds.had.co.nz/graphics-for-communication.html#label){target="_blank"}
+
+Then use the box below to complete the first exercise from *28.2.1 Exercises*  (copied below).
+
+Create one plot of the fuel economy data with customised title, subtitle, caption, x, y, and colour labels.
+```{r labs-exercise, exercise=TRUE, exercise.eval=FALSE}
+
+```
+
+### Preview: Optional layers
+
+There are several additional optional components to a ggplot; `ggplot2` will make reasonable guesses about what you want for these settings, and you can adjust them if you need to.  We will discuss these in greater depth in the next ggplot tutorial:
+
+- **STAT**: Depending on the GEOMETRIC OBJECT you're using, STAT can be used to add things like error bars, confidence intervals, ranges, etc.
+- **POSITION**: Allows you to adjust how things overlap (or not).  For example, if you have multiple bars on a barplot, are they plotted next to each other or stacked on top of each other?
+- **COORDINATE SYSTEM**: Most plots use the standard x-y Carteesian coordinate system, but occassionally you may want something different, such as polar coordinates for a pie chart, or geographic coordinates for plotting on a map.
+- **SCALE**: Most plots use a linear scale, and `ggplot` will guess what the minimum and maximum values should be, but you can adjust this.
+
+## 8. Putting it all together!
+
+For your final assignment, follow the R Notebook workflow to create an R Notebook exploring the *US Contagious Diseases* dataset.
+
+**Reminder: R Notebook Workflow**
+
+1. Create a new R Notebook (or open an existing one)
+2. Insert a code chunk (add and run code)
+3. Add narrative (notes, explanations, conclusions)
+4. Preview output report (edit until you're happy)
+5. Repeat steps 2-4 (adding code and narrative and Previewing until you're done)
+6. Share R Notebook
+
+And you can take a look at the R Markdown cheatsheet at [RStudio cheatsheets](https://rstudio.com/resources/cheatsheets/) for help with R Markdown (or just ask Google!).
+
+**Instructions**
+
+0. Install dslabs
+    + Enter the following command into the RStudio Console
+    
+        ```
+        install.packages( "dslabs" )
+        ```
+        
+1. Create a new R Notebook
+    + Save file with an informative name.
+    + Give it an informative title
+    + Delete the example prose and code showing how to use R Notebooks
+    + Add a brief (~1-2 sentence) introduction about the purpose of the R Notebook (exploring the US Congtagious Disease dataset, practicing R Notebooks).  What would be useful to know if you came back to this R Notebook in a month?
+      + Bonus points if you add styling, e.g. style the word "dslabs" as `code`, or make a numbered or bulleted list of a couple goals for the R Notebook
+2. Add a "setup" code chunk
+    + Add a `Heading 2` section called "Setup"
+    + Insert a code chunk that attaches the `ggplot2` and `dslabs` packages using the `library()` command (`dslabs` contains the US Contagious Diseases dataset).  Don't forget to Run the code chunk!
+    + Run and Preview your document. Check that:
+        + No errors come up
+        + Markdown is formatting correctly (headers, lists, bold/italics/code styling)
+3. Prepare your data
+    + Insert a new code chunk
+    + To simplify plotting and practice creating objects in an R Notebook, use the `filter()` command to create a new, smaller `data.frame` that only contains the data for one disease in one state.  Here is an example `filter()` command for measles in MD - modify this to select a disease and state of your choice.
+        + `filter(us_contagious_diseases, disease=="Measles"&state=="Maryland")`
+    + Make sure to assign it a name!
+    + Print out your new `data.frame` and make sure it's what you wanted.  This is a good way to catch mistakes - if you misspelled the disease then you'll have an empty `data.frame`.
+    + Above your code chunk, add a `Heading 2` section called "Subsetting for DISEASE in STATE" (replace DISEASE and STATE with your choice)
+4. Continue adding code (and comments) and Previewing until you're done
+    + Add code chunks to create at least two plots of the disease data.
+        + You can use different subsets of the data if you'd like - create any subsets you'd like using the `filter()` command
+    + Add section headings and prose as appropriate
+    + Preview your output document
+5. Share your document
+    + This time, share the `.Rmd` file on Discourse or Slack (rather than the output `.nb.html` file).  In a different tutorial, we discuss how to run an existing R Notebook so you can reproduce each others' analyses.

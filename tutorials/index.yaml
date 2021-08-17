@@ -23,9 +23,10 @@ Day 5:
     - "r4ds"
 
 Day 6:
-  name: "Aug 26 -- R Notebooks"
+  name: "Aug 26 -- R Notebooks and R for Data Science 2"
   tutorial_dir:
     - "rnotebooks"
+    - "r4ds2"
 
 Day 7:
   name: "Aug 31 -- R Notebooks 2"
