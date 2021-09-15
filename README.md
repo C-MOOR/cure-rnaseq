@@ -151,14 +151,18 @@ Note: Rendered previews are provided where possible, but tutorials that involve 
 
 ### Web Portfolios Using GitHub [[repo](https://github.com/C-MOOR/cmoor_website_template)][[demo](http://www.c-moor.org/cmoor_website_template/)]
 
-- Create GitHub Account [[video](https://link.c-moor.org/video-join-github)][[slides](https://docs.google.com/presentation/d/1c4sb5CLpvKjgnTVIuNGYTSr8WWNgeSfC8TUGrxktu64)]
-- Setup Website [[video](https://link.c-moor.org/video-student-website-setup)][[slides](https://docs.google.com/presentation/d/13chl2zYU1NbWCZmD_daqiKcLoJZAtILMqjXgew3TR6c)]
+- Set Up Website
+  - Create GitHub Account [[video](https://link.c-moor.org/video-join-github)][[slides](https://docs.google.com/presentation/d/1c4sb5CLpvKjgnTVIuNGYTSr8WWNgeSfC8TUGrxktu64)]
+  - Set Up Repository [[video](https://link.c-moor.org/video-student-website-setup)][[slides](https://docs.google.com/presentation/d/13chl2zYU1NbWCZmD_daqiKcLoJZAtILMqjXgew3TR6c)]
 - Personalize Website
   -  Profile [[video](https://link.c-moor.org/video-student-website-personalize-profile)][[slides](https://docs.google.com/presentation/d/1Fvf-pp35kzthJawqHwNVg8fTA5YDOWSOD88hVBFs840)]
   -  About [[video](https://link.c-moor.org/video-student-website-personalize-about)][[slides](https://docs.google.com/presentation/d/1qg3i5WhpqiPrLPdLdJoiVaCmZALNpPrlbHwBigbtfYo)]
   -  Languages [[video](https://link.c-moor.org/video-student-website-personalize-languages)][[slides](https://docs.google.com/presentation/d/1jLbdARLPvVnEl0HA18Jli0qQ90Bg9JFbenRqLBSeovk)]
   -  Site Preview [[video](https://link.c-moor.org/video-student-website-personalize-preview)][[slides](https://docs.google.com/presentation/d/1r3PPXaHUnZfzeKe4hZisaVM7Edz5VLw6hnKHzvifoWE)]
-- Add First Post
+- Add Posts
+  - Basic Posts [[video](https://link.c-moor.org/video-student-website-post-basic)][[slides](https://docs.google.com/presentation/d/1mLi7a-tZQLWp9RoOLhz90c_SDX2loBuXnwI7LfNJtcQ/)]
+  - Add Assets [[video](https://link.c-moor.org/video-student-website-post-assets)][[slides](https://docs.google.com/presentation/d/1iXwuC7qz3LuvIA1QXzHvUVCUn2OvkEoFdkLFoJgj8Dk/)]
+  - Add R Notebook [[video](https://link.c-moor.org/video-student-website-post-rnotebook)][[slides](https://docs.google.com/presentation/d/1OHvCo1RCvYLPl7Y7mwj7W3U1HTaZF45F27ZKO0W47VA/)]
 
 ## Getting Help
 
