@@ -53,10 +53,11 @@ plotAcrossRegions <- function( x ) {
     theme( axis.text.x = element_text( angle=90, vjust=0.5 ) )
 }
 
-midgut_tsv <- read.table("/home/idies/workspace/c_moor_data/marianes-regions/htseq/midgut.tsv", header=TRUE)
+#midgut_tsv <- read.table("/home/idies/workspace/c_moor_data/marianes-regions/htseq/midgut.tsv", header=TRUE)
 
 # Retrieve and rename cached DESeq results
-load("~/workspace/c_moor_data/instructors/preprocessed_data/marianes/marianes_htseq_DESeq.rda")
+#load("~/workspace/c_moor_data/instructors/preprocessed_data/marianes/marianes_htseq_DESeq.rda")
+load("/Users/katie/git/C-MOOR_github_account/cmoorData/data/marianes_htseq_DESeq.rda")
 midgut <- marianes_htseq_DESeq
 rm(marianes_htseq_DESeq)
 ```
