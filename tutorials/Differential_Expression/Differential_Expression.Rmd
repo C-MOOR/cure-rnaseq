@@ -1,0 +1,306 @@
+---
+title: "Differential Expression with DESeq2"
+output:
+  learnr::tutorial:
+    css: css/cmoor.css
+    progressive: true
+    version: 2.0
+subtitle: |
+  ![](images/cmoor_logo_notext.png){width=60%}
+  
+  [Get Help](https://help.c-moor.org/){target="_blank"}
+runtime: shiny_prerendered
+
+# The fields below will be used to create the first page of the tutorial.  You can use markdown.
+# For summary, all new lines must be indented to the same level as the first line.
+# The image must be surrounded with quotes
+summary: |
+  In the previous lab, we looked at a single HTSeq file, which provides gene expression data for one sample.  In today's lab we will learn a hand-full of methods for looking at gene expression across the multiple samples from the *Drosophila* midgut.
+image: "![](images/replace_me.png)"
+image_caption: "Welcome page image"
+author:
+  - "[Dr. Katherine Cox](https://c-moor.github.io/portfolio/coxkatherine/)"
+  - "[Dr. Stephanie Coffman](https://c-moor.github.io/portfolio/coffmanstephanie/)"
+learning_goals:
+  - "Calculate differential expression statistics using DESeq2"
+  - "Understand the columns and rows of DESeq2 results"
+  - "Use R to extract results for a single gene of interest"
+  - "Use R to create a list of significantly different genes for different significance cutoffs."
+  - "Use clusterProfiler to carry out Gene Set Analysis and identify categories of genes that are significantly different between samples."
+  - "Use R to plot expression of a single gene across all regions."
+time: "time to complete"
+prerequisites: "None"
+---
+
+```{r setup, include=FALSE}
+library(learnr)
+tutorial_options(exercise.completion=TRUE)
+knitr::opts_chunk$set(echo = FALSE)
+
+library("DESeq2")
+library("clusterProfiler")
+library("org.Dm.eg.db")
+library("tidyverse")
+
+formatDESeq2Results <- function( x ) {
+  df <- as.data.frame(x)
+  df <- data.frame(rownames(df), df)
+  colnames(df) <- c("GeneID", colnames(df)[-1])
+  rownames(df) <- c()
+  return(df)
+}
+
+runClusterProfiler <- function (x) {
+  ids <- bitr( x$GeneID, "ENSEMBL", "ENTREZID", "org.Dm.eg.db" )
+  kegg <- enrichKEGG(ids$ENTREZID, "dme", keyType="ncbi-geneid")
+  return(kegg)
+}
+
+getClusterProfilerGenes <- function (x, i) {
+  data.frame( x ) %>%
+  filter( Description == i ) %>%
+  pull( geneID ) %>%
+  strsplit( "/" ) %>%
+  unlist() %>%
+  bitr( fromType="ENTREZID", toType="SYMBOL", OrgDb="org.Dm.eg.db") %>%
+  pull( SYMBOL )
+}
+
+plotAcrossRegions <- function( x ) {
+  df <- data.frame(counts(midgut)[x,], midgut_tsv$condition)
+  colnames(df) <- c("counts", "region")
+  df <- df[10:30,]
+  df$region <- fct_relevel( factor( df$region ), "a1", "a2_3", "Cu", "LFCFe", "Fe", "p1", "p2_4" )
+  ggplot( df ) +
+    geom_bar( aes( region, counts ), stat="identity" ) +
+    theme( axis.text.x = element_text( angle=90, vjust=0.5 ) )
+}
+
+#midgut_tsv <- read.table("/home/idies/workspace/c_moor_data/marianes-regions/htseq/midgut.tsv", header=TRUE)
+
+# Retrieve and rename cached DESeq results
+#load("~/workspace/c_moor_data/instructors/preprocessed_data/marianes/marianes_htseq_DESeq.rda")
+#load("/Users/katie/git/C-MOOR_github_account/cmoorData/data/marianes_htseq_DESeq.rda")
+#midgut <- marianes_htseq_DESeq
+#rm(marianes_htseq_DESeq)
+```
+
+<!---
+Don't edit the Welcome page, it will be filled in automatically using the information from the YAML header
+Edit the rest of the document as you like
+There are some suggested sections to provide a standard order across our tutorials, but they may not all be needed/appropriate for all tutorials.
+Section 1. Content 1 has example quizes and exercises
+-->
+
+## Welcome {.splashpage}
+
+### `r rmarkdown::metadata$title`
+
+<div class="splashpage-container">
+  <figure class="splashpage-image">
+  `r rmarkdown::metadata$image`{width=100%}
+  <figcaption class="caption">`r rmarkdown::metadata$image_caption`</figcaption>
+  </figure>
+
+  `r rmarkdown::metadata$summary`
+  
+
+</div>
+
+
+#### Learning Goals
+
+```{r}
+# Extract learning goals from YAML and add HTML tags to make an ordered list
+learningGoals <- rmarkdown::metadata$learning_goals
+learningGoals <- paste("<li>", learningGoals, "</li>", sep="", collapse="")
+
+```
+
+<ol>
+`r learningGoals`
+</ol>
+
+#### Authors:
+
+```{r}
+# Extract authors from YAML and add HTML tags to make a list
+authorList <- rmarkdown::metadata$author
+authorList <- paste("<li>", authorList, "</li>", sep="", collapse="")
+
+```
+
+<ul>
+`r authorList`
+</ul>
+
+
+```{r}
+# Extract the tutorial version from the YAML data and store it so we can print it using inline r code below.  This can't be done directly inline because the code for extracting the YAML data uses backticks
+tv <- rmarkdown::metadata$output$`learnr::tutorial`$version
+```
+
+#### Version: `r tv`
+
+## Introduction
+
+In the previous lab, we looked at a single HTSeq file, which provides gene expression data for one sample. Let's consider an example from Marianes and Spradling et al. Recall that they compared many RNA-seq samples from different regions of the midgut in *Drosophilia melanogaster* (Figure 2A, from [Marianes and Spradling 2013](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3755342/))
+
+![**Figure 2A** Diagram illustrating the different RNA-seq libraries constructed by Marianes and Spradling from the Drosophila midgut.  From Marianes and Spradling (2013) [eLife 2013;2:e00886](https://doi.org/10.7554/eLife.00886)  License: [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/)](images/elife-00886-fig2A.jpg){ width=100% }
+
+
+From an HTSeq file, we can learn that the *lab* gene is highly expressed in the Cu region of the *Drosophlia* midgut. But, does that mean the *lab* gene is important for cells of the Cu region? Maybe, maybe not. It could be that *lab* is expressed at that level across the whole midgut or possible even the whole fly. To really answer questions about gene expression, we need to compare more than one sample with each other. Which samples are compared depends on the scientific question being asked. In terms of the *lab* gene, Marianes and Spradling analyzed its expression in each region of the gut and determined that it is localized to the Cu region (Figure 2D, from [Marianes and Spradling 2013](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3755342/)). This is a clue that *lab* is important in the Cu region.
+
+![**Figure 2D** Analysis of seven genes and their gene expression across each region of the gut.  From Marianes and Spradling (2013) [eLife 2013;2:e00886](https://doi.org/10.7554/eLife.00886)  License: [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/)](images/elife-00886-fig2D.jpg){ width=100% }
+
+In today's lab we will learn a hand-full of methods for looking at gene expression across the *Drosophila* midgut. As you work through the lab, think about scientific questions you could ask with the data, and what methods and samples would be useful for answering those questions.
+
+## Scientific Notation
+
+Many of the values reported by the progams for that analyze RNA-seq data are reported using scientific notation.  There is a brief explanations below if you need some review.  If you're comfortable with scientific notation, feel free to skip this section.  If you're not sure, you can always come back to this section later by clicking on the table of contents on the upper left.
+
+### Expressing values in scientific notation
+
+Scientific notation is a convenient method for expressing very large or very small numbers.  Instead of writing out long numbers, we just write out a small number, and then write down how many times that number has to be multiplied by 10 to get to the big number than we want to express.
+
+For example, instead of writing out `1,200,000,000` (1 billion, two-hundred million), we just write `1.2 * 10^9` (1.2 times 10 to the 9th power, which is 1.2 times 1 billion).
+
+For small numbers, we use 10 raised to a negative power.  For example, we could express the number `0.0000012` as `1.2 * 10^-6`.
+
+People often use the letter "e" (short for exponent) as a shorthand for `10^`.  For example, `1.2 * 10^9` would be written `1.2e9`.
+
+An easy way to figure out what the exponent should be for scientific notation is to count how many places you would need to move the decimal point in order to get the number you're aiming for.
+
+The table below shows some more examples of numbers in scientific notation:
+
+```{r}
+t <- c("7580000000", "758000000", "75800000", "7580000", "758000", "75800", "7580", "758", "75.8", "7.58", "0.758", "0.0758", "0.00758", "0.000758", "0.0000758", "0.00000758", "0.000000758", "0.0000000758", "0.00000000758")
+s <- data.frame(t, rep(7.58, times=19) * 10^seq(9,-9))
+colnames(s) <- c("Standard Notation", "Scientific Notation")
+s[5:14,]
+```
+
+
+### Interpreting Scientific Notation
+
+When you read a number written in scientific notation...
+
+* First look at the exponent
+    + Is is positive or negative?
+    + How big is it?
+* Then look at the front number
+
+```{r scientific-notation-big}
+quiz(caption = "Comparing numbers written in scientific notation",
+  question("Which is the biggest number?",
+    answer("1e0"),
+    answer("1e2"),
+    answer("1e-2"),
+    answer("1e7", correct=TRUE),
+    answer("1e-9", message = "This exponent has the greatest absolute value, but it's negative, so this number is very small."),
+    allow_retry=TRUE,
+    random_answer_order = TRUE
+    ),
+ question("Which is the biggest number?",
+    answer("7e0"),
+    answer("9e2", message="Look at the exponent first, then the front number."),
+    answer("3e-2"),
+    answer("1e7", correct=TRUE),
+    answer("4e-9", message = "This exponent has the greatest absolute value, but it's negative, so this number is very small."),
+    allow_retry=TRUE,
+    random_answer_order = TRUE
+    ),
+  question("Which is the biggest number?",
+    answer("7e2"),
+    answer("9e2", correct=TRUE),
+    answer("9e-2", message="This exponent is negative, so this number is small."),
+    answer("1e2"),
+    answer("4e2"),
+    allow_retry=TRUE,
+    random_answer_order = TRUE
+    ),
+   question("Which is the biggest number?",
+    answer("9e-9"),
+    answer("9e7", correct=TRUE),
+    answer("7e7"),
+    answer("7e-9"),
+    answer("9e-7"),
+    allow_retry=TRUE,
+    random_answer_order = TRUE
+    )
+)
+```
+
+```{r scientific-notation-small}
+quiz(caption = "Comparing numbers written in scientific notation",
+  question("Which is the smallest number?",
+    answer("1e0", message="This exponent has the smallest absolute value, but negative exponents represent smaller numbers than an exponent of zero."),
+    answer("1e2"),
+    answer("1e-2"),
+    answer("1e-7", correct=TRUE),
+    answer("1e7"),
+    allow_retry=TRUE,
+    random_answer_order = TRUE
+    ),
+ question("Which is the smallest number?",
+    answer("3e0", message="This exponent has the smallest absolute value, but negative exponents represent smaller numbers than an exponent of zero."),
+    answer("3e2"),
+    answer("3e-2"),
+    answer("1e7", message="Look at the exponent first, then the front number."),
+    answer("9e-9", correct=TRUE),
+    allow_retry=TRUE,
+    random_answer_order = TRUE
+    ),
+  question("Which is the smallest number?",
+    answer("7e-2"),
+    answer("9e-2"),
+    answer("1e2", message="This exponent is positive, so this number is bigger than numbers with a negative exponent."),
+    answer("1e-2", correct = TRUE),
+    answer("4e-2"),
+    allow_retry=TRUE,
+    random_answer_order = TRUE
+    ),
+   question("Which is the smallest number?",
+    answer("9e-9"),
+    answer("9e7"),
+    answer("7e7"),
+    answer("7e-9", correct=TRUE),
+    answer("9e-7"),
+    allow_retry=TRUE,
+    random_answer_order = TRUE
+    )
+)
+```
+
+## R cheat sheet
+
+Here is a reminder of some basic R commands, for your convenience:
+
+* `head(df)` prints the first few rows of the dataframe named `df`
+* `tail(df)` prints the last few rows of the dataframe named `df`
+* `summary(df)` prints some summary statistics for each column of the dataframe named `df`, such as min, mean, median, and max for numeric columns
+* `log(v)`, `log(v, 10)` if `v` is a vector of numbers, these will return a vector containining the natural log or log10 of the items in `v`
+* `plot(x,y)` plots the vector `x` against the vector `y`. Usually this will be a scatterplot, but R will try to guess a sensible plot if you give it data that doesn't fit in a scatter plot
+* `hist(v)` is a specialized version of plot, which will generate a histogram of the items in the vector `v`
+
+You can "filter" a dataframe (pick out only some of the rows and columns).  Some examples:
+
+* `df$c` finds the column named `c` from at dataframe named `df` (keeps all rows)
+* `filter(df, c>5)` finds all rows where the value in column `c` is greater than 5 (keeps all columns)
+* `filter(df, c==5)` finds all rows where the value in column `c` is exactly equal to 5 (keeps all columns)
+* `filter(df, c>5 & d<=10)` finds all rows where the value in column `c` is greater than 5 **and** the value in column `d` is less than or equal to 10 (keeps all columns)
+* `filter(df, c=="some_name")` finds all rows where the value in column `c` is exactly "some_name"
+* `filter(df, str_detect(c, "name"))` finds all rows where the value in column `c` contains "name" (things like "some_name", "other_name", as well as "name")
+
+You can usually combine commands any way you like, using parentheses.  As long as the output of the inner command is appropriate input for the outer command, things will probably work fine.  Some examples:
+
+* `plot(df$c, df$d)` plots columns of the dataframe named `df`, putting the column named `c` on the x axis and the column named `d` on the y axis
+* `hist(log(v))` plots a histogram of the natural log of the values in the vector named `v`
+
+
+
+## Wrap-up
+
+### Summary
+
+### What's next
