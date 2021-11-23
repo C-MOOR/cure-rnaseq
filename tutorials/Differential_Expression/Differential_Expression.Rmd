@@ -452,8 +452,205 @@ quiz(caption = "Examine another comparison between regions",
 )
 ```
 
-## Wrap-up
+## Get results for a single gene
 
-### Summary
+The `results()` command gives information about *all* genes.  That's a lot of data!  We can use some R commands to focus on smaller sets of those genes that we think are interesting.
 
-### What's next
+To look up a particular gene that you're interested in, you can select it by name using the `filter()` command.  It's important that the name you use *exactly matches* the name of the gene in the results dataframe.  R isn't like Google, it can't guess what you meant if you spell it wrong or even capitalize it differently.  The following code finds the gene "FBgn0000251" in the results for a1 vs. p1.  The first two commands are just getting the results, like we practiced earlier.  The filter command is looking through the column GeneID for any thing that exactly matches "FBgn0000251".  Note that we stored the result in a new variable, named `gene251`, so we can easily get this gene back whenever we want it.
+
+```{r filter-by-name-example, echo=TRUE}
+temp <- results(midgut, contrast = c("condition", "a1", "p1") )
+a1_vs_p1 <- formatDESeq2Results(temp)
+
+gene251 <- filter(a1_vs_p1, GeneID=="FBgn0000251")
+gene251
+```
+
+```{r filter-by-name-quiz}
+quiz(caption = "Looking at a specific gene",
+   question("Is this gene expressed more highly in region a1 or p1?",
+   answer("higher in a1"),
+   answer("higher in p1", correct=TRUE),
+   allow_retry=TRUE
+   ),
+  question("Is this difference significant at a padj value of 0.05?  In other words, is this difference 'real' or is it probably a fluke?",
+   answer("real", correct=TRUE),
+   answer("probably a fluke"),
+   allow_retry=TRUE
+   )
+)
+```
+
+Use the box below to look at FBgn0000251 and compare its expression between the a1 and Cu regions.
+
+```{r filter-by-name-practice, exercise=TRUE}
+```
+
+```{r filter-by-name-quiz-2}
+quiz(caption = "Looking at a specific gene",
+   question("Is this gene expressed more highly in region a1 or Cu?",
+   answer("higher in a1", correct=TRUE),
+   answer("higher in Cu"),
+   allow_retry=TRUE
+   ),
+  question("Is this difference significant at a padj value of 0.05?  In other words, is this difference 'real' or is it probably a fluke?",
+   answer("real"),
+   answer("probably a fluke", correct=TRUE),
+   allow_retry=TRUE
+   )
+)
+```
+
+## Lists of Interesting Genes
+
+While it's useful to be able to look up particular genes we're interested in, it's also valuable to get a list of all the genes that are different between two samples.  This lets us discover genes that we never would have thought to check by name.
+
+### Get a list of genes with good padj scores
+
+The first thing we need to do is to pick out all the genes that the computer thinks are "really" different between the two samples - those with a padj score smaller than our cutoff.  Remember, a good padj score is a small number.  This means that there is a very small chance that the differences we see between samples are just an accident.
+
+A cutoff of 0.05 or 0.10 is often a good place to start.  We can get a list of these genes using the `filter()` command, similar to the way we pulled out single genes by name.  The following code finds only the genes that have a padj score of less than or equal to 0.05, stores the results in a new dataframe named sig_genes.  (This is an abbreviation for "significantly different genes", you could name it whatever you like).  
+
+```{r filter-by-padj-example, echo=TRUE}
+temp <- results(midgut, contrast = c("condition", "a1", "p1") )
+a1_vs_p1 <- formatDESeq2Results(temp)
+
+sig_genes <- filter(a1_vs_p1, padj <= 0.05)
+sig_genes
+```
+
+Since R by default only shows us the first 1000 rows, we can use the `dim` command to find out how big our dataframe of significant genes is:
+
+```{r, echo=TRUE}
+dim(sig_genes)
+```
+
+```{r significantly-different-genes-quiz}
+quiz(caption = "Looking at a significantly different genes",
+  question("What percentage of all the fly genes made it onto this list?  Remember, we started out with 17559 genes.",
+    answer("Less than 1%"),
+    answer("About 2%"),
+    answer("About 14%", correct=TRUE),
+    answer("About 27%"),
+    allow_retry=TRUE
+   )
+)
+```
+
+##  Choosing a padj cutoff
+
+Often, a couple hundred to a couple thousand genes is a pretty comfortable number of genes to work with, it will let us look for patterns without overwhelming us.  If instead we got a very small number, we might want to loosen our cutoff (raise our minimum padj value).  Or, if we got thousands of genes, we might want to make our cutoff more strict (lower our padj value).  It depends on what we want to do with our list of genes.  If we're examining them by hand we might want a smaller, more certain list.  If we're looking for broad patterns, we might want a bigger list with more errors.
+
+When you pick a padj cutoff, it's important to think about what it means.  In DESeq2, the padj value is the fraction of genes on the list that are probably not "really" different ("False Positives").  If we pick a padj value of 0.05, and we get a list of 100 genes, we expect 95 of those genes to be "real" and (0.05 X 100 = 5) 5 of those genes to be accidents.  If we instead pick a higher padj value of 0.10, then we expect 90 genes to be "real" and (0.10 X 100 = 10) 10 to be accidents.  Likewise, if we picked a very low padj cutoff of 0.001 then we would expect all 100 of the genes to be real (0.001 X 100 = 0.1, so less that 1 gene is expected to be an accident).
+
+We would love to be able to have only "real" genes on the list (by picking a very low padj cutoff), but often we don't have good enough data to be able to do this (if we pick a low enough number that we expect all genes to be real, then very few genes (or maybe no genes) pass the cutoff).  And as we make the cutoff stricter, we end up throwing out a lot of real genes along with the false ones.  As data analysts, we have to decide when it's better to have a smaller list of differentially expressed genes that are more likely to be real, and when it's better to have a bigger list of genes but know that several of them aren't "really" different.
+
+In this case, for a1 vs p1 we actually have quite good data with many significantly different genes.  From our 2492 genes, we expect 0.05 X 2492 ~ 125 of them to be false positives.  Since we have so many genes, it might be a good idea to pick a lower p-value and see how many genes we're left with.
+
+If we try a padj cutoff of 0.01:
+```{r, echo=TRUE}
+sig_01_genes <- filter(a1_vs_p1, padj <= 0.01)
+dim(sig_01_genes)
+```
+In this case, we get 1799 genes, and we expect 0.01 X 1799 = 18 of them to be false positives.  That's a pretty strong list of genes.  We got rid of 125-18 = 107 false genes (yay!).  On the other hand, we also threw out about 600 real genes (boo!)
+
+If we try a stricter cutoff of 0.001:
+```{r, echo=TRUE}
+sig_001_genes <- filter(a1_vs_p1, padj <= 0.001)
+dim(sig_001_genes)
+```
+Now we get 1278 genes and we expect 0.001 X 1278 ~ 1 to be a false positive.  So we've basically gotten rid of all false genes, but we've also thrown out ~half of the real genes as compared to using the 0.05 cutoff.
+
+With this particular dataset, I'd probably pick a cutoff of either 0.05 or 0.01 for further computational analyis.  I think 0.001 throws away too many real genes.
+
+Use the box below to find genes that are significantly different between the a1 and Cu regions.
+
+```{r filter-by-padj-practice, exercise=TRUE}
+```
+
+```{r filter-by-padj-pracice-quiz}
+quiz(caption = "Looking at a significantly different genes",
+  question("How many genes are significantly different between the a1 and Cu regions at a padj cutoff of 0.05?",
+    answer("6,631"),
+    answer("3,804"),
+    answer("3,257", correct=TRUE),
+    answer("2,421"),
+    answer("1,803"),
+    allow_retry=TRUE
+   ),
+  question("How many genes are significantly different between the a1 and Cu regions at a padj cutoff of 0.01?",
+    answer("6,631"),
+    answer("3,804"),
+    answer("3,257"),
+    answer("2,421", correct=TRUE),
+    answer("1,803"),
+    allow_retry=TRUE
+  )
+)
+```
+
+## Plot a single gene across all regions
+
+Plotting gene expression out across all regions again takes some reformatting of the data, so we've created a command to take care of that for you, named `plotAcrossRegions()`:
+
+
+```{r, echo=TRUE}
+plotAcrossRegions("FBgn0000003")
+```
+
+This allows us to see patterns of gene expression across all regions.  In this case, FBgn0000003 is only expressed in the a1 and Fe regions.
+
+How do you decide what gene to look at?
+
+1. Pick genes that were mentioned in a scientific paper that you think would be relevant, or look at genes involved in the processes identified by `clusterProfiler`.  Once you know of a gene you're interested in, use the FlyBase website to look up the FlyBase ID for a gene so you can plot the data.
+
+2. Sort the genes by p-value (to get the most significantly different genes) or log2FoldChange (to get the genes with the biggest differences in expression).  This uses DESeq results data, so you will have to pick a particular pair of regions to compare.  The first few steps should look familiar by now.  The last command, `arrange`, sorts the genes by a particular column.  This command sorts smallest to largest; if you want to see the biggest values, you can use `tail()` to see the last few rows.  Then use the FlyBase ID to plot the data for the top ranked genes across all regions.
+
+```{r, echo=TRUE}
+temp <- results(midgut, contrast = c("condition", "a1", "p1") )
+a1_vs_p1 <- formatDESeq2Results(temp)
+a1_vs_p1_sorted <- arrange(a1_vs_p1, padj)
+head(a1_vs_p1_sorted)
+```
+
+In this case, FBgn0035665 has the lowest padj score when comparing regions a1 and p1.  Let's plot it across all regions:
+
+```{r, echo=TRUE}
+plotAcrossRegions("FBgn0035665")
+```
+
+Now we can see that it's generally more highly expressed towards the anterior and is expressed at a low level in posterior regions, but there is also high expression in the Fe region.
+
+## Try it Out!
+
+Now that you know how to find the categories of genes that are differentially expressed betweens samples, there are a few different ways you can explore scientific questions about nutrient metabolism in the Drosophila midgut.
+
+1. Repeat the `runClusterProfiler` analysis using different regions, to get a high level picture of which types of genes are differentially expressed across different regions.  Are you seeing similar results to the paper, or are you seeing something different?
+2. Plot out expression of a single gene across *all* regions.  Does it show a pattern you'd expect from what you knew already, or not?  Do this for a few different genes from the same category (e.g. sugar metabolism genes) to get a feel for how they're behaving.
+3. Find out more about these categories of genes.  Google and the FlyBase website are great places to start!  Find out what genes are in a particular category - what genes are "galactose metabolism" genes?  How do they work together to metabolize galactose?
+
+Use the codeblocks below to explore the differential expression data.  There are several blocks for your convenience, use as many as you like.
+
+```{r freeplayd-exercise, exercise=TRUE, exercise.eval=FALSE}
+
+```
+
+```{r freeplayd2-exercise, exercise=TRUE, exercise.eval=FALSE}
+
+```
+
+```{r freeplayd3-exercise, exercise=TRUE, exercise.eval=FALSE}
+
+```
+
+```{r freeplayd4-exercise, exercise=TRUE, exercise.eval=FALSE}
+
+```
+
+```{r freeplayd5-exercise, exercise=TRUE, exercise.eval=FALSE}
+
+```
+
+```{r freeplayd6-exercise, exercise=TRUE, exercise.eval=FALSE}
+
+```
