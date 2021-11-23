@@ -76,13 +76,12 @@ plotAcrossRegions <- function( x ) {
     theme( axis.text.x = element_text( angle=90, vjust=0.5 ) )
 }
 
-#midgut_tsv <- read.table("/home/idies/workspace/c_moor_data/marianes-regions/htseq/midgut.tsv", header=TRUE)
+midgut_tsv <- read.table("/home/idies/workspace/c_moor_data/marianes-regions/htseq/midgut.tsv", header=TRUE)
 
 # Retrieve and rename cached DESeq results
-#load("~/workspace/c_moor_data/instructors/preprocessed_data/marianes/marianes_htseq_DESeq.rda")
-#load("/Users/katie/git/C-MOOR_github_account/cmoorData/data/marianes_htseq_DESeq.rda")
-#midgut <- marianes_htseq_DESeq
-#rm(marianes_htseq_DESeq)
+load("~/workspace/c_moor_data/instructors/preprocessed_data/marianes/marianes_htseq_DESeq.rda")
+midgut <- marianes_htseq_DESeq
+rm(marianes_htseq_DESeq)
 ```
 
 <!---
@@ -297,7 +296,161 @@ You can usually combine commands any way you like, using parentheses.  As long a
 * `plot(df$c, df$d)` plots columns of the dataframe named `df`, putting the column named `c` on the x axis and the column named `d` on the y axis
 * `hist(log(v))` plots a histogram of the natural log of the values in the vector named `v`
 
+## Calculate Differential Expression
 
+### Introduction
+
+Usually when you do an RNA-seq experiment, you want to find out what genes behave differently in different samples.  This is called "differential expression", because you're looking for *differences* in gene *expression*.
+
+`DESeq2` is a program for calculating differential expression (the DE in DESeq2 stands for differential expression).  It starts with the read count data (for example, HTSeq files) for *all* the samples, then does a bunch of math to figure out which genes are the most different between samples.
+
+Since setting up DESeq2 is a little complicated, we've gone ahead and run the commands in the background, so that you can focus on exploring the results and looking for patterns in the data.  The commands we used to run DESeq2 are shown below, in case you're curious, but don't worry about trying to figure these out right now.
+
+
+```{r setup-DESeq2, echo=TRUE, eval=FALSE, message=FALSE}
+midgut_tsv <- read.table("/home/idies/workspace/c_moor_data/marianes-regions/htseq/midgut.tsv", header=TRUE)
+midgut <- DESeqDataSetFromHTSeqCount(midgut_tsv, "/home/idies/workspace/c_moor_data/marianes-regions/htseq/", design = ~condition)
+midgut <- DESeq(midgut)
+```
+
+
+Your job is to explore the results from DESeq2 and try to figure out what they mean biologically.  DESeq2 just reports statistical calculations, giving each gene scores for how different it is between samples.  It's the job of a scientist to look through that information and decide what it **means**.
+
+### Looking at results from DESeq2
+
+We have stored the results from DESeq2 in an object named `midgut`.  This is a special object made by DESeq2, with lots of dataframes inside it.  You can access the dataframe of results for a particular comparison using the `results()` command.  This process takes two steps:
+
+1. First, use the `results()` command to get the relevant data.  The `results()` command needs to know which samples you want to compare.  Make sure to store this output in a variable.
+  + In the example below, we have named this variable `temp` (short for temporary) because it's not in the right format yet.
+2. Reformat the results to make them more useful.  We've made a special command that takes care of reformatting DESeq2 results, named `formatDESeq2Results()`.  Run this command on your temporary variable to convert in into a nicely formatted dataframe.  Store the dataframe in a new variable, and give it a descriptive name so you can remember what it is.
+  + In the example below, we have named our dataframe `a1_vs_p1`, since it contains the data comparing region a1 to region p1.
+
+Here's an example of this two step process for getting the data comparing samples from region "a1" to region "p1".  As the last command, we type out the name of our new dataframe so that it will print to the screen and we can see what it looks like.
+
+```{r, echo=TRUE}
+temp <- results(midgut, contrast = c("condition", "a1", "p1") )
+a1_vs_p1 <- formatDESeq2Results(temp)
+a1_vs_p1
+```
+
+Each row in this dataframe is a gene, and the columns contain a bunch of information about the statistics that DESeq2 calculated.  This data frame has a lot of numbers in it, but there are three columns that we're interested in:
+
+- **baseMean**:  The mean expression level for this gene across all samples
+- **log2FoldChange**:  How much higher this gene is expressed in the first region ("a1") than in the second region ("p1").  A positive number means the gene is higher in a1 than in p1, and a negative number means the gene is lower in a1 than in p1
+- **padj**: (If this variable doesn't show up on your screen, click the little arrow at the top right of the table, next to the column names.  This will let you scroll through all the columns if they don't fit on your screen).  This is the "adjusted p-value" for the gene - basically, a score that helps you decide whether or not this gene is actually different between the regions.  A **high score** means the gene is probably **not different** between the samples.  A **low score** means that it probably is a **real difference**, and not a fluke in the data.  Scientists often use a score of 0.05 as a cutoff, so genes with a `padj` score of less than 0.05 would be considered "significantly different" between these samples.  This is important because measurements are never perfect, and we have to decide whether the differences we see are because the samples are actually different, or are just errors in measurement.
+
+```{r intro-deseq-results}
+quiz(caption = "What's in this dataframe?",
+  question("Out of the first 10 genes shown above, which gene has the highest average gene expression?",
+    answer("FBgn0000003"),
+    answer("FBgn0000008"),
+    answer("FBgn0000014"),
+    answer("FBgn0000015"),
+    answer("FBgn0000017"),
+    answer("FBgn0000018"),
+    answer("FBgn0000022"),
+    answer("FBgn0000024", correct=TRUE),
+    answer("FBgn0000028"),
+    answer("FBgn0000032"),
+    allow_retry=TRUE
+    ),
+  question("Out of the first 10 genes shown above, which gene(s) are more highly expressed in a1 than p1?  HINT: There are four - you must select all four to get the correct answer.",
+    answer("FBgn0000003", correct=TRUE),
+    answer("FBgn0000008"),
+    answer("FBgn0000014"),
+    answer("FBgn0000015"),
+    answer("FBgn0000017"),
+    answer("FBgn0000018"),
+    answer("FBgn0000022", correct=TRUE),
+    answer("FBgn0000024", correct=TRUE),
+    answer("FBgn0000028", correct=TRUE),
+    answer("FBgn0000032"),
+   allow_retry=TRUE
+   ),
+  question('Out of the first 10 genes shown above, which gene(s) are likely to "really" be different between regions a1 and p1, if we use a padj cutoff of 0.05?  HINT: There are two - you must select both to get the correct answer.',
+    answer("FBgn0000003"),
+    answer("FBgn0000008"),
+    answer("FBgn0000014", correct=TRUE),
+    answer("FBgn0000015"),
+    answer("FBgn0000017"),
+    answer("FBgn0000018"),
+    answer("FBgn0000022"),
+    answer("FBgn0000024", correct=TRUE),
+    answer("FBgn0000028"),
+    answer("FBgn0000032"),
+   allow_retry=TRUE
+   )
+)
+```
+
+### What does "NA" mean?
+For some genes you will see a value of "NA" instead of a number.  NA stands for "not available".  This means that for some reason R does not have a value for this gene.  This might happen, for example, if a gene is not expressed at all in a particular set of samples - R can't calculate the `log2FoldChange` because it would involve dividing by zero.  Likewise, sometime R does not calculate a `padj` value because the preliminary calculations show that it's not worth it - it's already clear that the gene won't have a good `padj` score.
+
+### Try it yourself: look at a different pair of samples
+
+Use the `results()` and `formatDESeq2Results()` commands in the box below to look at a comparison between region "a1" and region "Cu".  You can copy the commands from the box above (replace "a1" and "p1" with the samples you want to compare).
+
+```{r deseq-results, exercise=TRUE}
+```
+
+```{r intro-deseq-results-2}
+quiz(caption = "Examine another comparison between regions",
+   question("Out of the first 10 genes shown above, which gene has the highest average gene expression?",
+    answer("FBgn0000003"),
+    answer("FBgn0000008"),
+    answer("FBgn0000014"),
+    answer("FBgn0000015"),
+    answer("FBgn0000017"),
+    answer("FBgn0000018"),
+    answer("FBgn0000022", message="Pay attention to the exponent (scientific notation)"),
+    answer("FBgn0000024", correct=TRUE),
+    answer("FBgn0000028"),
+    answer("FBgn0000032"),
+    allow_retry=TRUE
+   ),
+  question("Are these values the same or different than the gene expression values in the comparison between regions a1 and p1",
+   answer("Same", correct=TRUE, message = "The baseMean is the average score across all samples, so it will be the same no matter what samples we're looking at"),
+   answer("Different"),
+   allow_retry=TRUE
+   ),
+  question("Out of the first 10 genes, which gene are more highly expressed in a1 than Cu?  HINT: There are four - you must select all four to get the correct answer.",
+    answer("FBgn0000003", correct=TRUE),
+    answer("FBgn0000008", correct=TRUE),
+    answer("FBgn0000014"),
+    answer("FBgn0000015"),
+    answer("FBgn0000017"),
+    answer("FBgn0000018"),
+    answer("FBgn0000022"),
+    answer("FBgn0000024", correct=TRUE),
+    answer("FBgn0000028", correct=TRUE),
+    answer("FBgn0000032"),
+    allow_retry=TRUE
+   ),
+  question("Are these values the same or different than the log2FoldChange values in the comparison between regions a1 and p1?",
+   answer("Same"),
+   answer("Different", correct = TRUE, message="The log2FoldChange describes the difference between the two specific samples you chose to look at using the `results()` command"),
+    allow_retry=TRUE
+   ),
+  question('Out of the first 10 genes shown above, which gene(s) are likely to "really" be different between regions a1 and Cu, if we use a padj cutoff of 0.05?  HINT: There are four - you must select all four to get the correct answer.',
+    answer("FBgn0000003"),
+    answer("FBgn0000008", correct=TRUE),
+    answer("FBgn0000014", correct=TRUE),
+    answer("FBgn0000015"),
+    answer("FBgn0000017", correct=TRUE),
+    answer("FBgn0000018"),
+    answer("FBgn0000022"),
+    answer("FBgn0000024", correct=TRUE),
+    answer("FBgn0000028"),
+    answer("FBgn0000032"),
+   allow_retry=TRUE
+   ),
+    question("Are these values the same or different than the padj values in the comparison between regions a1 and p1?",
+   answer("Same"),
+   answer("Different", correct = TRUE, "The padj describes the difference between the two specific samples you chose to look at using the `results()` command"),
+   allow_retry=TRUE
+   )
+)
+```
 
 ## Wrap-up
 
