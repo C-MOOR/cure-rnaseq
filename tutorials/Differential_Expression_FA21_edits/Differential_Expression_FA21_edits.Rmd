@@ -54,6 +54,7 @@ plotAcrossRegions <- function( x ) {
 }
 
 #midgut_tsv <- read.table("/home/idies/workspace/c_moor_data/marianes-regions/htseq/midgut.tsv", header=TRUE)
+midgut_tsv <- read.table("/Users/katie/git/C-MOOR_github_account/cmoorData/data-raw/marianes_htseq/midgut.tsv", header=TRUE)
 
 # Retrieve and rename cached DESeq results
 #load("~/workspace/c_moor_data/instructors/preprocessed_data/marianes/marianes_htseq_DESeq.rda")
@@ -646,7 +647,6 @@ quiz(caption = "Genes in clusterProfiler groups",
     )
 )
 ```
-
 
 ## Plot a single gene across all regions
 

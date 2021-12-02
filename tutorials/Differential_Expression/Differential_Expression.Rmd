@@ -77,11 +77,15 @@ plotAcrossRegions <- function( x ) {
 }
 
 midgut_tsv <- read.table("/home/idies/workspace/c_moor_data/marianes-regions/htseq/midgut.tsv", header=TRUE)
+#midgut_tsv <- read.table("/Users/katie/git/C-MOOR_github_account/cmoorData/data-raw/marianes_htseq/midgut.tsv", header=TRUE)
 
-# Retrieve and rename cached DESeq results
-load("~/workspace/c_moor_data/instructors/preprocessed_data/marianes/marianes_htseq_DESeq.rda")
-midgut <- marianes_htseq_DESeq
-rm(marianes_htseq_DESeq)
+# Load cached DESeq results
+midgut <- readRDS("~/workspace/c_moor_data/instructors/preprocessed_data/marianes/marianes_htseq_DESeq.rds")
+
+
+# Load cached clusterProfiler results (cached Dec 1 2021)
+a1_vs_p1_clusters <- readRDS("~/workspace/c_moor_data/instructors/preprocessed_data/marianes/a1_vs_p1_clusters.rds")
+
 ```
 
 <!---
@@ -588,6 +592,124 @@ quiz(caption = "Looking at a significantly different genes",
   )
 )
 ```
+
+## Gene Set Analysis with clusterProfiler
+
+Now that we have a list of interesting genes, we can use `clusterProfiler` program to figure out what these genes do.  Like `DESeq2`, we have to do a bit of reformating to organize our data for `clusterProfiler`, and we've made a command to make that easy: `runClusterProfiler`:
+
+1. Use `runClusterProfiler` on a list of interesting genes (in this case, genes that were significantly different between regions of the midgut).
+
++ `clusterProfiler` looks at a couple of different international databases to find out what each of the genes does.  It then compares your list of interesting genes to the list of all genes in the fly genome, and checks what types of genes are over-represented in your list.
++ Make sure to save the results in a new variable.
+
+2. Use `dotPlot` to look at the results.
+
++ You can adjust how many results appear on the plot using `showCategory`.  It's a good idea to find out how many gene categories you have (using the `dim` command on the results from `clusterProfiler`) and then set `dotplot` to show all of them.  If this is too crowded, you can pick a smaller number for the `dotplot` command.
++ You can add a title to the plot using `title`
+
+For this analysis, we're using a padj cutoff of 0.01.
+
+```{r, echo=TRUE, eval=FALSE}
+temp <- results(midgut, contrast = c("condition", "a1", "p1") )
+a1_vs_p1 <- formatDESeq2Results(temp)
+sig_genes <- filter(a1_vs_p1, padj <= 0.01)
+
+a1_vs_p1_clusters <- runClusterProfiler(sig_genes)
+dim(a1_vs_p1_clusters)
+dotplot(a1_vs_p1_clusters, showCategory=33, title="a1 vs p1")
+```
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.height=6}
+dim(a1_vs_p1_clusters)
+dotplot(a1_vs_p1_clusters, showCategory=33, title="a1 vs p1")
+```
+
+```{r clusterProfiler-quiz}
+quiz(caption = "Categories of genes with differential expression",
+  question("Which category has the largest number of differentially expressed genes?",
+    answer("Drug metabolism - other enzymes", correct=TRUE),
+    answer("Metabolism of xenobiotics by cytochrome P450"),
+    answer("Cysteine and methionine metabolism"),
+    answer("Arginine biosynthesis"),
+    allow_retry=TRUE,
+    random_answer_order = TRUE
+    ),
+ question("Which categories have more than 20 differentially expressed genes?  Choose more than one answer.",
+    answer("Drug metabolism - other enzymes", correct=TRUE),
+    answer("Metabolism of xenobiotics by cytochrome P450", correct=TRUE),
+    answer("Alanine, aspartate and glutamate metabolism"),
+    answer("Biosynthesis of unsaturated fatty acids"),
+    allow_retry=TRUE,
+    random_answer_order = TRUE
+    )
+)
+```
+
+In the box below, use the `runClusterProfiler` command to find what groups of genes are significantly different between the a1 and Cu regions.
+
+* You will first need to make a list of significantly different genes.
+* Look at the code above and adjust it to examine the a1 and Cu regions instead of a1 and p1.
+* Use the `dim` command to find out how many groups of genes there are, and change `showCategory` in `dotplot` to match
+* You may see an error message telling you that it "returned 1:many mapping between keys and columns" or some small percentage of your genes couldn't be found in the databases ("fail to map").  That's fine, it shouldn't affect results too much as long as it's a small percentage, and we always lose some genes when we compare across different databases since databases don't all have exactly the same genes.
+
+```{r clusterProfiler-practice, exercise=TRUE, fig.height=6}
+```
+
+
+### Find out what genes are in a clusterProfiler group
+
+Once you've identified an interesting category of genes using `clusterProfiler`, it may be useful to find out what those genes are.  This is a bit tricky to do with R, so we've again created a function for you, named `getClusterProfilerGenes()` that will extract the gene symbols for you.  The `getClusterProfilerGenes()` command needs two pieces of information:
+
+1. The `clusterProfiler` results
+2. The name of the group of genes you want to list. This must be in quotes and must be spelled **exactly** as it is in the `clusterProfiler` results.
+
+For example, if we wanted to get a list of the genes in the "Fatty acid degradation" group for a1 vs p1, we would use the commands you've already learned to run clusterProfiler, then look at the dot use the `getClusterProfiler()` command:
+
+```{r, echo=TRUE, eval=FALSE}
+# Run clusterProfiler
+temp <- results(midgut, contrast = c("condition", "a1", "p1") )
+a1_vs_p1 <- formatDESeq2Results(temp)
+sig_genes <- filter(a1_vs_p1, padj <= 0.01)
+a1_vs_p1_clusters <- runClusterProfiler(sig_genes)
+
+# Look at the dotplot to see the groups of genes
+dim(a1_vs_p1_clusters)
+dotplot(a1_vs_p1_clusters, showCategory=33, title="a1 vs p1")
+
+# Get the gene symbols for a group of genes
+getClusterProfilerGenes(a1_vs_p1_clusters, "Fatty acid degradation")
+```
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+# Look at the dotplot to see the groups of genes
+dim(a1_vs_p1_clusters)
+dotplot(a1_vs_p1_clusters, showCategory=33, title="a1 vs p1")
+
+# Get the gene symbols for a group of genes
+getClusterProfilerGenes(a1_vs_p1_clusters, "Fatty acid degradation")
+```
+
+This gives us a list of gene symbols.  We can then look these genes up on FlyBase to find out more about them.
+
+Use the box below to find groups of genes that are significantly different between the a1 and Cu regions with the `runClusterProfiler` command.  Then use the `getClusterProfilerGenes` command to find out what genes are in those groups.
+
+```{r getClusterProfilerGenes-practice, exercise=TRUE}
+```
+
+```{r clusterProfilerGenes-quiz}
+quiz(caption = "Genes in clusterProfiler groups",
+  question("Which of the following genes are involved in Carbon metabolism?  HINT: There are two - you must select both to get the correct answer.",
+    answer("Hex-A", correct=TRUE),
+    answer("Pgk", correct=TRUE),
+    answer("lab"),
+    answer("bgm"),
+    answer("Ace"),
+    allow_retry=TRUE,
+    random_answer_order = TRUE
+    )
+)
+```
+
 
 ## Plot a single gene across all regions
 
