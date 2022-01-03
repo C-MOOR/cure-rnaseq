@@ -1,6 +1,18 @@
 ---
-Day 2:
-  name: "Aug 12 -- Model Organisms and Biological Databases"
+BIOL11A 1:
+  name: "BIOL11A -- Prelab: RNA-seq"
+  tutorial_dir:
+    - "Biotechnology_Next-Gen_Sequencing"
+    - "Biotechnology_RNA-seq"
+BIOL11A 2:
+  name: "BIOL11A -- Lab: RNA-seq [under construction]"
+  tutorial_dir:
+BIOL11A 3:
+  name: "BIOL11A -- Lab: Differential Expression"
+  tutorial_dir:
+    - "Differential_Expression"
+BIOL11A 4:
+  name: "BIOL11A -- Model Organisms and Biological Databases"
   tutorial_dir:
     - "Model_Organisms_Intro"
     - "Model_Organisms_Drosophila"
@@ -8,7 +20,7 @@ Day 2:
     - "Biological_Databases_FlyBase"
     - "Biological_Databases_HPA"
 Day 3:
-  name: "Aug 17 -- Introduction to R"
+  name: "Introduction to R"
   tutorial_dir:
     - "test_driveR"
     - "Intro_R"
