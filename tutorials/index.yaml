@@ -9,6 +9,7 @@ BIOL11A 2:
   tutorial_dir:
 BIOL11A 3:
   name: "BIOL11A -- Lab: Differential Expression"
+  message: "This tutorial takes a while to load, and sometimes shows an error because it loads slowly.  If you see an error, try refreshing the page; it should load properly the second time."
   tutorial_dir:
     - "Differential_Expression"
 BIOL11A 4:
