@@ -5,8 +5,9 @@ BIOL11A 1:
     - "Biotechnology_Next-Gen_Sequencing"
     - "Biotechnology_RNA-seq"
 BIOL11A 2:
-  name: "BIOL11A -- Lab: RNA-seq [under construction]"
+  name: "BIOL11A -- Lab: RNA-seq"
   tutorial_dir:
+    - "Clovis_RNAseq_single_sample"
 BIOL11A 3:
   name: "BIOL11A -- Lab: Differential Expression"
   message: "This tutorial takes a while to load, and sometimes shows an error because it loads slowly.  If you see an error, try refreshing the page; it should load properly the second time."
