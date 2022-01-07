@@ -16,8 +16,8 @@ runtime: shiny_prerendered
 # The image must be surrounded with quotes
 summary: |
   In the previous lab, we looked at a single HTSeq file, which provides gene expression data for one sample.  In today's lab we will learn a hand-full of methods for looking at gene expression across the multiple samples from the *Drosophila* midgut.
-image: "![](images/replace_me.png)"
-image_caption: "Welcome page image"
+image: "![](images/clusterProfiler_dotplot.png)"
+image_caption: "clusterProfiler gene set analysis of differential expression in the Drosophila midgut by Katherine Cox. License: [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)"
 author:
   - "[Dr. Katherine Cox](https://c-moor.github.io/portfolio/coxkatherine/)"
   - "[Dr. Stephanie Coffman](https://c-moor.github.io/portfolio/coffmanstephanie/)"
