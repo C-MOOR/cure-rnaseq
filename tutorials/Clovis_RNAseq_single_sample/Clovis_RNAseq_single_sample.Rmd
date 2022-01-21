@@ -1051,25 +1051,31 @@ b <- "test"
 
 ```{r freeplay-exercise, exercise=TRUE, exercise.eval=FALSE, exercise.setup="prepare-tryout"}
 readCounts <- read.table( "/home/idies/workspace/c_moor_data/marianes-regions/htseq/FILENAMEHERE.htseq" )[1:17559,]
+readCounts
 ```
 
 ```{r freeplay2-exercise, exercise=TRUE, exercise.eval=FALSE, exercise.setup="prepare-tryout"}
 readCounts <- read.table( "/home/idies/workspace/c_moor_data/marianes-regions/htseq/FILENAMEHERE.htseq" )[1:17559,]
+readCounts
 ```
 
 ```{r freeplay3-exercise, exercise=TRUE, exercise.eval=FALSE, exercise.setup="prepare-tryout"}
 readCounts <- read.table( "/home/idies/workspace/c_moor_data/marianes-regions/htseq/FILENAMEHERE.htseq" )[1:17559,]
+readCounts
 ```
 
 ```{r freeplay4-exercise, exercise=TRUE, exercise.eval=FALSE, exercise.setup="prepare-tryout"}
 readCounts <- read.table( "/home/idies/workspace/c_moor_data/marianes-regions/htseq/FILENAMEHERE.htseq" )[1:17559,]
+readCounts
 ```
 
 ```{r freeplay5-exercise, exercise=TRUE, exercise.eval=FALSE, exercise.setup="prepare-tryout"}
 readCounts <- read.table( "/home/idies/workspace/c_moor_data/marianes-regions/htseq/FILENAMEHERE.htseq" )[1:17559,]
+readCounts
 ```
 
 ```{r freeplay6-exercise, exercise=TRUE, exercise.eval=FALSE, exercise.setup="prepare-tryout"}
 readCounts <- read.table( "/home/idies/workspace/c_moor_data/marianes-regions/htseq/FILENAMEHERE.htseq" )[1:17559,]
+readCounts
 ```
 

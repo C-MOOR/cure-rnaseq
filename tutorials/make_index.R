@@ -1,4 +1,4 @@
-TITLE = "C-MOOR CURE CCC FA21"
+TITLE = "C-MOOR Tutorials"
 YAML_FILE = "index.yaml"
 HTML_FILE = "index.html"
 BASE_URL = "./"
