@@ -1,48 +1,28 @@
 ---
-BIOL11A 1:
-  name: "BIOL11A -- Prelab: RNA-seq"
-  tutorial_dir:
-    - "Biotechnology_Next-Gen_Sequencing"
-    - "Biotechnology_RNA-seq"
-BIOL11A 2:
-  name: "BIOL11A -- Lab: RNA-seq"
-  tutorial_dir:
-    - "Clovis_RNAseq_single_sample"
-BIOL11A 3:
-  name: "BIOL11A -- Lab: Differential Expression"
-  message: "This tutorial takes a while to load, and sometimes shows an error because it loads slowly.  If you see an error, try refreshing the page; it should load properly the second time."
-  tutorial_dir:
-    - "Differential_Expression"
-BIOL11A 4:
-  name: "BIOL11A -- Model Organisms and Biological Databases"
-  tutorial_dir:
+Common:
+  name: "Introduction to Model Organisms and Biological Databases"
+  tutorial_dir: 
     - "Model_Organisms_Intro"
     - "Model_Organisms_Drosophila"
     - "Biological_Databases_Intro"
     - "Biological_Databases_FlyBase"
     - "Biological_Databases_HPA"
-Day 3:
-  name: "Introduction to R"
+BIOL11A:
+  name: "A taste of RNA-seq"
+  message: "DESeq2 takes 1-2 minutes to load; click \"Reload\" if you receive a \"503\" error"
   tutorial_dir:
+    - "Biotechnology_Next-Gen_Sequencing"
+    - "Biotechnology_RNA-seq"
+    - "Clovis_RNAseq_single_sample"
+    - "Differential_Expression"
+BIOL12:
+  name: "Deeper dive into R/RStudio for scRNA-seq analysis"
+  tutorial_dir: 
     - "test_driveR"
     - "Intro_R"
-Day 4:
-  name: "Aug 19 -- Base R"
-  tutorial_dir:
     - "reviewR"
-
-Day 5:
-  name: "Aug 24 -- R for Data Science"
-  tutorial_dir:
     - "r4ds"
-
-Day 6:
-  name: "Aug 26 -- R Notebooks and R for Data Science 2"
-  tutorial_dir:
     - "rnotebooks"
     - "r4ds2"
-
-Day 7:
-  name: "Aug 31 -- R Notebooks 2"
-  tutorial_dir:
     - "rnotebooks2"
+
