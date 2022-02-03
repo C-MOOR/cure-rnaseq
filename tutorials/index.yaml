@@ -9,7 +9,6 @@ Common:
     - "Biological_Databases_HPA"
 BIOL11A:
   name: "A taste of RNA-seq"
-  message: "DESeq2 takes 1-2 minutes to load; click \"Reload\" if you receive a \"503\" error"
   tutorial_dir:
     - "Biotechnology_Next-Gen_Sequencing"
     - "Biotechnology_RNA-seq"
