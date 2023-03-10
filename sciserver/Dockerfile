@@ -10,6 +10,10 @@ RUN useradd -m idies && \
     mkdir -p /srv/shiny-server/ && \
     chown -R idies /srv/shiny-server/ /var/log/shiny-server /var/lib/shiny-server/
 
+RUN R -q -e "install.packages( 'remotes' )" && \
+  R -q -e "remotes::install_github( 'YuLab-SMU/clusterProfiler' )" && \
+  R -q -e "remotes::install_github( 'YuLab-SMU/DOSE' )"
+
 COPY sciserver/shiny-server.conf /etc/shiny-server/shiny-server.conf
 
 COPY sciserver/startup.sh /opt/startup.sh
