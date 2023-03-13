@@ -1,8 +1,8 @@
-FROM rocker/shiny-verse:4.1.2
+FROM rocker/shiny-verse:4.2.2
 
 RUN apt-get update && apt-get install -y git libglpk-dev
 
-RUN R -q -e "install.packages(c('learnr', 'BiocManager')); BiocManager::install(version = '3.14')" && \
+RUN R -q -e "install.packages(c('learnr', 'BiocManager')); BiocManager::install(version = '3.16')" && \
  R -q -e "BiocManager::install(c('DESeq2', 'clusterProfiler', 'org.Dm.eg.db'))"
 
 RUN useradd -m idies && \
