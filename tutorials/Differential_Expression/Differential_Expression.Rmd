@@ -58,7 +58,7 @@ runClusterProfiler <- function (x) {
 
 getClusterProfilerGenes <- function (x, i) {
   data.frame( x ) %>%
-  filter( Description == i ) %>%
+  filter( str_detect( Description, i ) ) %>%
   pull( geneID ) %>%
   strsplit( "/" ) %>%
   unlist() %>%
