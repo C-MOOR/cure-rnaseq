@@ -652,7 +652,7 @@ In the box below, use the `runClusterProfiler` command to find what groups of ge
 * Use the `dim` command to find out how many groups of genes there are, and change `showCategory` in `dotplot` to match
 * You may see an error message telling you that it "returned 1:many mapping between keys and columns" or some small percentage of your genes couldn't be found in the databases ("fail to map").  That's fine, it shouldn't affect results too much as long as it's a small percentage, and we always lose some genes when we compare across different databases since databases don't all have exactly the same genes.
 
-```{r clusterProfiler-practice, exercise=TRUE, fig.height=6}
+```{r clusterProfiler-practice, exercise=TRUE, fig.height=6, exercise.timelimit=120}
 ```
 
 
@@ -693,7 +693,7 @@ This gives us a list of gene symbols.  We can then look these genes up on FlyBas
 
 Use the box below to find groups of genes that are significantly different between the a1 and Cu regions with the `runClusterProfiler` command.  Then use the `getClusterProfilerGenes` command to find out what genes are in those groups.
 
-```{r getClusterProfilerGenes-practice, exercise=TRUE}
+```{r getClusterProfilerGenes-practice, exercise=TRUE, exercise.timelimit=120}
 ```
 
 ```{r clusterProfilerGenes-quiz}
@@ -753,26 +753,26 @@ Now that you know how to find the categories of genes that are differentially ex
 
 Use the codeblocks below to explore the differential expression data.  There are several blocks for your convenience, use as many as you like.
 
-```{r freeplayd-exercise, exercise=TRUE, exercise.eval=FALSE}
+```{r freeplayd-exercise, exercise=TRUE, exercise.eval=FALSE, exercise.timelimit=120}
 
 ```
 
-```{r freeplayd2-exercise, exercise=TRUE, exercise.eval=FALSE}
+```{r freeplayd2-exercise, exercise=TRUE, exercise.eval=FALSE, exercise.timelimit=120}
 
 ```
 
-```{r freeplayd3-exercise, exercise=TRUE, exercise.eval=FALSE}
+```{r freeplayd3-exercise, exercise=TRUE, exercise.eval=FALSE, exercise.timelimit=120}
 
 ```
 
-```{r freeplayd4-exercise, exercise=TRUE, exercise.eval=FALSE}
+```{r freeplayd4-exercise, exercise=TRUE, exercise.eval=FALSE, exercise.timelimit=120}
 
 ```
 
-```{r freeplayd5-exercise, exercise=TRUE, exercise.eval=FALSE}
+```{r freeplayd5-exercise, exercise=TRUE, exercise.eval=FALSE, exercise.timelimit=120}
 
 ```
 
-```{r freeplayd6-exercise, exercise=TRUE, exercise.eval=FALSE}
+```{r freeplayd6-exercise, exercise=TRUE, exercise.eval=FALSE, exercise.timelimit=120}
 
 ```
