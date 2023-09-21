@@ -53,6 +53,7 @@ formatDESeq2Results <- function( x ) {
 runClusterProfiler <- function (x) {
   ids <- bitr( x$GeneID, "ENSEMBL", "ENTREZID", "org.Dm.eg.db" )
   kegg <- enrichKEGG(ids$ENTREZID, "dme", keyType="ncbi-geneid")
+  kegg@result$Description <- sub( " - Drosophila melanogaster \\(fruit fly\\)", "", kegg@result$Description )
   return(kegg)
 }
 
@@ -77,14 +78,16 @@ plotAcrossRegions <- function( x ) {
 }
 
 midgut_tsv <- read.table("/home/idies/workspace/c_moor_data/marianes-regions/htseq/midgut.tsv", header=TRUE)
-#midgut_tsv <- read.table("/Users/katie/git/C-MOOR_github_account/cmoorData/data-raw/marianes_htseq/midgut.tsv", header=TRUE)
+#midgut_tsv <- read.table("../../temp_midgut_copy/midgut.tsv", header=TRUE)
 
 # Load cached DESeq results
 midgut <- readRDS("~/workspace/c_moor_data/instructors/preprocessed_data/marianes/marianes_htseq_DESeq.rds")
+#midgut <- readRDS("../../temp_midgut_copy/marianes_htseq_DESeq.rds")
 
 
 # Load cached clusterProfiler results (cached Dec 1 2021)
 a1_vs_p1_clusters <- readRDS("~/workspace/c_moor_data/instructors/preprocessed_data/marianes/a1_vs_p1_clusters.rds")
+#a1_vs_p1_clusters <- readRDS("../../temp_midgut_copy/a1_vs_p1_clusters.rds")
 
 ```
 
@@ -604,7 +607,10 @@ Now that we have a list of interesting genes, we can use `clusterProfiler` progr
 
 2. Use `dotPlot` to look at the results.
 
-+ You can adjust how many results appear on the plot using `showCategory`.  It's a good idea to find out how many gene categories you have (using the `dim` command on the results from `clusterProfiler`) and then set `dotplot` to show all of them.  If this is too crowded, you can pick a smaller number for the `dotplot` command.
++ You can adjust how many results appear on the plot using `showCategory`.  It's a good idea to find out how many gene categories you have (using the `dim` command on the results from `clusterProfiler`) and then set `dotplot` to show all of them.  If this is too crowded, you can
+    + shrink the font by using a smaller `font.size`
+    + change how many characters are displayed before wrapping onto a new line using `label_format`
+    + set  `showCategory` to a smaller number to display fewer results
 + You can add a title to the plot using `title`
 
 For this analysis, we're using a padj cutoff of 0.01.
@@ -616,12 +622,12 @@ sig_genes <- filter(a1_vs_p1, padj <= 0.01)
 
 a1_vs_p1_clusters <- runClusterProfiler(sig_genes)
 dim(a1_vs_p1_clusters)
-dotplot(a1_vs_p1_clusters, showCategory=33, title="a1 vs p1")
+dotplot(a1_vs_p1_clusters, showCategory=34, title="a1 vs p1", font.size=10, label_format = 50)
 ```
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.height=6}
 dim(a1_vs_p1_clusters)
-dotplot(a1_vs_p1_clusters, showCategory=33, title="a1 vs p1")
+dotplot(a1_vs_p1_clusters, showCategory=34, title="a1 vs p1", font.size=10, label_format = 50)
 ```
 
 ```{r clusterProfiler-quiz}
@@ -652,7 +658,7 @@ In the box below, use the `runClusterProfiler` command to find what groups of ge
 * Use the `dim` command to find out how many groups of genes there are, and change `showCategory` in `dotplot` to match
 * You may see an error message telling you that it "returned 1:many mapping between keys and columns" or some small percentage of your genes couldn't be found in the databases ("fail to map").  That's fine, it shouldn't affect results too much as long as it's a small percentage, and we always lose some genes when we compare across different databases since databases don't all have exactly the same genes.
 
-```{r clusterProfiler-practice, exercise=TRUE, fig.height=6, exercise.timelimit=120}
+```{r clusterProfiler-practice, exercise=TRUE, fig.height=7,  exercise.timelimit=120}
 ```
 
 
@@ -674,16 +680,16 @@ a1_vs_p1_clusters <- runClusterProfiler(sig_genes)
 
 # Look at the dotplot to see the groups of genes
 dim(a1_vs_p1_clusters)
-dotplot(a1_vs_p1_clusters, showCategory=33, title="a1 vs p1")
+dotplot(a1_vs_p1_clusters, showCategory=34, title="a1 vs p1", font.size=10, label_format = 50)
 
 # Get the gene symbols for a group of genes
 getClusterProfilerGenes(a1_vs_p1_clusters, "Fatty acid degradation")
 ```
 
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
+```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.height=6}
 # Look at the dotplot to see the groups of genes
 dim(a1_vs_p1_clusters)
-dotplot(a1_vs_p1_clusters, showCategory=33, title="a1 vs p1")
+dotplot(a1_vs_p1_clusters, showCategory=34, title="a1 vs p1", font.size=10, label_format = 50)
 
 # Get the gene symbols for a group of genes
 getClusterProfilerGenes(a1_vs_p1_clusters, "Fatty acid degradation")
@@ -693,7 +699,7 @@ This gives us a list of gene symbols.  We can then look these genes up on FlyBas
 
 Use the box below to find groups of genes that are significantly different between the a1 and Cu regions with the `runClusterProfiler` command.  Then use the `getClusterProfilerGenes` command to find out what genes are in those groups.
 
-```{r getClusterProfilerGenes-practice, exercise=TRUE, exercise.timelimit=120}
+```{r getClusterProfilerGenes-practice, exercise=TRUE, fig.height=7, exercise.timelimit=120}
 ```
 
 ```{r clusterProfilerGenes-quiz}
@@ -753,26 +759,26 @@ Now that you know how to find the categories of genes that are differentially ex
 
 Use the codeblocks below to explore the differential expression data.  There are several blocks for your convenience, use as many as you like.
 
-```{r freeplayd-exercise, exercise=TRUE, exercise.eval=FALSE, exercise.timelimit=120}
+```{r freeplayd-exercise, exercise=TRUE, exercise.eval=FALSE, fig.height=7, exercise.timelimit=120}
 
 ```
 
-```{r freeplayd2-exercise, exercise=TRUE, exercise.eval=FALSE, exercise.timelimit=120}
+```{r freeplayd2-exercise, exercise=TRUE, exercise.eval=FALSE, fig.height=7, exercise.timelimit=120}
 
 ```
 
-```{r freeplayd3-exercise, exercise=TRUE, exercise.eval=FALSE, exercise.timelimit=120}
+```{r freeplayd3-exercise, exercise=TRUE, exercise.eval=FALSE, fig.height=7, exercise.timelimit=120}
 
 ```
 
-```{r freeplayd4-exercise, exercise=TRUE, exercise.eval=FALSE, exercise.timelimit=120}
+```{r freeplayd4-exercise, exercise=TRUE, exercise.eval=FALSE, fig.height=7, exercise.timelimit=120}
 
 ```
 
-```{r freeplayd5-exercise, exercise=TRUE, exercise.eval=FALSE, exercise.timelimit=120}
+```{r freeplayd5-exercise, exercise=TRUE, exercise.eval=FALSE, fig.height=7, exercise.timelimit=120}
 
 ```
 
-```{r freeplayd6-exercise, exercise=TRUE, exercise.eval=FALSE, exercise.timelimit=120}
+```{r freeplayd6-exercise, exercise=TRUE, exercise.eval=FALSE, fig.height=7, exercise.timelimit=120}
 
 ```
