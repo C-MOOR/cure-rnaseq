@@ -211,7 +211,7 @@ Once you know the likely human orthologs, you can then research those genes in o
 quiz(caption = "Investigate orthologs for the *lab* gene",
   question("What is the most likely human ortholog for the *lab* gene?",
     answer("HTT"),
-    answer("HOXA", correct = TRUE),
+    answer("HOXB1", correct = TRUE),
     answer("HSAP"),
     answer("LAT"),
     allow_retry = TRUE,
@@ -222,7 +222,7 @@ quiz(caption = "Investigate orthologs for the *lab* gene",
     answer("4"),
     answer("7", correct = TRUE),
     answer("11"),
-    answer("15"),
+    answer("14"),
     allow_retry = TRUE
   )
 )
@@ -309,8 +309,9 @@ quiz(caption = "Explore the *htt* gene report",
     answer("0"),
     answer("1"),
     answer("2"),
-    answer("3", correct = TRUE),
+    answer("3"),
     answer("4"),
+    answer("5", correct = TRUE),
     allow_retry = TRUE
   )
 )
@@ -318,7 +319,7 @@ quiz(caption = "Explore the *htt* gene report",
 
 ### *htt* alleles (variant forms of the gene)
 
-Yes!  Here we can see that there are actually three different variants of the *htt* gene that have been experimentally shown to cause symptoms similar to Huntington’s disease in flies.  These variants all have different types of mutations affecting the *htt* gene.
+Yes!  Here we can see that there are actually five different variants of the *htt* gene that have been experimentally shown to cause symptoms similar to Huntington’s disease in flies.  These variants all have different types of mutations affecting the *htt* gene.
 
 It can be useful to have different versions of the gene that all mimic Huntington's disease.  Depending how these mutations were made or discovered, they can be useful for different types of experiments.  Also, if experiments turn out the same for several different disease-causing mutations, it's more likely that the result will transfer to other organisms, and isn't just a quirk of a particular mutation.
 
