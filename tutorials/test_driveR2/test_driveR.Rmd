@@ -37,7 +37,7 @@ library( "tidyverse" )
 knitr::opts_chunk$set(echo = FALSE)
 
 df <- testdriveRData
-df_long <- pivot_longer( testdriveRData, 3:9, names_to="region", values_to="count" )
+df_long <- pivot_longer( df, 3:9, names_to="region", values_to="count" )
 ```
 
 
