@@ -3,7 +3,7 @@ title: "Biological Databases: Human Protein Atlas"
 output:
   learnr::tutorial:
     css: css/cmoor.css
-    progressive: true
+    progressive: false
     version: 2.0
 subtitle: |
   ![](images/cmoor_logo_notext.png){width=60%}
@@ -96,68 +96,91 @@ tv <- rmarkdown::metadata$output$`learnr::tutorial`$version
 - The form and function of genes
 - The form and function of proteins
 - The Central Dogma: How transcription and translation read a DNA template and synthesize a polypeptide from   those instructions
+- Gene expression: How variation in gene expression creates specialized cells
 
 <!-- #Image of Central Dogma  -->
-![Screenshot of the Human Protein Atlas home page](images/Central_Dogma_NIH_2025.jpg){width=100%}
+![](images/Central_Dogma_NIH_2025.jpg){width=100%}
 
-<p class=caption> **The Central Dogma**: The process of reading a DNA template and synthesizing a polypeptide from those instructions. Image sourced from The NIH National Human Genome Research Institute (February 11th 2025). Available from: https://www.genome.gov/genetics-glossary/Central-Dogma License: [CC BY 3.0] <p>
+<p class=caption> **The Central Dogma**: The process of reading a DNA template and synthesizing a polypeptide from those instructions. Image sourced from The NIH National Human Genome Research Institute (February 11th 2025). Available from: https://www.genome.gov/genetics-glossary/Central-Dogma License: [CC BY 3.0] </p>
 
-People sometimes use the names of a gene and the protein it "codes for" interchangeably, which can be a bit confusing.
-
-- A **gene** is a DNA sequence (made of **nucleotides**).  It contains the instructions for how to make a specific protein
-- A **protein** is an **amino acid** sequence.  Proteins fold up into specific shapes that let them do their jobs.  Proteins perform the majority of functions in cells, including things like:
-    - Carrying out chemical reactions
-    - Moving materials around inside the cell
-    - Transporting things in and out of a cell
-
-Mutations in a *gene* can cause the *protein* to be made incorrectly, resulting in a protein that does not do its job properly.
-
-Not all genes code for proteins; genes can have other types of information and instructions.  The Human Protein Atlas is focused specifically on proteins and the genes that code for them (“protein-coding genes”).
 
 ### The Human Protein Atlas: What is it?
 
 The Human Protein Atlas is a website that organizes research results about human proteins.  It contains many types of information, including what the proteins do, where they are active, and what types of diseases they are involved in.  We can use it to find out what has been discovered about genes we’re interested in.
 
-###The Human Protein Atlas: What can I do with it?
+Remember: Not all genes code for proteins; genes can have other types of information and instructions.  The Human Protein Atlas is focused specifically on proteins and the genes that code for them (“protein-coding genes”).
 
-![Screenshot of the Human Protein Atlas home page](images/HPA_Home_2025.png){width=100%}
+### The Human Protein Atlas: What can I do with it?
 
-You will primarily interact with the Human Protein Atlas by typing the names of genes or proteins of interest into the search bar.
+![](images/HPA_Home_Head_2025.png){width=70%}
+<p class=caption> **The Human Protein Atlas Homepage**. Image sourced from The Human Protein Atlas (www.proteinatlas.org) (February 11th 2025).</p>
 
-The boxes below the search bar ("Tissue Atlas", "Cell Atlas", etc.) provide explanations about the types of information available in the Human Protein Atlas.
+You will primarily interact with the Human Protein Atlas by typing the names of genes or proteins of interest into the search bar. 
 
-## Protein Pages
 
-### Protein Summary
-Every protein in the Human Protein Atlas has its own page with a large collection of information about the protein.  To see what kinds of information is available, we will look at the entry for [**insulin**](https://www.proteinatlas.org/ENSG00000254647-INS).
+![](images/HPA_Home_Middle_2025.png){width=70%}
+<p class=caption> **The Human Protein Atlas Homepage: Resources**. Scroll down on the homepage of the Human Protein Atlas to find these resources. We will explore them a little later in this module. Image sourced from The Human Protein Atlas (www.proteinatlas.org) (February 11th 2025).</p>
 
-At the top of the page there is a summary:
-![Human Protein Atlas summary for insulin](images/HPA_insulin_summary.png){width=100%}
+The boxes below the search bar ("Tissue Atlas", "Cell Atlas", etc.) provide explanations about the types of information available in the Human Protein Atlas. These pages can also be accessed through the "Resources" tab at the top of the page.
 
-- **Gene name** - The name of the gene that codes for the protein.  If multiple names have been used for this gene, they will be listed in parentheses.  The gene for insulin is named “INS”.
-- **Gene summary** (at the bottom) - A summary of what we know about this gene.  For insulin, it contains a description of how it is processed, and then an explanation of how it binds to the insulin receptor and stimulates glucose uptake.
-- **Where is it located?** (Tissue specificity, Extracellular location, Brain specificity, Blood specificity, Predicted location) - The Human Protein Atlas has several types of information about the protein’s location.  More information is available further down on the page.
-- **What does it do?** (Protein function, Molecular function, Biological process) - What molecular, chemical, and biological processes does it carry out?  Insulin is a hormone involved in carbohydrate metabolism.
-- **Disease involvement** - Is it associated with any diseases?  Insulin is associated with diabetes as well as cancer.
+Feel free to explore the website as you wish. When you're ready, in the next section we'll try using the search bar on the homepage to learn more about a protein.
 
-Further down the page we can see diagrams depicting where the protein is located:
-![Human Protein Atlas graphical summaries of insulin localization: Tissue Atlas (enriched in pancreas), Brain Atlas (not detected), Cell Atlas (not available), and Blood Atlas (secreted to blood)](images/HPA_insulin_localization.png){width=100%}
+## Human Protein Atlas: I have a protein I'm interested in.
 
+We have a protein in mind! Great!
+
+Every protein in the Human Protein Atlas has its own page with a large collection of information about the protein. 
+
+**Here is where the goals of the how-to can go**
+
+### Step 1: Use the search bar to find a protein
+
+![](images/HPA_Search_Box_2025.png){width=100%}
+
+Proteins have a number of **aliases** - different names that all refer to the same protein. In this example, we searched for Insulin, but we would also get similar results if we searched for the other aliases for insulin such as INS, IDDM1, or IDDM2.
+
+### Step 2: Examine the search results page
+
+![](images/HPA_Search_Results_2025.png){width=100%}
+
+Here is our results page. In the top left side of the results, we can see that our search brought back 635 genes and their related proteins. Notice also how even though we asked for insulin, insulin is actually the third result.
+
+We can also get a quick overview of each protein by hovering our mouse over each resource. In this example, we see that within all of HPA's single-cell RNA-seq data insulin had the highest expression in pancreatic cells. That makes a lot of sense, since insulin is produced in the pancreas!
+
+Let's click on "Insulin" in the 2nd column to go to insulin's protein page.
+
+### Step 3: Explore the protein's page
+
+![](images/HPA_Insulin_Protein_Summary_2025.png){width=100%}
+Here we are in the summary tab on the insulin page. Here we can view a quick overview of what the protein does, where it is expressed, and where in the body the protein can be found. 
+
+### Step 4: Examine the gene information page
+
+While we're on the summary tab, let's check out the gene information page.
+
+![](images/HPA_Insulin_Gene_Information_2025.png){width=100%}
+This page has another summary of what the protein does in the body and has helpful links to other databases (highlighted in the red box). You can use these other databases to get more information on the protein. For example, you can find resources for insulin orthologs in other species using  Ensembl, Entrez gene (NCBI), and UniProt.
+
+![](images/HPA_Insulin_Tissue_2025.png){width=100%}
 Insulin is located specifically in the pancreas.
 
-### Tissue Atlas
+### Step 5: Learn more about what tissues in the body the protein is found
 
-If we click on the [Tissue Atlas box](https://www.proteinatlas.org/ENSG00000254647-INS/tissue), we can see more detailed information:
+![](images/HPA_Insulin_Tissue_2025.png){width=100%}
 
-![Human Protein Atlas Tissue Atlas report for insulin](images/HPA_insulin_tissue.png){width=100%}
+Now let's check out the ["Tissue" tab](https://www.proteinatlas.org/ENSG00000254647-INS/tissue). At the top of this tab under "Human Protein Atlas Information", we can get an overview of which tissues in the body insulin is found. As before, we can see that insulin is primarily found in the pancreas.
 
-Insulin is very cleanly localized to the pancreas.  Both the RNA and the protein experimental data show high expression in the pancreas and very little expression anywhere else.
+![](images/HPA_Insulin_Tissue_Expression_2025.png){width=100%}
 
-## Look up a Protein
+Scrolling down further, we arrive at a section titled "RNA AND PROTEIN EXPRESSION SUMMARY". Here we can see the expression data for both the RNA that codes for the protein and the protein itself. We can also see where in the body those tissues are. We know that insulin is made in the pancreas, but in this diagram, we can see other tissues represented in light red. Indeed, there seems to be some minimal expression of insulin in other parts of the body, but the pancreas - shown in dark red - is where the vast majority of insulin is expressed.
+
+The other tabs, such as "Brain", "Single cell" and "Subcell" all look at expression data relating to those specific parts of the body or those specific data types.
+
+### Try it yourself! Human Protein Atlas: Look up a protein
 
 Phenylketonuria (PKU) is a severe disease where individuals are unable to metabolize the amino acid phenylalanine.  If untreated, children with PKU develop seizures and irreversible intellectual disabilities.  It can be controlled by maintaining a strict diet, and individuals can go on to live a normal life.  Babies are routinely screened for PKU shortly after birth, so that they can begin treatment immediately.
 
-PKU is caused by deficiency in **phenylalanine hydroxylase** - the protein that processes phenylalanine.
+PKU is caused by deficiency in phenylalanine hydroxylase - the protein that processes phenylalanine.
 
 Go to the Human Protein Atlas and enter "Phenylalanine hydroxylase" in the search bar to find out more about this protein.
 
