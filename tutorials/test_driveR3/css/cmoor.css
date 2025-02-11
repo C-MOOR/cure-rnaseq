@@ -10,3 +10,33 @@
 .caption {
   font-size: 0.75em;
 }
+
+
+
+div.notice, div.warning {
+  padding: 1em;
+  margin: 1em 0;
+  padding-left: 100px;
+  min-height: 120px;
+  background-repeat: no-repeat;
+}
+
+
+div.notice{
+  border: 4px #68ace5;
+  border-style: solid;
+  background-size: 70px;
+  background-position: 15px center;
+  background-color: #e8ebee;
+  background-image: url("../assets/box_images/note.png");
+}
+
+
+div.warning{
+  border: 4px #e0471c;
+  border-style: solid;
+  background-size: 70px;
+  background-position: 15px center;
+  background-color: #e8ebee;
+  background-image: url("../assets/box_images/warning.png");
+}
