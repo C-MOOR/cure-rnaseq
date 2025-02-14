@@ -24,4 +24,7 @@ BIOL12:
     - "rnotebooks"
     - "r4ds2"
     - "rnotebooks2"
-
+Testing:
+  name: "Biological_Databases_HPA-dev"
+  tutorial_dir: 
+    - "Biological_Databases_HPA-dev"
