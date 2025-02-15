@@ -24,4 +24,8 @@ BIOL12:
     - "rnotebooks"
     - "r4ds2"
     - "rnotebooks2"
+WIP:
+  name: "Work in Progress"
+  tutorial_dir:
+    - "Biological_Databases_HPA-dev"
 
