@@ -1,18 +1,14 @@
-FROM rocker/shiny-verse:4.2.2
+FROM rocker/shiny-verse:4.4.2
 
 RUN apt-get update && apt-get install -y git libglpk-dev
 
-RUN R -q -e "install.packages(c('learnr', 'BiocManager')); BiocManager::install(version = '3.16')" && \
- R -q -e "BiocManager::install(c('DESeq2', 'clusterProfiler', 'org.Dm.eg.db'))"
+RUN R -q -e "install.packages(c('learnr', 'BiocManager')); BiocManager::install(version = '3.20')" && \
+ R -q -e "BiocManager::install(c('DESeq2', 'clusterProfiler', 'org.Dm.eg.db', 'phyloseq'))"
 
 RUN useradd -m idies && \
     rm -rf /srv/shiny-server && \
     mkdir -p /srv/shiny-server/ && \
     chown -R idies /srv/shiny-server/ /var/log/shiny-server /var/lib/shiny-server/
-
-RUN R -q -e "install.packages( 'remotes' )" && \
-  R -q -e "remotes::install_github( 'YuLab-SMU/clusterProfiler' )" && \
-  R -q -e "remotes::install_github( 'YuLab-SMU/DOSE' )"
 
 COPY sciserver/shiny-server.conf /etc/shiny-server/shiny-server.conf
 
