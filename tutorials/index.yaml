@@ -27,5 +27,6 @@ BIOL12:
 WIP:
   name: "Work in Progress"
   tutorial_dir:
+    - "explore-phyloseq"
     - "Biological_Databases_HPA-dev"
 

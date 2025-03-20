@@ -51,7 +51,7 @@ library("phyloseq")
 
 #SciServer paths
 # miso <- readRDS( "/home/idies/workspace/Storage/vgaysin1/persistent/MISO_16S.prop.rds" )
-miso <- readRDS( "/home/idies/workspace/c_moor_data/miso-16s/VG-MISO_16S/MISO_16S.prop.clean.rds" )
+miso <- readRDS( "/home/idies/workspace/c_moor_data/miso-16s/MISO_16S.prop.clean.rds" )
 
 
 # <!-- EXERCISE = should we see an interactive code chunk with this code? -->
