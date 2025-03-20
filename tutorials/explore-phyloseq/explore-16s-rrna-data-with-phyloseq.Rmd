@@ -40,7 +40,7 @@ library("tidyverse")
 library("phyloseq")
 
 #Uncomment exercise timelimit when deployed
-# tutorial_options(exercise.timelimit = 180)
+tutorial_options(exercise.timelimit = 180)
 
 #Load MISO_16S.prop.RDS
 #Normalized data from Leah Guthrie's original phyloseq object, miso2ps.rds
