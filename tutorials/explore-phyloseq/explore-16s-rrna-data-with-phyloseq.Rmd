@@ -3,7 +3,7 @@ title: "Explore 16S rRNA Data with phyloseq"
 output:
   learnr::tutorial:
     css: css/cmoor.css
-    progressive: false #set to true to force stop until exercises are completed with 100% score
+    progressive: TRUE #set to true to force stop until exercises are completed with 100% score
     version: 2.0
 subtitle: |
   ![](images/cmoor_logo_notext.png){width=60%}
@@ -14,9 +14,9 @@ runtime: shiny_prerendered
 # The fields below will be used to create the first page of the tutorial.  You can use markdown.
 # For summary, all new lines must be indented to the same level as the first line.
 # The image must be surrounded with quotes
-summary: |
-  This tutorial will introduce you to...
-image: #"![Human Protein Atlas logo](images/HPA_logo.png)"
+summary: "This tutorial will introduce you to an R package called phyloseq, which is a popular tool for analyzing 16S amplicon data, as well as the ggplot2 package of tidyverse which we will use to generate figures. 
+  Using phyloseq we will explore and vizualize a 16S dataset from the study titled, “Impact of a 7-day homogeneous diet on interpersonal variation in human gut microbiomes and metabolomes” by Guthrie et al., 2023."
+image: "![The phyloseq logo (2025)](images/phyloseq_logo.png)"
 image_caption: ""
 author:
   - "Valeriya Gaysinskaya, Johns Hopkins University"
@@ -25,7 +25,7 @@ author:
 learning_goals:
   - "Use phyloseq to explore a 16S dataset."
   - "Use tidyverse to visualize your results."
-time: "X min"
+time: "25 min"
 prerequisites: "None"
 ---
 
@@ -122,41 +122,51 @@ tv <- rmarkdown::metadata$output$`learnr::tutorial`$version
 
 In this module, we'll use two R packages to explore our 16S microbiome data:
 
-  - *phyloseq*, a package for microbiome analysis
-  - *ggplot2*, a popular graph making tool that is a part of the tidyverse group of packages
+  - [*phyloseq*](https://joey711.github.io/phyloseq/), a package for microbiome analysis
+  - [*ggplot2*](https://ggplot2.tidyverse.org/), a popular graph making tool that is a part of the tidyverse group of packages
 
-While no prior experience in R is needed, we will refer to objects throughout this module. We have a separate module for learning about R objects (Meet R!). For more on ggplot check out the R for Data Science module (r4ds2) or the R Graph Galley (https://r-graph-gallery.com/)
+While no prior experience in R is needed, we will refer to objects throughout this module. We have a separate module for learning about R objects (Meet R!). For more on ggplot check out the R for Data Science module (r4ds2) or the [R Graph Gallery](https://r-graph-gallery.com/).
 
-<!-- REMINDER: Link the R graph gallery -->
+## Key concepts
 
-## Intro concepts
+### OTU or ASV?
+Amplicon sequencing results in **amplicon sequence variants (ASVs)**. ASVs varying from as little as one single nucleotide can be defined as separate ASVs. ASVs can further be grouped into **operational taxonomic units (OTUs)** by clustering similar ASVs based on a threshold of similarity (for example, ASVs with 1% difference in sequence can be grouped into the same species.) For now, you can think of these terms of being interchangeable. We will refer to our data as ASVs, and phyloseq will refer to them as OTUs.
 
-Phyloseq object:
-- A phyloseq object is composed of 4 core data classes. They are (1) the OTU abundance table (otu_table), (2) a table of sample data (sample_data), (3) a table of taxonomic descriptors (taxonomyTable); and (4 - Optional) a phylogenetic tree. Together, these datasets create a phyloseq-class object.
+### ASV counts normalization
+An important concept in microbiome data analysis is the concept of data **normalization**. Data normalization corrects for differences in sample size and allows us to make comparisons between samples. Not every analysis will use normalized reads as an input, but when necessary, our ASV counts were normalized by the total number of reads in each sample to convert the counts to proportion.
 
-OTU or ASV:
-- Amplicon sequencing results in Amplicon Sequence Variants (ASVs). ASVs varying from as little as one single nucleotide can be defined as separate ASVs. ASVs can further be grouped ASVs into OTUs (Operational Taxonomic Units) by clustering similar ASVs based on a threshold of similarity (e.g. ASVs with 1% difference in sequence can be grouped into same species.) Phyloseq , can use ASV or OTU counts table, but will refer to both as OTUs, such that you only will have an otu_table, and not an asv_table.
 
-ASV counts normalization:
-- An important concept in microbiome data analysis is the concept of data normalization, to enable statistical analyses and comparisons between samples. Therefore, for exploring 16S with phyloseq module we will use normalized ASV counts. The ASV counts were normalized by the total number of reads in each sample to convert the counts to proportion.
+![](images/Normalized_Proportions_Example.png){width=100%}
+<p class=caption> **An example of normalization by proportions**: In this example we have 3 ASVs, and we wish to compare data between sample A and sample B. Based on the raw count data (left), it is easy for a viewer to believe that sample A and B have the same amount of ASVs 1 and 2. However, when comparing between samples based on proportion (right), it becomes clear that sample A has a higher proportion of ASVs 1 and 2 compared to ASV 3. Original figure by Evans et al. (2018); figure cleaned and edited by Sayumi York (March 21, 2025).</p>
 
-Subsetting data in R:
-- R has powerful features for accessing data parts via subsetting, which involves selecting portions of information from a bigger set of data. Different data structures (e.g. dataframes, matrices, lists) can have different rules for subsetting. For example, an otu_table is a matrix, and can be subsetted using rules for subsetting a matrix in R, which utilizes brackets [ ]. To subset matrices, you can specify the [row 1, column 2] to access information stored in row 1 and column 2. 
+
+### Subsetting data in R:
+R has powerful features for accessing data parts via **subsetting**, which involves selecting portions of information from a bigger set of data. Different data structures (examples: data frames, matrices, lists) can have different rules for subsetting. For example, an otu_table is a matrix, and can be subsetted using rules for subsetting a matrix in R, which utilizes brackets [ ]. To subset matrices, you can specify the [row 1, column 2] to access information stored in row 1 and column 2. For more information on subsetting, see the associated [R Cheatsheet](https://docs.google.com/document/d/1R99uj_oliyvnNOPLOfI2bUBBa64Z2PAIJ0oicbHyVZU/edit?usp=sharing). We will practice this in this module.
 
 
 ## Exploring a phyloseq object
 
-Let's explore our phyloseq object (miso). We can check by calling the object through its name.
+Let's explore our phyloseq object (miso). We can check by calling the object through its name. Do so now with the code below.
 
-### Demo Code
-
-```{r, echo=TRUE}
+```{r explore_miso, exercise=TRUE, echo=FALSE}
 miso
 ```
 
-Here we see that the phyloseq object consists of an otu_table, sample_data and tax_table. Phyloseq knits all these tables together inside the object. 
+Here we see that the phyloseq object consists of an otu_table, sample_data and tax_table. Phyloseq knits all these tables together inside the object as shown below.
 
-#### Multiple choice
+![](images/Phyloseq_Class_Overview.png){width=100%}
+
+<p class=caption> **The phyloseq class**: The image above shows a conceptual diagram of the phyloseq class. All phyloseq objects will share the characteristics of the class. Dotted lines between the tables show how phyloseq is able to relate the different data in each tables to each other. The sample_table and otu_table both have samples stored in rows, but the tax_table has ASVs stored in rows. Image by Sayumi York (March 21, 2025).</p>
+
+Our phyloseq object is composed of 3 core data tables (some have more).
+
+  - **The sample data table (sample_data)**: which holds all the metadata relating to each sample. For example in this case our metadata contains information on what timepoint in the experiment the sample is from, the gender of the subject, whether they were on the homogenized diet at the time, the subject's age, etc.
+  
+  - **The OTU abundance table (otu_table)**: which holds the data on how many of each ASV were found in each sample.
+  
+  -  **The taxonomic annotation table (tax_table)**: which holds all the taxonomic data for each ASV (what phylum, class, order, etc. the ASV has belongs to). Not every ASV has a taxonomic assignment at every level.
+
+---
 
 ```{r miso-object_quiz}
 quiz(caption = "What's in the phyloseq object?",
@@ -190,172 +200,28 @@ quiz(caption = "What's in the phyloseq object?",
 )
 ```
 
----
-
-## OTU_table
-
-An otu_table contains ASV counts for all the samples. In an otu_table, columns are different ASVs, and rows are different samples. Remember, that even though we are using ASVs for input, and not OTUs, phyloseq treats them the same, and uses only 'otu' nomenclature.
-
-### Interactive Code
-
-Examine the first few columns and rows with the following code.
-
-```{r otu_table-1, exercise=TRUE, echo=FALSE}
-head(colnames(otu_table(miso)))
-```
-
-```{r otu_table-2, exercise=TRUE, echo=FALSE}
-head(rownames(otu_table(miso)))
-```
-
-#### Multiple choice
-
-```{r otu_table_quiz1}
-quiz(caption = "What is the otu_table?",
-  
-question("What are columns in the otu_table?",
-    answer("sample names"),
-    answer("ASV IDs", correct=TRUE),
-    answer("taxonomy ranks"),
-    allow_retry = TRUE
-  ),
-
-question("What are rows in the otu_table?",
-    answer("sample names", correct=TRUE),
-    answer("ASV IDs"),
-    answer("taxonomy ranks"),
-    allow_retry = TRUE
-  )
-)
-```
-
-
-We can examine a specific sample or ASV in the otu_table by selecting the samples (rows) and ASVs (columns). 
-
-### Interactive Code
-
-Use code below to examine ASV1 counts for sample 1. This is done by specifying sample information (rows) and ASV information (columns) in the brackets. 
-
-```{r otu_table-3, exercise=TRUE, echo=FALSE}
-otu_table(miso)[1,"ASV1"]
-```
-
-We can see that the sample MISO1-S02-1 has a value of 0.059 for ASV 1. Recall that we are working with normalized data, so our data is in proportions. So really our data are telling us that 5.9% of this sample is ASV 1! Explore different samples and ASVs by changing the numbers in the brackets.
-
-For samples 1 through 5, explore counts for ASV50.
-
-```{r otu_table-4, exercise=TRUE, echo=FALSE}
-
-otu_table(miso)[1:5, "ASV50"]
-```
-
-#### Multiple choice
-
-```{r otu_table_quiz2}
-quiz(caption = "What's in the otu_table?",
-     
-  question("What is the normalized count for ASV115 in sample 10",
-    answer("there is no ASV0115",),
-    answer("0.05988178", ),
-    answer("0.005442962", ),
-    answer("0.0009637625", correct=TRUE),
-    allow_retry = TRUE
-  ),
-  
-  question("For samples 1 through 5, how many samples have zero counts for ASV1000?",
-    answer("1",),
-    answer("3", ),
-    answer("All of them", correct=TRUE),
-    allow_retry = TRUE
-  )
-)
-```
-
----
-
-## Tax_table
-
-The tax_table contains all the information relating to what ASV has what taxonomy assigned to it.
-
-### Demo Code
-
-Examine the column and rows in the tax_table with the following code.
-
-```{r, echo=TRUE}
-colnames(tax_table(miso))
-head(rownames(tax_table(miso)))
-```
-
-#### Multiple choice
-
-```{r tax_table_cols_rows_quiz}
-quiz(caption = "What's in the tax_table?",
-  question("What are columns in the tax_table?",
-    answer("Sample names"),
-    answer("ASV IDs"),
-    answer("Taxonomy ranks", correct=TRUE),
-    allow_retry = TRUE
-  ),
-  
-  question("What are rows in the tax_table?",
-    answer("Sample names",),
-    answer("ASV IDs", correct=TRUE),
-    answer("Taxonomy ranks"),
-    allow_retry = TRUE
-  )
-)
-```
-
-### Interactive Code
-
-Use the interactive code block below to try out the commands you learned and retreive specific ASV information.
-
-Check the taxonomy associated with ASV1. Within the brackets, rows and columns are separated by a comma (","). By leaving the column blank, R will return all columns. In this case it will return the taxonomic assignment at all levels for ASV1.
-
-```{r tax_table_col_rows_ASV1, exercise=TRUE, echo=FALSE}
-tax_table(miso)["ASV1",]
-```
-#### Multiple choice
-
-```{r tax_table_ASV2005}
-quiz(caption = "Let's find a taxnomic assignment by ASV",
-  question("What is the taxonomic Family associated with ASV2005?",
-    answer("Bifidobacteriaceae"),
-    answer("Lachnospiraceae", correct=TRUE),
-    answer("Clostridiales"),
-    answer("NA"),
-    allow_retry = TRUE
-  )
-)
-```
-
----
 
 ## Sample_data
 
 The sample_data contains all the metadata for each sample. 
 
-### Demo Code
+Using the head() command allows us to look only at the first handful of columns and rows, but if we remove head() we can also see the entirety of each. 
 
-Using the head() command lets look only at the first handful of columns and rows, but if we remove head we can also see the entirety of each. 
+Note: The sample data is stored as a data frame class (or table) - as opposed to the matrix class for example - sample data can be called using a data.frame() command to display the sample data as an interactive table.
 
-Note, that because sample data is a data frame class (or table) - as opposed to matrix class for example - sample data can be called using a data.frame() command and display the sample data as a nice table.
-
-```{r, echo=TRUE}
+```{r sample_data_head, exercise=TRUE, echo=FALSE}
 #Examine sample_data (metadata) table
 head(data.frame(sample_data(miso)))
 ```
 
-### Interactive Code
-
-Now, use the code block below to view a handful of column names and rownames
+Now, use the code block below to view a handful of column names and row names.
 
 ```{r sample-data1, exercise=TRUE, echo=FALSE}
 head(colnames(sample_data(miso)))
 head(rownames(sample_data(miso)))
 ```
 
-### Multiple Choice
+---
 
 ```{r overview_sample_data_quiz}
 quiz(caption = "Exploring the sample_table",
@@ -384,9 +250,7 @@ quiz(caption = "Exploring the sample_table",
 )
 ```
 
-### Interactive Code
-
-Let's try looking at different variables for a given column of metadata.
+Let's try looking at different variables for a given column of metadata. Change the column name in between the double quotes to check different columns. We've given you two examples.
 
 ```{r unique_metadata, exercise=TRUE, echo=FALSE}
 unique(data.frame(sample_data(miso)[, "subject"]))
@@ -394,7 +258,7 @@ unique(data.frame(sample_data(miso)[, "timepointgroup"]))
 
 ```
 
-#### Multiple choice
+---
 
 ```{r metadata_sample_table_quiz}
 quiz(caption="Exploring metadata in sample_table",
@@ -418,36 +282,161 @@ quiz(caption="Exploring metadata in sample_table",
 ```
 
 
+## OTU_table
+
+An otu_table contains ASV counts for all the samples. In an otu_table, columns are different ASVs, and rows are different samples. Remember, that even though we are using ASVs for input, and not OTUs, phyloseq treats them the same, and uses only 'otu' nomenclature.
+
+Examine the first few columns and rows with the following code.
+
+```{r otu_table_colnames, exercise=TRUE, echo=FALSE}
+head(colnames(otu_table(miso)))
+```
+
+```{r otu_table_rownames, exercise=TRUE, echo=FALSE}
+head(rownames(otu_table(miso)))
+```
+
+---
+
+```{r otu_table_quiz1}
+quiz(caption = "What is the otu_table?",
+  
+question("What are columns in the otu_table?",
+    answer("Sample names"),
+    answer("ASV IDs", correct=TRUE),
+    answer("Taxonomy ranks"),
+    allow_retry = TRUE
+  ),
+
+question("What are rows in the otu_table?",
+    answer("Sample names", correct=TRUE),
+    answer("ASV IDs"),
+    answer("Taxonomy ranks"),
+    allow_retry = TRUE
+  )
+)
+```
+
+
+We can examine a specific sample or ASV in the otu_table by selecting the samples (rows) and ASVs (columns). 
+Use code below to examine ASV1 counts for sample 1. This is done by specifying sample information (rows) and ASV information (columns) in the brackets (example: [rows, columns]). As we can see in the example, we can call a row or column by its position in the data frame ("give me row 1") or by calling it specifically ("give me ASV1").
+
+```{r otu_table-3, exercise=TRUE, echo=FALSE}
+# This will give you counts for ASV1 for sample 1.
+otu_table(miso)[1,"ASV1"]
+```
+
+We can see that the sample MISO1-S02-1 has a value of 0.059 for ASV 1. Recall that we are working with normalized data, so our data is in proportions. So really our data are telling us that 5.9% of this sample is ASV 1! We canxplore different samples and ASVs by changing the numbers in the brackets. 
+
+For samples 1 through 5, explore counts for ASV50. Notice how we can ask for a range of rows or columns using the : symbol.
+
+```{r otu_table-4, exercise=TRUE, echo=FALSE}
+# This will give you counts for ASV50, for samples 1 through 5.
+otu_table(miso)[1:5, "ASV50"]
+```
+
+---
+
+```{r otu_table_quiz2}
+quiz(caption = "What's in the otu_table?",
+     
+    question("For samples 1 through 5, how many samples have zero counts for ASV1000?",
+    answer("1",),
+    answer("3", ),
+    answer("All of them", correct=TRUE),
+    allow_retry = TRUE
+  ),
+  
+  question("What is the normalized count for ASV115 in sample 10",
+    answer("there is no ASV0115",),
+    answer("0.05988178", ),
+    answer("0.005442962", ),
+    answer("0.0009637625", correct=TRUE),
+    allow_retry = TRUE
+  )
+)
+```
+
+## Tax_table
+
+The tax_table contains all the information relating to what ASV has what taxonomy assigned to it.
+
+Examine the column and rows in the tax_table with the following code.
+
+```{r tax_table_col_rows, exercise=TRUE, echo=FALSE}
+colnames(tax_table(miso))
+head(rownames(tax_table(miso)))
+```
+
+---
+
+```{r tax_table_cols_rows_quiz}
+quiz(caption = "What's in the tax_table?",
+  question("What are columns in the tax_table?",
+    answer("Sample names"),
+    answer("ASV IDs"),
+    answer("Taxonomy ranks", correct=TRUE),
+    allow_retry = TRUE
+  ),
+  
+  question("What are rows in the tax_table?",
+    answer("Sample names",),
+    answer("ASV IDs", correct=TRUE),
+    answer("Taxonomy ranks"),
+    allow_retry = TRUE
+  )
+)
+```
+
+Use the interactive code block below to try out the commands you learned and retreive specific ASV information.
+
+Check the taxonomy associated with ASV1. Within the brackets, rows and columns are separated by a comma (","). By leaving the column blank, R will return all columns. In this case it will return the taxonomic assignment at all levels for ASV1.
+
+```{r tax_table_col_rows_ASV1, exercise=TRUE, echo=FALSE}
+tax_table(miso)["ASV1",]
+```
+
+---
+
+```{r tax_table_ASV2005}
+quiz(caption = "Let's find a taxnomic assignment by ASV",
+  question("What is the taxonomic Family associated with ASV2005?",
+    answer("Bifidobacteriaceae"),
+    answer("Lachnospiraceae", correct=TRUE),
+    answer("Clostridiales"),
+    answer("NA"),
+    allow_retry = TRUE
+  )
+)
+```
+
 ## Visualizing taxonomy
 
-Let's try plotting our phyloseq object to get an idea of everything that's inside it.
+Now that we have a good idea of what's in the phyloseq object, let's try plotting our phyloseq object to get an idea of everything that's inside it.
+
 The code below plots the taxonomy profile of individuals (subjects) based on Phylum.
 
-### Demo Code
-
-```{r, echo=TRUE}
+```{r plot_bar_demo, exercise=TRUE, echo=FALSE}
   plot_bar(miso, "subject", fill = "Phylum") + 
   geom_bar(aes(color = Phylum, fill = Phylum), stat = "identity", position = "stack") 
 ```
 
 Notice that the y-axis currently has "Abundance" on a scale of 1-5. Why is this the case? Remember that we are working with proportions, so each sample should add up to 1, which represents 100% of a sample. For each subject we sampled them at 5 different time points. Thus, we have a total of "5" for all time points included.
 
-#### Multiple choice
+---
 
 ```{r plot_bar_phylum_quiz}
-question("How many different Phyla are in the data?",
-  answer("14"),
-  answer("13", correct=TRUE),
-  answer("5"),
-  allow_retry = TRUE
+quiz(caption = "Plotting phylum by subject",
+  question("How many different known Phyla are in the data?",
+    answer("14"),
+    answer("13", correct=TRUE),
+    answer("5"),
+    allow_retry = TRUE
+  )
 )
 ```
 
----
-
-### Interactive Code
-
-The demo code above plotted the taxonomy profile of individuals based on Phylum. Use the code below to play around with the plot_bar() function. 
+The demo code above plotted the taxonomy profile of individuals based on phylum. Use the code below to play around with the plot_bar() function. 
 
 The demo plot did not have a plot title. Use code block below to give your plot a title by substituting "Choose a name for your graph" with a title name appropriate for the plot (e.g. Phylum by individual).
 
@@ -469,8 +458,7 @@ Try plotting a different taxonomy based on another variable such as timepointgro
 plot_bar(miso, x= "subject", fill = "Phylum", title = "choose a name for your graph") +
   geom_bar(aes(color = Phylum, fill = Phylum), stat = "identity", position = "stack")
 ```
-
-#### Multiple choice
+---
 
 ```{r plot_bar_tax_quiz}
 quiz(caption = "Changing the phyloseq graph by taxonomic level",
@@ -481,12 +469,8 @@ quiz(caption = "Changing the phyloseq graph by taxonomic level",
     answer("Synergistia"),
     allow_retry = TRUE,
     random_answer_order = TRUE
-  )
-)
-```
+  ),
 
-```{r plot_bar_metadata_quiz}
-quiz(caption = "Changing the phyloseq graph by metadata",
   question("What timepoint has the lowest proportion of Verrucomicrobia?",
     answer("1"),
     answer("2"),
@@ -499,11 +483,7 @@ quiz(caption = "Changing the phyloseq graph by metadata",
 )
 ```
 
----
-
 ## Using subset_taxa()
-
-### Interactive Code
 
 What happens when we try to plot our data at the level of order? Try it out with the following code.
 
@@ -512,14 +492,11 @@ plot_bar(miso, x= "subject", fill = "Order", title = "choose a name for your gra
   geom_bar(aes(color = Order, fill = Order), stat = "identity", position = "stack")
 ```
 
-
-There are way more orders than phyla. As we get more and more groups in our graph, it becomes harder to read.
+There are way more orders than there are phyla. As we get more and more groups in our graph, it becomes harder to read.
 
 Subset_taxa() allows you to select a group of data based on a taxonomic rank. This allows us to discriminate between taxa on a finer scale.
 
-The code below subsets only ASVs with the phylum Firmicutes, and plots the associated order for all these ASVs by subject. First, we create a new phyloseq object called my_subset, which then stores only our Firmicutes ASVs. Then we plot these ASVs by their taxonomic order.
-
-In the code block below, subset taxa by Phylum first, then, plot all Order associated with Phylum Firmicutes.
+The code below subsets only ASVs with the phylum Firmicutes and plots the associated order for all these ASVs by subject. First, we create a new phyloseq object called my_subset, which then stores only our Firmicutes ASVs. Then we plot these ASVs by their taxonomic order.
 
 ```{r r_subset_example, exercise=TRUE, echo=FALSE}
 my_subset <- subset_taxa(miso, Phylum == "Firmicutes")
@@ -529,9 +506,9 @@ plot_bar(my_subset, x="subject", fill = "Order", title = "Orders of Firmicutes A
 
 ```
 
-That looks much better! There are only 7 orders represented within ASVs of the phyla Firmicutes so we can see them clearly in our graph.
+That looks much better! There are only 7 orders represented within ASVs of the phylum Firmicutes, so we can see them clearly in our graph.
 
-The command below will retrieve a list of all the different Phyla you could subset. Of course, if we change "Phylum" to another taxonomic rank we will see all the different groups of that rank.
+The command below will retrieve a list of all the different phyla you could subset. Of course, if we change "Phylum" to another taxonomic rank we will see all the different groups of that rank.
 
 ```{r examine_unique_taxonomic_group, exercise=TRUE, echo=FALSE}
 unique(tax_table(miso)[ , "Phylum"])
@@ -548,14 +525,14 @@ plot_bar(my_subset, x="subject", fill = "Class", title = "My title") +
 
 ```
 
-#### Multiple choice
+---
 
 ```{r subsetting_quiz}
-quiz(caption = "Changing the phyloseq graph by metadata",
-  question("How many different classes are represented in the entire dataset?",
+quiz(caption = "Changing the phyloseq graph",
+  question("How many different known classes are represented in the entire dataset?",
     answer("13"),
     answer("14"),
-    answer("22", correct=TRUE),
+    answer("21", correct=TRUE),
     allow_retry = TRUE
   ),
 
@@ -571,18 +548,18 @@ quiz(caption = "Changing the phyloseq graph by metadata",
 ```
 
 
-```{r question-problem-summary}
-question("What was the goal of these exercises?",
-  answer("To see how much you already know"),
-  answer("To give you a taste of some useful commands", correct=TRUE),
-  answer("To daze and confuse you"),
-  allow_retry = TRUE
-)
-```
-
 ## Try it out!
 
 Use the following code blocks and example code to explore the data.
+
+```{r try_it_out_1, exercise=TRUE, echo=FALSE}
+#Subsetting based on a group
+my_subset <- subset_taxa(miso, Phylum == "Firmicutes")
+
+#Plotting using the new subset
+plot_bar(my_subset, x= "subject", fill = "Class", title = "My title") +
+  geom_bar(aes(color = Class, fill = Class), stat = "identity", position = "stack")
+```
 
 ```{r try_it_out_2, exercise=TRUE, echo=FALSE}
 
@@ -601,9 +578,11 @@ Use the following code blocks and example code to explore the data.
 ```
 
 
-## Phyloseq-related R commands
+## Related R ocmmands
 
-### Exploring data with base R commands
+Also available at our [R Cheatsheet](https://docs.google.com/document/d/1R99uj_oliyvnNOPLOfI2bUBBa64Z2PAIJ0oicbHyVZU/edit?usp=sharing)!
+
+#### Exploring data with base R commands
 - **head**: A base R function that gives you the first part of a called object
   - head(my_object) 
   - head(colnames(otu_table(miso)))
@@ -622,7 +601,7 @@ Use the following code blocks and example code to explore the data.
 
 - **ls.str()**: A base R function that will list out all the objects available to you in your environment. In this module, each code block is its own environment.
 
-### Phyloseq commands
+#### Phyloseq commands
 
 - **otu_table()**: Used to reference the otu_table of a phyloseq object
 
@@ -635,7 +614,7 @@ Use the following code blocks and example code to explore the data.
 
 - **plot_bar()**: Returns a ggplot2 object that can be modified further with ggplot commands using + to add more options. 
 
-### ggplot commands
+#### ggplot commands
 
 - **facet_wrap** (Advanced): Ask ggplot to facet by a given field. This will break the graph down into smaller graphs focused on each subject.
 
@@ -658,5 +637,20 @@ In this module we have explored a 16S dataset and used phyloseq to create inform
 Your subset does not contain any data. Make sure your taxonomic level (example: phylum, class, order) matches the name of your taxonomic group (Alphaproteobacteria, Bacilli, Clostridiales). You may have a mismatch (example: asking phyloseq to subset by the phylum Clostridiales, which is an order)
 
 
+## Works Cited
 
+- Aden-Buie G, Schloerke B, Allaire J, Rossell Hayes A (2023). learnr: Interactive Tutorials for R. <https://rstudio.github.io/learnr/>, <https://github.com/rstudio/learnr>
+
+- Evans, Ciaran, Johanna Hardin, and Daniel M. Stoebel. "Selecting between-sample RNA-Seq normalization methods from the perspective of their assumptions." Briefings in bioinformatics 19.5 (2018): 776-792.
+
+- Guthrie, Leah, et al. "Impact of a 7-day homogeneous diet on interpersonal variation in human gut microbiomes and metabolomes." Cell host & microbe 30.6 (2022): 863-874.
+
+- McMurdie, Paul J., and Susan Holmes. "phyloseq: an R package for reproducible interactive analysis and graphics of microbiome census data." PloS one 8.4 (2013): e61217.
+
+- R Core Team (2024). R: A Language and Environment for Statistical Computing. R Foundation for Statistical Computing, Vienna, Austria.
+  <https://www.R-project.org/>.
+  
+- Stoudt, Sara, Anthony D. Scotina, and Karsten Luebke. "Supporting Statistics and Data Science Education with learnr." Technology Innovations in Statistics Education 14.1 (2022).
+
+- Wickham, Hadley. "ggplot2." Wiley interdisciplinary reviews: computational statistics 3.2 (2011): 180-185.
 
