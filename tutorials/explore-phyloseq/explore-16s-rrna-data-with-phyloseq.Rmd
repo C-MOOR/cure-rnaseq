@@ -448,7 +448,8 @@ plot_bar(miso, x="subject", fill = "Phylum", title = "Choose a name for your gra
   geom_bar(aes(color = Phylum, fill = Phylum), stat = "identity", position = "stack")
 ```
 
-Try substituting phylum with another taxonomic rank of interest, like class by substituting "Phylum" with "Class" in the code block below. Make sure you replace all instances of phylum, and pay attention to the case (example: notice that subject is in all lowercase, but Phylum uses a capital P).
+Try substituting phylum with another taxonomic rank of interest, like class, by substituting "Phylum" with "Class" in the code block below. Make sure you replace all instances of phylum, and pay attention to the case (example: notice that subject is in all lowercase, but Phylum uses a capital P). 
+Hint: To plot class using the template code below, you will need to substitute 3 things in the code, plus a new title.
 
 ```{r plot_bar_subject_Class, exercise=TRUE, exercise.eval=FALSE}
 plot_bar(miso, x= "subject", fill = "Phylum", title = "choose a name for your graph") +
@@ -519,6 +520,7 @@ unique(tax_table(miso)[ , "Phylum"])
 ```
 
 Modify the code below to subset class Bacteroidia (instead of Firmicutes) and plot the different orders of the class Bacteroidia for the 21 individuals (subjects). Be careful - there a few things to modify in the code below to get the right plot! And don't forget the title!
+Hint: To plot orders for the class Bacteroidia using the template code below, you will need to substitute 5 things in the code, plus a new title.
 
 ```{r subsetting_bacteroidia, exercise=TRUE, exercise.eval=FALSE}
 my_subset <- subset_taxa(miso, Phylum == "Firmicutes")
