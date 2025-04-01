@@ -655,8 +655,9 @@ quiz(caption = "",
 )
 ``` 
 
-To change the comparision, if we are using the same factor, we only need to change the code in Step 2. 
-Change the code below and swap out "WO" for "HD" so that we can compare the "HD" to the "BD" (baseline) group.
+How can we change the comparision? 
+
+To change the comparison, we need to change the code in Step 2!. In the axample above, we compared timepointgroup WO with BD. If we now want to compare HD to BD, we can change the my_comparison() portion of the code and swap out "WO" for "HD" so that we can compare the "HD" to the "BD" (baseline) group.
 
 ```{r DESeq2_example_comparison, exercise=TRUE, echo=TRUE}
 # STEP 1: Convert the phyloseq object to a DESeq2 object and tell R the experimental design 
@@ -679,7 +680,7 @@ ggplot(Significant_DEseq2_ASVs, aes(x = Phylum, y=log2FoldChange, color= Class))
 ```
 
 ```{r differential_abundance_quiz_comparison}
-quiz(caption = "Using DESeq2 to examine differential abundance - HD vs BD",
+quiz(caption = "Using DESeq2 to examine differential abundance between HD vs BD",
     
     question("How many differentially abundant ASVs are there between HD and BD?",
     answer("6"),
@@ -699,6 +700,8 @@ quiz(caption = "Using DESeq2 to examine differential abundance - HD vs BD",
 ) 
 ```
 
+
+How can we change the factor we are examining for differential abundance. For example, instead of comparing different timepointgroups BD, HD, WO we did above, how can we instead perform differential abundance based on subjects?
 
 If we want to change the factor we are looking at (example: from timepointgroup to subject) we will have to change the design code in Step 1 as well. In step 1 change timepointgroup to subject.
 
