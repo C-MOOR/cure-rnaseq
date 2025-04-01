@@ -1,5 +1,5 @@
 ---
-title: "Analyzing 16S data in Phyloseq"
+title: "Analyze 16S data in Phyloseq"
 output:
   learnr::tutorial:
     css: css/cmoor.css
@@ -18,8 +18,9 @@ summary: |
 image: "![The phyloseq logo (2025)](images/phyloseq_logo.png)"
 image_caption: ""
 author:
-  - "Valeriya Gaysinskaya, John Hopkins University"
   - "Sayumi York, Notre Dame of Maryland University"
+  - "Valeriya Gaysinskaya, Johns Hopkins University"
+  - "Frederick Tan, Johns Hopkins University"
 learning_goals:
   - "Use phyloseq to analyze a 16S dataset."
   - "Use tidyverse to visualize your results."
