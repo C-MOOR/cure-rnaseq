@@ -301,11 +301,11 @@ quiz(caption = "Using plot_richness to plot alpha diversity",
   ),
 
   question("What male subject has the data point for the LOWEST alpha diversity? HINT: Use subset_samples() to subset males, and specify individuals (subject) on x-axis of the alpha diversity plot.",
-    answer("S02"),
-    answer("S03", correct=TRUE),
-    answer("S08"),
-    answer("S12"),
-    answer("S28"),
+    answer("S06"),
+    answer("S10", correct=TRUE),
+    answer("S09"),
+    answer("S19"),
+    answer("S31"),
     allow_retry = TRUE,
     random_answer_order = TRUE
   )
