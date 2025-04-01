@@ -293,14 +293,14 @@ plot_richness(subset, x="timepoint",
 
 ```{r alpha_diversity_quiz}
 quiz(caption = "Using plot_richness to plot alpha diversity",
-  question("For subject S02, which timepointgroup has the HIGHEST alpha diveristy?" HINT: the answer can be found in the alpha diversity plot where x = "subject" and color is by "timepointgroup",
+  question("For subject S02, which timepointgroup has the HIGHEST alpha diveristy? HINT: the answer can be found in the alpha diversity plot where x = subject and color is by timepointgroup",
     answer("BD", correct = TRUE),
     answer("HD"),
     answer("WO"),
     allow_retry = TRUE
   ),
 
-  question("What male subject has the data point for the LOWEST alpha diversity? HINT: Use subset_samples() to subset males, and specify individuals ("subject") on x-axis of the alpha diversity plot.
+  question("What male subject has the data point for the LOWEST alpha diversity? HINT: Use subset_samples() to subset males, and specify individuals (subject) on x-axis of the alpha diversity plot.",
     answer("S02"),
     answer("S03", correct=TRUE),
     answer("S08"),
