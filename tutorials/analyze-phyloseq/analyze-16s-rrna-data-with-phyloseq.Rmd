@@ -538,7 +538,7 @@ Note that this plot only uses the ASVs with a significantly different abundance 
 
 
 ```{r plot_deseq2, exercise=TRUE, eval=FALSE, exercise.setup="prepare-forDESeq2-2"}
-ggplot(Significant_DEseq2_ASVs, aes(x=Class, y=log2FoldChange, color=Class)) + geom_point(size=3) + 
+ggplot(Significant_DEseq2_ASVs, aes(x=Class, y=log2FoldChange, color=Class)) + geom_point(size=3, position = "jitter") + 
   theme(axis.text.x = element_text(angle = -90, hjust = 0, vjust=0.5))
 ```
 
@@ -562,7 +562,7 @@ Significant_DEseq2_ASVs<-Differential_Abundance(my_miso_DESeq2, my_comparision, 
 Significant_DEseq2_ASVs
 
 # STEP 5: Plot the results with your chosen x axis and legend
-ggplot(Significant_DEseq2_ASVs, aes(x = Phylum, y=log2FoldChange, color= Class)) + geom_point(size=3) +
+ggplot(Significant_DEseq2_ASVs, aes(x = Phylum, y=log2FoldChange, color= Class)) + geom_point(size=3, position = "jitter") +
   theme(axis.text.x = element_text(angle = -90, hjust = 0, vjust=0.5))+
   ggtitle("my title here")
 
@@ -639,7 +639,7 @@ Significant_DEseq2_ASVs<-Differential_Abundance(my_miso_DESeq2, my_comparision, 
 Significant_DEseq2_ASVs
 
 # STEP 5: Plot the results with your chosen x axis and legend
-ggplot(Significant_DEseq2_ASVs, aes(x = Phylum, y=log2FoldChange, color= Class)) + geom_point(size=3) +
+ggplot(Significant_DEseq2_ASVs, aes(x = Phylum, y=log2FoldChange, color= Class)) + geom_point(size=3, position = "jitter") +
   theme(axis.text.x = element_text(angle = -90, hjust = 0, vjust=0.5))+
   ggtitle("my title here")
 
@@ -689,7 +689,7 @@ Significant_DEseq2_ASVs<-Differential_Abundance(my_miso_DESeq2, my_comparision, 
 Significant_DEseq2_ASVs
 
 # STEP 5: Plot the results with your chosen x axis and legend
-ggplot(Significant_DEseq2_ASVs, aes(x = Phylum, y=log2FoldChange, color= Class)) + geom_point(size=3) +
+ggplot(Significant_DEseq2_ASVs, aes(x = Phylum, y=log2FoldChange, color= Class)) + geom_point(size=3, position = "jitter") +
   theme(axis.text.x = element_text(angle = -90, hjust = 0, vjust=0.5))+
   ggtitle("my title here")
 
@@ -782,7 +782,7 @@ Significant_DEseq2_ASVs<-Differential_Abundance(my_miso_DESeq2, my_comparision, 
 Significant_DEseq2_ASVs
 
 # STEP 5: Plot the results with your chosen x axis and legend
-ggplot(Significant_DEseq2_ASVs, aes(x = Phylum, y=log2FoldChange, color= Class)) + geom_point(size=3) +
+ggplot(Significant_DEseq2_ASVs, aes(x = Phylum, y=log2FoldChange, color= Class)) + geom_point(size=3, position = "jitter") +
   theme(axis.text.x = element_text(angle = -90, hjust = 0, vjust=0.5))+
   ggtitle("my title here")
 ```
