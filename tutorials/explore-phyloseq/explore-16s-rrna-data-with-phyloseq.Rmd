@@ -133,7 +133,7 @@ While no prior experience in R is needed, we will refer to objects throughout th
 Amplicon sequencing results in **amplicon sequence variants (ASVs)**. ASVs varying from as little as one single nucleotide can be defined as separate ASVs. ASVs can further be grouped into **operational taxonomic units (OTUs)** by clustering similar ASVs based on a threshold of similarity (for example, ASVs with 1% difference in sequence can be grouped into the same species.) For now, you can think of these terms of being interchangeable. We will refer to our data as ASVs, and phyloseq will refer to them as OTUs.
 
 ### ASV counts normalization
-An important concept in microbiome data analysis is the concept of data **normalization**. Data normalization corrects for differences in sample size and allows us to make comparisons between samples. Not every analysis will use normalized reads as an input, but when necessary, our ASV counts were normalized by the total number of reads in each sample to convert the counts to proportion.
+An important concept in microbiome data analysis is the concept of data **normalization**. Data normalization corrects for differences in sample size and allows us to make comparisons between samples. Not every analysis uses normalized reads as an input, but in this tutorial, the ASV counts were normalized by the total number of reads in each sample to convert the counts to proportion.
 
 
 ![](images/Normalized_Proportions_Example.png){width=100%}
@@ -146,7 +146,7 @@ R has powerful features for accessing data parts via **subsetting**, which invol
 
 ## Exploring a phyloseq object
 
-Let's explore our phyloseq object (miso). We can check by calling the object through its name. Do so now with the code below.
+Let's explore our phyloseq object called 'miso'. We can check by calling the object through its name. Do so now by running the code below.
 
 ```{r explore_miso, exercise=TRUE, echo=FALSE}
 miso
@@ -156,15 +156,15 @@ Here we see that the phyloseq object consists of an otu_table, sample_data and t
 
 ![](images/Phyloseq_Class_Overview.png){width=100%}
 
-<p class=caption> **The phyloseq class**: The image above shows a conceptual diagram of the phyloseq class. All phyloseq objects will share the characteristics of the class. Dotted lines between the tables show how phyloseq is able to relate the different data in each tables to each other. The sample_table and otu_table both have samples stored in rows, but the tax_table has ASVs stored in rows. Image by Sayumi York (March 21, 2025).</p>
+<p class=caption> **The phyloseq class**: The image above shows a conceptual diagram of the phyloseq class. Dotted lines between the tables show how phyloseq is able to relate the different data in each tables to each other. The sample_table and otu_table both have samples stored in rows, but the tax_table has ASVs stored in rows. Image by Sayumi York (March 21, 2025).</p>
 
 Our phyloseq object is composed of 3 core data tables (some have more).
 
-  - **The sample data table (sample_data)**: which holds all the metadata relating to each sample. For example in this case our metadata contains information on what timepoint in the experiment the sample is from, the gender of the subject, whether they were on the homogenized diet at the time, the subject's age, etc.
+  - **The sample data table (sample_data)**: holds all the metadata relating to each sample. For example our metadata contains information on what timepoint in the experiment the sample is from (timepoint 1, 2, 3, 4 or 5), the gender of the subject, whether they were on the homogenized diet (HD) at the time, the subject's age, etc.
   
-  - **The OTU abundance table (otu_table)**: which holds the data on how many of each ASV were found in each sample.
+  - **The OTU abundance table (otu_table)**: holds the data on how many of each ASV were found in each sample.
   
-  -  **The taxonomic annotation table (tax_table)**: which holds all the taxonomic data for each ASV (what phylum, class, order, etc. the ASV has belongs to). Not every ASV has a taxonomic assignment at every level.
+  -  **The taxonomic annotation table (tax_table)**: holds all the taxonomic data for each ASV (what phylum, class, order, etc. the ASV has belongs to). Note, that not every ASV has a taxonomic assignment at every level.
 
 ---
 
@@ -207,10 +207,11 @@ The sample_data contains all the metadata for each sample.
 
 Using the head() command allows us to look only at the first handful of columns and rows, but if we remove head() we can also see the entirety of each. 
 
-Note: The sample data is stored as a data frame class (or table) - as opposed to the matrix class for example - sample data can be called using a data.frame() command to display the sample data as an interactive table.
+Note: The sample data is stored as a data frame class (or table) - as opposed to the matrix class for example. Thus, sample_data can be called using a data.frame() command to display the sample data as an interactive table.
+
+Use the code block below to examine sample_data (metadata) table using head() and data.frame() commands.
 
 ```{r sample_data_head, exercise=TRUE, echo=FALSE}
-#Examine sample_data (metadata) table
 head(data.frame(sample_data(miso)))
 ```
 
@@ -250,7 +251,9 @@ quiz(caption = "Exploring the sample_table",
 )
 ```
 
-Let's try looking at different variables for a given column of metadata. Change the column name in between the double quotes to check different columns. We've given you two examples.
+Let's try looking at different metadata variables (e.g. subject and timepointgroup) represented by the columns of the metadata table. 
+
+Use code block below to identify unique subjects and timepointgroups present in miso data. Try substituting the column name in between the double quotes with another metadata variable (e.g. age). 
 
 ```{r unique_metadata, exercise=TRUE, echo=FALSE}
 unique(data.frame(sample_data(miso)[, "subject"]))
@@ -445,7 +448,8 @@ plot_bar(miso, x="subject", fill = "Phylum", title = "Choose a name for your gra
   geom_bar(aes(color = Phylum, fill = Phylum), stat = "identity", position = "stack")
 ```
 
-Try substituting phylum with another taxonomic rank of interest, like class by substituting "Phylum" with "Class" in the code block below. Make sure you replace all instances of phylum, and pay attention to the case (example: notice that subject is in all lowercase, but Phylum uses a capital P).
+Try substituting phylum with another taxonomic rank of interest, like class, by substituting "Phylum" with "Class" in the code block below. Make sure you replace all instances of phylum, and pay attention to the case (example: notice that subject is in all lowercase, but Phylum uses a capital P). 
+Hint: To plot class using the template code below, you will need to substitute 3 things in the code, plus a new title.
 
 ```{r plot_bar_subject_Class, exercise=TRUE, exercise.eval=FALSE}
 plot_bar(miso, x= "subject", fill = "Phylum", title = "choose a name for your graph") +
@@ -516,6 +520,7 @@ unique(tax_table(miso)[ , "Phylum"])
 ```
 
 Modify the code below to subset class Bacteroidia (instead of Firmicutes) and plot the different orders of the class Bacteroidia for the 21 individuals (subjects). Be careful - there a few things to modify in the code below to get the right plot! And don't forget the title!
+Hint: To plot orders for the class Bacteroidia using the template code below, you will need to substitute 5 things in the code, plus a new title.
 
 ```{r subsetting_bacteroidia, exercise=TRUE, exercise.eval=FALSE}
 my_subset <- subset_taxa(miso, Phylum == "Firmicutes")
