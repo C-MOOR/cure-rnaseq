@@ -1,5 +1,5 @@
 ---
-title: "Analyzing 16S data in Phyloseq"
+title: "Analyze 16S data in Phyloseq"
 output:
   learnr::tutorial:
     css: css/cmoor.css
@@ -14,13 +14,13 @@ runtime: shiny_prerendered
 # For summary, all new lines must be indented to the same level as the first line.
 # The image must be surrounded with quotes
 summary: |
-  This tutorial will introduce you to more advanced functions in phyloseq and DESeq2 that will allow us to perform more complex analyses including alpha diversity, multidimensional scaled plots, and differential abundance. These analyses would be incredibly complex and difficult to do manually and showcase the convenience and power of R and the associated packages. 
+  This tutorial will introduce you to more advanced functions in phyloseq and DESeq2 that will allow us to perform more complex analyses including alpha diversity, multidimensional scaled plots, and differential abundance. These analyses would be incredibly complex and difficult to do manually and showcase the convenience and power of R and the associated packages. We will again use a metagenomic 16S rRNA sequencing dataset from Guthrie L et al, Cell Host Microbe. 2023 publication (PMID: 35643079).
 image: "![The phyloseq logo (2025)](images/phyloseq_logo.png)"
 image_caption: ""
 author:
-  - "Valeriya Gaysinskaya, John Hopkins University"
   - "Sayumi York, Notre Dame of Maryland University"
-  - "Frederick Tan, John Hopkins University"
+  - "Valeriya Gaysinskaya, Johns Hopkins University"
+  - "Frederick Tan, Johns Hopkins University"
 learning_goals:
   - "Use phyloseq to analyze and visualize 16S microbiome data."
   - "Use DESeq2 phyloseq to perform a differential abundance analysis."
@@ -47,12 +47,12 @@ tutorial_options(exercise.timelimit = 360)
 #Normalization by turning counts into proportions
 
 # #Local path
-miso <- readRDS("MISO_16S.prop.clean.RDS")
-miso_counts <- readRDS("MISO_16S.clean.RDS")
+#miso <- readRDS("MISO_16S.prop.clean.RDS")
+#miso_counts <- readRDS("MISO_16S.clean.RDS")
 
 #SciServer paths
-#miso <- readRDS( "/home/idies/workspace/c_moor_data/miso-16s/MISO_16S.prop.clean.rds" )
-#miso_counts <- readRDS("/home/idies/workspace/c_moor_data/miso-16s/MISO_16S.clean.rds")
+miso <- readRDS( "/home/idies/workspace/c_moor_data/miso-16s/MISO_16S.prop.clean.rds" )
+miso_counts <- readRDS("/home/idies/workspace/c_moor_data/miso-16s/MISO_16S.clean.rds")
 
 # <!-- EXERCISE = should we see an interactive code chunk with this code? -->
 # <!-- EVAL = should you run this code? -->
@@ -258,6 +258,7 @@ This module assumes that you have previously completed our "Exploring 16S data w
 - **Example question**: Does changing the diet reduce biodiversity in the human gut? Are male microbiomes more diverse than female microbiomes?
 - **Data format**: Because we want to include rare species in our analysis, we will use our raw data, which is in counts.
 
+
 We can measure biodiversity by taking a measure of each sample's alpha diversity (diversity within a sample) and comparing these measurements. We will use **Simpson's index** to calculate alpha diversity here. Simpson's alpha diversity measure is based on the number of unique ASVs (species richness) and their proportion of them within sample (species evenness), taking into account which species are more dominant and which are more rare.
 
 ***Note that with Simpson's index, a HIGHER score on the scale (0-1) means a LOWER alpha diversity.***
@@ -265,9 +266,11 @@ We can measure biodiversity by taking a measure of each sample's alpha diversity
 ![](images/Diversity_Figure.png){width=70%}
 <p class=caption> **Species richness vs species evenness**: Although the number of species between the two samples is the same, sample 2 has a higher species evenness, where each species is represented more equally. Bacteria art from NIAID Visual & Medical Arts (42, 57, & 179). Figure by Sayumi York (March 27, 2025).</p>
 
-We will do this using the plot_richness() function of phyloseq. As you can see, we can again customize the plot based on different metadata fields. If we don't want these extra fields, we can just delete them or add a # in front of them to comment them out. We will use non-normalized data in counts (miso_counts) as recommended by [McMurdie & Holmes (2014)](https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1003531) for our alpha diversity and differential abundance analyses. 
+We will do this using the plot_richness() function of phyloseq. We can customize the plot based on different metadata fields. If we don't want these extra fields, we can just delete them or add a hashtag (#) in front of them to comment them out. 
 
-If you get a warning that contains the message: The data you have provided does not have any singletons, you may ignore this and continue.
+We will use non-normalized data in counts (miso_counts) as recommended by [McMurdie & Holmes (2014)](https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1003531) for our alpha diversity and differential abundance analyses. 
+
+Use the code below to plot alpha diversity for each individual (x = "subject"), and color by timepointgroup. If you get a warning message, you may ignore it and continue.
 
 ```{r plot_richness_example, exercise=TRUE, echo=FALSE}
 plot_richness(miso_counts, x="subject", 
@@ -278,13 +281,13 @@ plot_richness(miso_counts, x="subject",
 
 ```
 
-Naturally, we can also subset our dataset through either subset_samples or subset_taxa and make new plots.
+Use the code below to subset the data using subset_samples() and make a new alpha diversity plot. The example below demonstrates how to subset data associated with females ("F") only, based on metadata variable 'gender', and make a new alpha diversity plot using the subsetted data. We could also use subset_taxa() to subset a specific taxa of interest. If you get a warning message, you may ignore it and continue.
 
 ```{r plot_richness_subset_example, exercise=TRUE, echo=FALSE}
 
-my_subset <- subset_samples(miso_counts, gender == "F")
+subset <- subset_samples(miso_counts, gender == "F")
 
-plot_richness(my_subset, x="timepoint", 
+plot_richness(subset, x="timepoint", 
               color="phase", 
               shape="timepointgroup", 
           	  title ="fill in the blank",
@@ -296,19 +299,19 @@ plot_richness(my_subset, x="timepoint",
 
 ```{r alpha_diversity_quiz}
 quiz(caption = "Using plot_richness to plot alpha diversity",
-  question("For subject S02, which timepointgroup has the highest alpha diveristy?",
+  question("For subject S02, which timepointgroup has the HIGHEST alpha diveristy? HINT: the answer can be found in the alpha diversity plot where x = subject and color is by timepointgroup",
     answer("BD", correct = TRUE),
     answer("HD"),
     answer("WO"),
     allow_retry = TRUE
   ),
 
-  question("What subject has the data point for the LOWEST alpha diversity when looking only at ASVs from the phylum Firmicutes? HINT: Don't forget to change subset_samples() to subset_taxa().",
-    answer("S21"),
-    answer("S12"),
+  question("What male subject has the data point for the LOWEST alpha diversity? HINT: Use subset_samples() to subset males, and specify individuals (subject) on x-axis of the alpha diversity plot.",
+    answer("S06"),
+    answer("S10", correct=TRUE),
+    answer("S09"),
+    answer("S19"),
     answer("S31"),
-    answer("S02"),
-    answer("S15", correct=TRUE),
     allow_retry = TRUE,
     random_answer_order = TRUE
   )
@@ -381,9 +384,9 @@ plot_ordination(miso, miso.pcoa,
         title="My PCoA")
 ```
 
-The samples that are closer together are more similar in composition than samples far away from each other.
+The samples that are closer together are more similar in composition than samples far away from each other. For example, a closely associated group of datapoints in the upper left corner of the plot appears to be distinct from a closely associated group of datapoints in the lower left corner of the plot.
 
-Each principal coordiate is a collection of relationships between the different variables in your dataset. Axis 1 represents principal coordinate 1, which explains 16.7% of the variance in the dataset. Likewise, Axis 2 represents principal coordinate 2, which explains 11.9% of variance in the dataset. These percentages are rather low. Generally, if the percentage is high that means there are only a handful of factors that are really driving the relationship between samples.
+Each principal coordiate (PC) is a collection of relationships between the different variables in your dataset. Axis 1 represents PC1, which explains 16.7% of the variance in the dataset. Likewise, Axis 2 represents PC2, which explains 11.9% of variance in the dataset. If the percentage of a PC is very high, that means there are only a few factors that are really driving the relationship between the samples. If the percentage of PC is low (as is the case with our plot above) this suggests that many factors, not just a handful, are likely driving the relationship between the samples.
 
 A PCoA is a complex analysis. It's okay if you still don't understand the principal coordinates themselves. Just focus on how close the samples are to each other.
 
@@ -535,7 +538,7 @@ Note that this plot only uses the ASVs with a significantly different abundance 
 
 
 ```{r plot_deseq2, exercise=TRUE, eval=FALSE, exercise.setup="prepare-forDESeq2-2"}
-ggplot(Significant_DEseq2_ASVs, aes(x=Class, y=log2FoldChange, color=Class)) + geom_point(size=3) + 
+ggplot(Significant_DEseq2_ASVs, aes(x=Class, y=log2FoldChange, color=Class)) + geom_point(size=3, position = "jitter") + 
   theme(axis.text.x = element_text(angle = -90, hjust = 0, vjust=0.5))
 ```
 
@@ -559,7 +562,7 @@ Significant_DEseq2_ASVs<-Differential_Abundance(my_miso_DESeq2, my_comparision, 
 Significant_DEseq2_ASVs
 
 # STEP 5: Plot the results with your chosen x axis and legend
-ggplot(Significant_DEseq2_ASVs, aes(x = Phylum, y=log2FoldChange, color= Class)) + geom_point(size=3) +
+ggplot(Significant_DEseq2_ASVs, aes(x = Phylum, y=log2FoldChange, color= Class)) + geom_point(size=3, position = "jitter") +
   theme(axis.text.x = element_text(angle = -90, hjust = 0, vjust=0.5))+
   ggtitle("my title here")
 
@@ -567,7 +570,7 @@ ggplot(Significant_DEseq2_ASVs, aes(x = Phylum, y=log2FoldChange, color= Class))
 
 How do we interpret the results?
 
-- **log2FoldChange**:  The latter of the two conditions in our chosen variable is what DESeq2 considers the baseline. For example, the code: *my_comparision <-c("timepointgroup", "WO", "BD")*, sets the baseline as BD. Thus, any positive number represents a greater abundance in the former ("WO") condition compared to the latter ("BD"). The larger the magnitude of the number, the greater the difference in abundance.
+- **log2FoldChange**:  The latter of the two conditions in our chosen variable is what DESeq2 considers the baseline. For example, the code: *my_comparision <-c("timepointgroup", "WO", "BD")*, sets the baseline as BD. Thus, any positive number represents a greater abundance in the former ("WO") condition compared to the latter - baseline ("BD"). The larger the magnitude of the number, the greater the difference in abundance.
 - **p-value**: The base p-value, without corrections for multiple comparisons. 
 - **p-adj**: The p-value after correcting for multiple comparisions. You should use p-adj when reporting your results.
 
@@ -594,7 +597,7 @@ quiz(caption = "Using DESeq2 to examine differential abundance - WO vs BD",
   ),
   
 
-  question("Of all the ASVs found to be differentially abundant between WO and BD, which has the MOST differential abundance between the WO and BD conditions? HINT: Look at Log2FoldChange",
+  question("Of all the ASVs found to be differentially abundant between WO and BD, which has the MOST differential abundance between the WO and BD conditions? HINT: Look at the highest absolute value for Log2FoldChange",
     answer("ASV245", correct = TRUE),
     answer("ASV1248"),
     answer("ASV1693"),
@@ -618,8 +621,9 @@ quiz(caption = "",
 )
 ``` 
 
-To change the comparision, if we are using the same factor, we only need to change the code in Step 2. 
-Change the code below and swap out "WO" for "HD" so that we can compare the "HD" to the "BD" (baseline) group.
+How can we change the comparision? 
+
+To change the comparison, we need to change the code in Step 2!. In the axample above, we compared timepointgroup WO with BD. If we now want to compare HD to BD, we can change the my_comparison() portion of the code and swap out "WO" for "HD" so that we can compare the "HD" to the "BD" (baseline) group.
 
 ```{r DESeq2_example_comparison, exercise=TRUE, echo=TRUE}
 # STEP 1: Convert the phyloseq object to a DESeq2 object and tell R the experimental design 
@@ -635,14 +639,14 @@ Significant_DEseq2_ASVs<-Differential_Abundance(my_miso_DESeq2, my_comparision, 
 Significant_DEseq2_ASVs
 
 # STEP 5: Plot the results with your chosen x axis and legend
-ggplot(Significant_DEseq2_ASVs, aes(x = Phylum, y=log2FoldChange, color= Class)) + geom_point(size=3) +
+ggplot(Significant_DEseq2_ASVs, aes(x = Phylum, y=log2FoldChange, color= Class)) + geom_point(size=3, position = "jitter") +
   theme(axis.text.x = element_text(angle = -90, hjust = 0, vjust=0.5))+
   ggtitle("my title here")
 
 ```
 
 ```{r differential_abundance_quiz_comparison}
-quiz(caption = "Using DESeq2 to examine differential abundance - HD vs BD",
+quiz(caption = "Using DESeq2 to examine differential abundance between HD vs BD",
     
     question("How many differentially abundant ASVs are there between HD and BD?",
     answer("6"),
@@ -662,6 +666,8 @@ quiz(caption = "Using DESeq2 to examine differential abundance - HD vs BD",
 ) 
 ```
 
+
+How can we change the factor we are examining for differential abundance. For example, instead of comparing different timepointgroups BD, HD, WO we did above, how can we instead perform differential abundance based on subjects?
 
 If we want to change the factor we are looking at (example: from timepointgroup to subject) we will have to change the design code in Step 1 as well. In step 1 change timepointgroup to subject.
 
@@ -683,7 +689,7 @@ Significant_DEseq2_ASVs<-Differential_Abundance(my_miso_DESeq2, my_comparision, 
 Significant_DEseq2_ASVs
 
 # STEP 5: Plot the results with your chosen x axis and legend
-ggplot(Significant_DEseq2_ASVs, aes(x = Phylum, y=log2FoldChange, color= Class)) + geom_point(size=3) +
+ggplot(Significant_DEseq2_ASVs, aes(x = Phylum, y=log2FoldChange, color= Class)) + geom_point(size=3, position = "jitter") +
   theme(axis.text.x = element_text(angle = -90, hjust = 0, vjust=0.5))+
   ggtitle("my title here")
 
@@ -776,7 +782,7 @@ Significant_DEseq2_ASVs<-Differential_Abundance(my_miso_DESeq2, my_comparision, 
 Significant_DEseq2_ASVs
 
 # STEP 5: Plot the results with your chosen x axis and legend
-ggplot(Significant_DEseq2_ASVs, aes(x = Phylum, y=log2FoldChange, color= Class)) + geom_point(size=3) +
+ggplot(Significant_DEseq2_ASVs, aes(x = Phylum, y=log2FoldChange, color= Class)) + geom_point(size=3, position = "jitter") +
   theme(axis.text.x = element_text(angle = -90, hjust = 0, vjust=0.5))+
   ggtitle("my title here")
 ```
