@@ -263,7 +263,7 @@ We can measure biodiversity by taking a measure of each sample's alpha diversity
 
 ***Note that with Simpson's index, a HIGHER score on the scale (0-1) means a LOWER alpha diversity.***
   
-![](images/Diversity_Figure.png){width=70%}
+![](images/Diversity_Figure.png){width=50%}
 <p class=caption> **Species richness vs species evenness**: Although the number of species between the two samples is the same, sample 2 has a higher species evenness, where each species is represented more equally. Bacteria art from NIAID Visual & Medical Arts (42, 57, & 179). Figure by Sayumi York (March 27, 2025).</p>
 
 We will do this using the plot_richness() function of phyloseq. We can customize the plot based on different metadata fields. If we don't want these extra fields, we can just delete them or add a hashtag (#) in front of them to comment them out. 
@@ -323,17 +323,17 @@ quiz(caption = "Using plot_richness to plot alpha diversity",
 
 ### What is a multidimensional analysis?
 
-![](images/1D_Graph.png){width=70%}
+![](images/1D_Graph.png){width=50%}
 <p class=caption> **A 1D graph**: We have one dimension (age) to compare samples. Figure by Sayumi York (March 27, 2025).</p>
 
 What does a one-dimensional graph look like? It's likely you use one every day although you may not think of it as a graph. Take for example, a ruler or the volume control on your computer. A one-dimensional graph simply graphs a measure of something with just one variable (ex. # of centimeters or speaker loudness measurement).
 
-![](images/2D_Graph.png){width=70%}
+![](images/2D_Graph.png){width=50%}
 <p class=caption> **A 2D graph**: We have two dimensions (age and height) to compare samples. Figure by Sayumi York (March 27, 2025).</p>
 
 A two-dimensional graph is probably the graph you're most familiar with. A two-dimensional graph has an x-axis and a y-axis and it draws a relationship between the measurements on each axis to describe their relationship. For example, *y = mx + b* describes a linear relationship between a given x variable and its respective y variable.
 
-![](images/3D_Graph.png){width=70%}
+![](images/3D_Graph.png){width=50%}
 <p class=caption> **A 3D graph**: We have three dimensions (age, height, and weight) to compare samples. The size of the data points correlates to their z-axis. Figure by Sayumi York (March 27, 2025).</p>
 
 How about a three-dimensional graph? A three-dimensional graph would have a z-axis, and would add depth. Data points would be plotted in a space, like a cube sticking out from your screen (here we are imagining the larger data points are closer to us). 
@@ -722,6 +722,26 @@ quiz(caption = "Using DESeq2 to examine differential abundance",
 
 ## Template code
 
+
+### Alpha Diversity
+
+```{r try_it_plot_richness_end, exercise=TRUE, echo=FALSE}
+
+my_subset <- subset_samples(miso_counts, gender == "F")
+
+plot_richness(my_subset, x="timepoint", 
+              color="phase", 
+              shape="timepointgroup",
+          	  title ="fill in the blank", 
+              measures= "Simpson")
+
+```
+
+```{r Try_it_plot_richness_blank, exercise=TRUE, echo=FALSE}
+
+```
+---
+
 ### PCoA
 
 
@@ -742,27 +762,6 @@ plot_ordination(miso_subset, miso.pcoa.subset,
 ```{r Try_it_PCoA_blank, exercise=TRUE, echo=FALSE}
 
 ```
-
----
-
-### Alpha Diversity
-
-```{r try_it_plot_richness_end, exercise=TRUE, echo=FALSE}
-
-my_subset <- subset_samples(miso_counts, gender == "F")
-
-plot_richness(my_subset, x="timepoint", 
-              color="phase", 
-              shape="timepointgroup",
-          	  title ="fill in the blank", 
-              measures= "Simpson")
-
-```
-
-```{r Try_it_plot_richness_blank, exercise=TRUE, echo=FALSE}
-
-```
-
 ---
 
 ### Differential abundance
