@@ -47,12 +47,12 @@ tutorial_options(exercise.timelimit = 360)
 #Normalization by turning counts into proportions
 
 # #Local path
-miso <- readRDS("MISO_16S.prop.clean.RDS")
-miso_counts <- readRDS("MISO_16S.clean.RDS")
+#miso <- readRDS("MISO_16S.prop.clean.RDS")
+#miso_counts <- readRDS("MISO_16S.clean.RDS")
 
 #SciServer paths
-#miso <- readRDS( "/home/idies/workspace/c_moor_data/miso-16s/MISO_16S.prop.clean.rds" )
-#miso_counts <- readRDS("/home/idies/workspace/c_moor_data/miso-16s/MISO_16S.clean.rds")
+miso <- readRDS( "/home/idies/workspace/c_moor_data/miso-16s/MISO_16S.prop.clean.rds" )
+miso_counts <- readRDS("/home/idies/workspace/c_moor_data/miso-16s/MISO_16S.clean.rds")
 
 # <!-- EXERCISE = should we see an interactive code chunk with this code? -->
 # <!-- EVAL = should you run this code? -->
