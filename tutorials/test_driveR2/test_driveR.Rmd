@@ -47,7 +47,7 @@ if (file.exists(file_path)) {
 
 df_long <- pivot_longer( df, 3:9, names_to="region", values_to="count" )
 ```
-```
+
 
 
 <!---
