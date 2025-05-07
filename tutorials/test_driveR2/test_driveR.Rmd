@@ -30,15 +30,24 @@ prerequisites: "None"
 ---
 
 ```{r setup, include=FALSE}
-remotes::install_github("C-MOOR/testdriveRData")
-library(testdriveRData)
 library(learnr)
 library( "tidyverse" )
 knitr::opts_chunk$set(echo = FALSE)
 
-df <- testdriveRData
+#First, check if we are on SciServer by seeing if the file path to test-driveR on SciServer is available.
+file_path <- "/home/idies/workspace/c_moor_data/test-driveR/test-driveR.tsv"
+if (file.exists(file_path)) {
+  #If available, load in the file test-driveR.tsv to an object called df
+  df <- read_tsv("/home/idies/workspace/c_moor_data/test-driveR/test-driveR.tsv")
+} else {
+  #If not, assume we are on AnVIL and load in the data through the package testdriveRData and load the object testdriveRData (which has the same content as test-driveR.tsv) to the object df. We only load testdriveRData on AnVIL because the AnVIL enivronment has the package testdriveRData installed through the startup script
+  library("testdriveRData")
+  df <- testdriveRData
+}
+
 df_long <- pivot_longer( df, 3:9, names_to="region", values_to="count" )
 ```
+
 
 
 <!---
