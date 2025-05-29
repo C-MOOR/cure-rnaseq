@@ -35,27 +35,68 @@ tutorial_options(exercise.completion=TRUE)
 knitr::opts_chunk$set(echo = FALSE)
 options(scipen=5)
 
+#First, check if we are on SciServer by seeing if the file path to test-driveR on SciServer is available.
+file_path <- "/home/idies/workspace/c_moor_data/marianes-regions/htseq/SRR891601.htseq"
+if (file.exists(file_path)) {
+  #If available, load in the files from SciServer
+  readCounts <- read.table("/home/idies/workspace/c_moor_data/marianes-regions/htseq/SRR891601.htseq")
+  readCounts_Cu <- read.table("/home/idies/workspace/c_moor_data/marianes-regions/htseq/SRR891616.htseq")
+  readCounts_a1 <- read.table("/home/idies/workspace/c_moor_data/marianes-regions/htseq/SRR891610.htseq")
+  i <- read_csv("~/workspace/c_moor_data/instructors/preprocessed_data/s.ipums.la.99.gz", col_names = FALSE)
+  midgut_tsv<-read.table("/home/idies/workspace/c_moor_data/marianes-regions/htseq/midgut.tsv", header=TRUE)
+  #Sample data for Try it out! section
+  SRR891601 <- read.table( "/home/idies/workspace/c_moor_data/marianes-regions/htseq/SRR891601.htseq" )
+  SRR891602 <- read.table( "/home/idies/workspace/c_moor_data/marianes-regions/htseq/SRR891602.htseq" )
+  SRR891603 <- read.table( "/home/idies/workspace/c_moor_data/marianes-regions/htseq/SRR891603.htseq" )
+  SRR891604 <- read.table( "/home/idies/workspace/c_moor_data/marianes-regions/htseq/SRR891604.htseq" )
+  SRR891605 <- read.table( "/home/idies/workspace/c_moor_data/marianes-regions/htseq/SRR891605.htseq" )
+  SRR891606 <- read.table( "/home/idies/workspace/c_moor_data/marianes-regions/htseq/SRR891606.htseq" )
+  SRR891607 <- read.table( "/home/idies/workspace/c_moor_data/marianes-regions/htseq/SRR891607.htseq" )
+  SRR891608 <- read.table( "/home/idies/workspace/c_moor_data/marianes-regions/htseq/SRR891608.htseq" )
+  SRR891609 <- read.table( "/home/idies/workspace/c_moor_data/marianes-regions/htseq/SRR891609.htseq" )
+  SRR891610 <- read.table( "/home/idies/workspace/c_moor_data/marianes-regions/htseq/SRR891610.htseq" )
+  SRR891611 <- read.table( "/home/idies/workspace/c_moor_data/marianes-regions/htseq/SRR891611.htseq" )
+  SRR891612 <- read.table( "/home/idies/workspace/c_moor_data/marianes-regions/htseq/SRR891612.htseq" )
+  SRR891613 <- read.table( "/home/idies/workspace/c_moor_data/marianes-regions/htseq/SRR891613.htseq" )
+  SRR891614 <- read.table( "/home/idies/workspace/c_moor_data/marianes-regions/htseq/SRR891614.htseq" )
+  SRR891615 <- read.table( "/home/idies/workspace/c_moor_data/marianes-regions/htseq/SRR891615.htseq" )
+  SRR891616 <- read.table( "/home/idies/workspace/c_moor_data/marianes-regions/htseq/SRR891616.htseq" )
+  SRR891617 <- read.table( "/home/idies/workspace/c_moor_data/marianes-regions/htseq/SRR891617.htseq" )
+  SRR891618 <- read.table( "/home/idies/workspace/c_moor_data/marianes-regions/htseq/SRR891618.htseq" )
+  SRR891619 <- read.table( "/home/idies/workspace/c_moor_data/marianes-regions/htseq/SRR891619.htseq" )
+  SRR891620 <- read.table( "/home/idies/workspace/c_moor_data/marianes-regions/htseq/SRR891620.htseq" )
+  SRR891621 <- read.table( "/home/idies/workspace/c_moor_data/marianes-regions/htseq/SRR891621.htseq" )
+  SRR891622 <- read.table( "/home/idies/workspace/c_moor_data/marianes-regions/htseq/SRR891622.htseq" )
+  SRR891623 <- read.table( "/home/idies/workspace/c_moor_data/marianes-regions/htseq/SRR891623.htseq" )
+  SRR891624 <- read.table( "/home/idies/workspace/c_moor_data/marianes-regions/htseq/SRR891624.htseq" )
+  SRR891625 <- read.table( "/home/idies/workspace/c_moor_data/marianes-regions/htseq/SRR891625.htseq" )
+  SRR891626 <- read.table( "/home/idies/workspace/c_moor_data/marianes-regions/htseq/SRR891626.htseq" )
+  SRR891627 <- read.table( "/home/idies/workspace/c_moor_data/marianes-regions/htseq/SRR891627.htseq" )
+  SRR891628 <- read.table( "/home/idies/workspace/c_moor_data/marianes-regions/htseq/SRR891628.htseq" )
+  SRR891629 <- read.table( "/home/idies/workspace/c_moor_data/marianes-regions/htseq/SRR891629.htseq" )
+  SRR891630 <- read.table( "/home/idies/workspace/c_moor_data/marianes-regions/htseq/SRR891630.htseq" )
+  } else {
+    
+    
+  #If not, assume we are on AnVIL and load in the data through the package MarianesMidgutData
+  library(MarianesMidgutData)
+    
+    
+}
+    
 # Get a single file as a data.frame (readcounts) for use in student coding blocks.
 # Also make a labeled version (a).
-readCounts <- read.table( "/home/idies/workspace/c_moor_data/marianes-regions/htseq/SRR891601.htseq" )
-#readCounts <- read.table( "../../data/SRR891601.htseq" )
 readCounts <- filter(readCounts, str_detect(V1, "FBgn"))
 a <- readCounts
 colnames(a) <- c("GeneID", "readCount")
 
 # Make a data.frame with reads from a copper (Cu) sample for looking at the "lab" gene
-readCounts_Cu <- read.table( "/home/idies/workspace/c_moor_data/marianes-regions/htseq/SRR891616.htseq" )
-#readCounts_Cu <- read.table( "../../data/SRR891616.htseq" )
 readCounts_Cu <- filter(readCounts_Cu, str_detect(V1, "FBgn"))
 
 # Make a data.frame with reads from an anterior (a1) sample for looking at the "lab" gene
-readCounts_a1 <- read.table( "/home/idies/workspace/c_moor_data/marianes-regions/htseq/SRR891610.htseq" )
-#readCounts_a1 <- read.table( "../../data/SRR891610.htseq" )
 readCounts_a1 <- filter(readCounts_a1, str_detect(V1, "FBgn"))
 
 # Get income data for the log-scaling practice section
-i <- read_csv("~/workspace/c_moor_data/instructors/preprocessed_data/s.ipums.la.99.gz", col_names = FALSE)
-#i <- read_csv("http://archive.ics.uci.edu/ml/machine-learning-databases/ipums-mld/s.ipums.la.99.gz", col_names = FALSE)
 income <- as.numeric(i$X8)
 ```
 
@@ -1035,13 +1076,14 @@ For each region, there are 3 data files, each containing RNA-seq data.  We colle
 
 The following table lists the filename for each sample:
 ```{r}
-read.table("/home/idies/workspace/c_moor_data/marianes-regions/htseq/midgut.tsv", header=TRUE)
-#read.table("../../data/midgut.tsv", header=TRUE)
+midgut_tsv
 ```
 
 Use the table to figure out the file name (starting with "SRR") for the sample you want to examine.  Use the codeblocks below to explore the data, calculating summary statistics and plotting out histograms.  There are several blocks for your convenience, use as many as you like.
 
-The first line of each code block loads the data into `readCounts`.  Replace `FILENAMEHERE` in the first command with the filename for the sample you want to examine.  For example, for sample `am1` (which contains data from the anterior region `a1_3`), the filename is `SRR891601`, so the command should look like this: `readCounts <- read.table( "/home/idies/workspace/c_moor_data/marianes-regions/htseq/SRR891601.htseq" )`.  If you forget to change the filename, you will see an error message because R can't find a file named `FILENAMEHERE`.  If you need to reset this line, click the "Start Over" button at the top of the code block.  **You can always look back at other tabs and use the R cheat sheet to remind yourself how to set up a particular command.**
+Replace `FILENAMEHERE` with the filename for the sample you want to examine **without the .htseq at the end**. For example, for sample `am1` (which contains data from the anterior region `a1_3`), the filename is `SRR891601'.
+
+**You can always look back at other tabs and use the R cheat sheet to remind yourself how to set up a particular command.**
 
 There are instructions on Canvas about what to submit for this lab.
 
@@ -1050,32 +1092,26 @@ b <- "test"
 ```
 
 ```{r freeplay-exercise, exercise=TRUE, exercise.eval=FALSE, exercise.setup="prepare-tryout"}
-readCounts <- read.table( "/home/idies/workspace/c_moor_data/marianes-regions/htseq/FILENAMEHERE.htseq" )[1:17559,]
-readCounts
+FILENAMEHERE
 ```
 
 ```{r freeplay2-exercise, exercise=TRUE, exercise.eval=FALSE, exercise.setup="prepare-tryout"}
-readCounts <- read.table( "/home/idies/workspace/c_moor_data/marianes-regions/htseq/FILENAMEHERE.htseq" )[1:17559,]
-readCounts
+FILENAMEHERE
 ```
 
 ```{r freeplay3-exercise, exercise=TRUE, exercise.eval=FALSE, exercise.setup="prepare-tryout"}
-readCounts <- read.table( "/home/idies/workspace/c_moor_data/marianes-regions/htseq/FILENAMEHERE.htseq" )[1:17559,]
-readCounts
+FILENAMEHERE
 ```
 
 ```{r freeplay4-exercise, exercise=TRUE, exercise.eval=FALSE, exercise.setup="prepare-tryout"}
-readCounts <- read.table( "/home/idies/workspace/c_moor_data/marianes-regions/htseq/FILENAMEHERE.htseq" )[1:17559,]
-readCounts
+FILENAMEHERE
 ```
 
 ```{r freeplay5-exercise, exercise=TRUE, exercise.eval=FALSE, exercise.setup="prepare-tryout"}
-readCounts <- read.table( "/home/idies/workspace/c_moor_data/marianes-regions/htseq/FILENAMEHERE.htseq" )[1:17559,]
-readCounts
+FILENAMEHERE
 ```
 
 ```{r freeplay6-exercise, exercise=TRUE, exercise.eval=FALSE, exercise.setup="prepare-tryout"}
-readCounts <- read.table( "/home/idies/workspace/c_moor_data/marianes-regions/htseq/FILENAMEHERE.htseq" )[1:17559,]
-readCounts
+FILENAMEHERE
 ```
 
