@@ -33,14 +33,32 @@ prerequisites: "None"
 ---
 
 ```{r setup, include=FALSE}
+#Load learnr and set options
 library(learnr)
 tutorial_options(exercise.completion=TRUE)
 knitr::opts_chunk$set(echo = FALSE)
 
+#Load other libraries
 library("DESeq2")
 library("clusterProfiler")
 library("org.Dm.eg.db")
 library("tidyverse")
+
+#Check if we are on SciServer by seeing if the file path to midgut.tsv on SciServer is available.
+file_path <- "/home/idies/workspace/c_moor_data/marianes-regions/htseq/midgut.tsv"
+if (file.exists(file_path)) {
+  midgut_tsv <- read.table("/home/idies/workspace/c_moor_data/marianes-regions/htseq/midgut.tsv", header=TRUE)
+  midgut <- readRDS("~/workspace/c_moor_data/instructors/preprocessed_data/marianes/marianes_htseq_DESeq.rds")
+  a1_vs_p1_clusters <- readRDS("~/workspace/c_moor_data/instructors/preprocessed_data/marianes/a1_vs_p1_clusters.rds")
+  midgut <- DESeqDataSetFromHTSeqCount(midgut_tsv, "/home/idies/workspace/c_moor_data/marianes-regions/htseq/", design = ~condition)
+  midgut <- DESeq(midgut)
+  
+
+} else {
+  #If not, assume we are on AnVIL and load in the data through the package MarianesMidgutData
+  library("MarianesMidgutData")
+  
+}
 
 formatDESeq2Results <- function( x ) {
   df <- as.data.frame(x)
@@ -77,17 +95,6 @@ plotAcrossRegions <- function( x ) {
     theme( axis.text.x = element_text( angle=90, vjust=0.5 ) )
 }
 
-midgut_tsv <- read.table("/home/idies/workspace/c_moor_data/marianes-regions/htseq/midgut.tsv", header=TRUE)
-#midgut_tsv <- read.table("../../temp_midgut_copy/midgut.tsv", header=TRUE)
-
-# Load cached DESeq results
-midgut <- readRDS("~/workspace/c_moor_data/instructors/preprocessed_data/marianes/marianes_htseq_DESeq.rds")
-#midgut <- readRDS("../../temp_midgut_copy/marianes_htseq_DESeq.rds")
-
-
-# Load cached clusterProfiler results (cached Dec 1 2021)
-a1_vs_p1_clusters <- readRDS("~/workspace/c_moor_data/instructors/preprocessed_data/marianes/a1_vs_p1_clusters.rds")
-#a1_vs_p1_clusters <- readRDS("../../temp_midgut_copy/a1_vs_p1_clusters.rds")
 
 ```
 
@@ -311,15 +318,7 @@ Usually when you do an RNA-seq experiment, you want to find out what genes behav
 
 `DESeq2` is a program for calculating differential expression (the DE in DESeq2 stands for differential expression).  It starts with the read count data (for example, HTSeq files) for *all* the samples, then does a bunch of math to figure out which genes are the most different between samples.
 
-Since setting up DESeq2 is a little complicated, we've gone ahead and run the commands in the background, so that you can focus on exploring the results and looking for patterns in the data.  The commands we used to run DESeq2 are shown below, in case you're curious, but don't worry about trying to figure these out right now.
-
-
-```{r setup-DESeq2, echo=TRUE, eval=FALSE, message=FALSE}
-midgut_tsv <- read.table("/home/idies/workspace/c_moor_data/marianes-regions/htseq/midgut.tsv", header=TRUE)
-midgut <- DESeqDataSetFromHTSeqCount(midgut_tsv, "/home/idies/workspace/c_moor_data/marianes-regions/htseq/", design = ~condition)
-midgut <- DESeq(midgut)
-```
-
+Since setting up DESeq2 is a little complicated, we've gone ahead and run the commands in the background, so that you can focus on exploring the results and looking for patterns in the data. 
 
 Your job is to explore the results from DESeq2 and try to figure out what they mean biologically.  DESeq2 just reports statistical calculations, giving each gene scores for how different it is between samples.  It's the job of a scientist to look through that information and decide what it **means**.
 
@@ -395,9 +394,12 @@ For some genes you will see a value of "NA" instead of a number.  NA stands for 
 
 ### Try it yourself: look at a different pair of samples
 
-Use the `results()` and `formatDESeq2Results()` commands in the box below to look at a comparison between region "a1" and region "Cu".  You can copy the commands from the box above (replace "a1" and "p1" with the samples you want to compare).
+Use the `results()` and `formatDESeq2Results()` commands in the box below to look at a comparison between region "a1" and region "Cu" (replace "a1" and "p1" with the samples you want to compare).
 
 ```{r deseq-results, exercise=TRUE}
+temp <- results(midgut, contrast = c("condition", "a1", "p1") )
+a1_vs_p1 <- formatDESeq2Results(temp)
+a1_vs_p1
 ```
 
 ```{r intro-deseq-results-2}
@@ -488,9 +490,14 @@ quiz(caption = "Looking at a specific gene",
 )
 ```
 
-Use the box below to look at FBgn0000251 and compare its expression between the a1 and Cu regions.
+Use the box below to look at FBgn0000251 and compare its expression between the **a1 and Cu** regions.
 
 ```{r filter-by-name-practice, exercise=TRUE}
+temp <- results(midgut, contrast = c("condition", "a1", "p1") )
+a1_vs_p1 <- formatDESeq2Results(temp)
+
+gene251 <- filter(a1_vs_p1, GeneID=="FBgn0000251")
+gene251
 ```
 
 ```{r filter-by-name-quiz-2}
@@ -570,9 +577,14 @@ Now we get 1278 genes and we expect 0.001 X 1278 ~ 1 to be a false positive.  So
 
 With this particular dataset, I'd probably pick a cutoff of either 0.05 or 0.01 for further computational analyis.  I think 0.001 throws away too many real genes.
 
-Use the box below to find genes that are significantly different between the a1 and Cu regions.
+Use the box below to find genes that are significantly different between the **a1 and Cu** regions.
 
 ```{r filter-by-padj-practice, exercise=TRUE}
+temp <- results(midgut, contrast = c("condition", "a1", "p1") )
+a1_vs_p1 <- formatDESeq2Results(temp)
+
+sig_001_genes <- filter(a1_vs_p1, padj <= 0.001)
+dim(sig_001_genes)
 ```
 
 ```{r filter-by-padj-pracice-quiz}
@@ -659,6 +671,13 @@ In the box below, use the `runClusterProfiler` command to find what groups of ge
 * You may see an error message telling you that it "returned 1:many mapping between keys and columns" or some small percentage of your genes couldn't be found in the databases ("fail to map").  That's fine, it shouldn't affect results too much as long as it's a small percentage, and we always lose some genes when we compare across different databases since databases don't all have exactly the same genes.
 
 ```{r clusterProfiler-practice, exercise=TRUE, fig.height=7,  exercise.timelimit=120}
+temp <- results(midgut, contrast = c("condition", "a1", "p1") )
+a1_vs_p1 <- formatDESeq2Results(temp)
+sig_genes <- filter(a1_vs_p1, padj <= 0.01)
+
+a1_vs_p1_clusters <- runClusterProfiler(sig_genes)
+dim(a1_vs_p1_clusters)
+dotplot(a1_vs_p1_clusters, showCategory=34, title="a1 vs p1", font.size=10, label_format = 50)
 ```
 
 
@@ -700,6 +719,18 @@ This gives us a list of gene symbols.  We can then look these genes up on FlyBas
 Use the box below to find groups of genes that are significantly different between the a1 and Cu regions with the `runClusterProfiler` command.  Then use the `getClusterProfilerGenes` command to find out what genes are in those groups.
 
 ```{r getClusterProfilerGenes-practice, exercise=TRUE, fig.height=7, exercise.timelimit=120}
+# Run clusterProfiler
+temp <- results(midgut, contrast = c("condition", "a1", "p1") )
+a1_vs_p1 <- formatDESeq2Results(temp)
+sig_genes <- filter(a1_vs_p1, padj <= 0.01)
+a1_vs_p1_clusters <- runClusterProfiler(sig_genes)
+
+# Look at the dotplot to see the groups of genes
+dim(a1_vs_p1_clusters)
+dotplot(a1_vs_p1_clusters, showCategory=34, title="a1 vs p1", font.size=10, label_format = 50)
+
+# Get the gene symbols for a group of genes
+getClusterProfilerGenes(a1_vs_p1_clusters, "Fatty acid degradation")
 ```
 
 ```{r clusterProfilerGenes-quiz}
@@ -753,18 +784,29 @@ Now we can see that it's generally more highly expressed towards the anterior an
 
 Now that you know how to find the categories of genes that are differentially expressed betweens samples, there are a few different ways you can explore scientific questions about nutrient metabolism in the Drosophila midgut.
 
-1. Repeat the `runClusterProfiler` analysis using different regions, to get a high level picture of which types of genes are differentially expressed across different regions.  Are you seeing similar results to the paper, or are you seeing something different?
-2. Plot out expression of a single gene across *all* regions.  Does it show a pattern you'd expect from what you knew already, or not?  Do this for a few different genes from the same category (e.g. sugar metabolism genes) to get a feel for how they're behaving.
+1. Repeat the `runClusterProfiler` analysis using different regions, to get a high level picture of which types of genes are differentially expressed across different regions.  Are you seeing similar results to the paper, or are you seeing something different? You can use FlyBase to get the FlyBase ID for a given gene.
+2. Plot out expression of a single gene across *all* regions using the FlyBase ID. Does it show a pattern you'd expect from what you knew already, or not?  Do this for a few different genes from the same category (e.g. sugar metabolism genes) to get a feel for how they're behaving. 
 3. Find out more about these categories of genes.  Google and the FlyBase website are great places to start!  Find out what genes are in a particular category - what genes are "galactose metabolism" genes?  How do they work together to metabolize galactose?
 
 Use the codeblocks below to explore the differential expression data.  There are several blocks for your convenience, use as many as you like.
 
 ```{r freeplayd-exercise, exercise=TRUE, exercise.eval=FALSE, fig.height=7, exercise.timelimit=120}
+# Run clusterProfiler
+temp <- results(midgut, contrast = c("condition", "a1", "p1") )
+a1_vs_p1 <- formatDESeq2Results(temp)
+sig_genes <- filter(a1_vs_p1, padj <= 0.01)
+a1_vs_p1_clusters <- runClusterProfiler(sig_genes)
 
+# Look at the dotplot to see the groups of genes
+dim(a1_vs_p1_clusters)
+dotplot(a1_vs_p1_clusters, showCategory=34, title="a1 vs p1", font.size=10, label_format = 50)
+
+# Get the gene symbols for a group of genes
+getClusterProfilerGenes(a1_vs_p1_clusters, "Fatty acid degradation")
 ```
 
 ```{r freeplayd2-exercise, exercise=TRUE, exercise.eval=FALSE, fig.height=7, exercise.timelimit=120}
-
+plotAcrossRegions("FBgn0035665")
 ```
 
 ```{r freeplayd3-exercise, exercise=TRUE, exercise.eval=FALSE, fig.height=7, exercise.timelimit=120}
