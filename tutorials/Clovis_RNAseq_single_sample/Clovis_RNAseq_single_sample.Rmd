@@ -36,7 +36,7 @@ knitr::opts_chunk$set(echo = FALSE)
 options(scipen=5)
 
 #First, check if we are on SciServer by seeing if the file path to an htseq file on SciServer is available.
-file_path <- "/home/idies/workspace/c_moor_data/marianes-regions/htseq/SRR891601.htseq"
+file_path <- "/home/idies/workspace/c_moor_data/marianes-regions/htseq/"
 if (file.exists(file_path)) {
   #If available, load in the files from SciServer
   readCounts <- read.table("/home/idies/workspace/c_moor_data/marianes-regions/htseq/SRR891601.htseq")
