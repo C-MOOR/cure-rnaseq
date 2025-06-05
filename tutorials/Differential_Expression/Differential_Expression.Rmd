@@ -50,9 +50,6 @@ if (file.exists(file_path)) {
   midgut_tsv <- read.table("/home/idies/workspace/c_moor_data/marianes-regions/htseq/midgut.tsv", header=TRUE)
   midgut <- readRDS("~/workspace/c_moor_data/instructors/preprocessed_data/marianes/marianes_htseq_DESeq.rds")
   a1_vs_p1_clusters <- readRDS("~/workspace/c_moor_data/instructors/preprocessed_data/marianes/a1_vs_p1_clusters.rds")
-  midgut <- DESeqDataSetFromHTSeqCount(midgut_tsv, "/home/idies/workspace/c_moor_data/marianes-regions/htseq/", design = ~condition)
-  midgut <- DESeq(midgut)
-  
 
 } else {
   #If not, assume we are on AnVIL and load in the data through the package MarianesMidgutData
