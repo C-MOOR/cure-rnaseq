@@ -48,20 +48,20 @@ tutorial_options(exercise.timelimit = 360)
 # #Local path
 
 
-miso <- readRDS("C:/Users/syork/Desktop/Sayumi/C-MOOR/C-MOOR_DEVELOPMENT/C-MOOR_16S/CMOOR-16S DATA/16S MISO data/MISO_16S.prop.clean.RDS")
-miso_counts <- readRDS("C:/Users/syork/Desktop/Sayumi/C-MOOR/C-MOOR_DEVELOPMENT/C-MOOR_16S/CMOOR-16S DATA/16S MISO data/MISO_16S.clean.RDS")
+#miso <- readRDS("C:/Users/syork/Desktop/Sayumi/C-MOOR/C-MOOR_DEVELOPMENT/C-MOOR_16S/CMOOR-16S DATA/16S MISO data/MISO_16S.prop.clean.RDS")
+#miso_counts <- readRDS("C:/Users/syork/Desktop/Sayumi/C-MOOR/C-MOOR_DEVELOPMENT/C-MOOR_16S/CMOOR-16S DATA/16S MISO data/#MISO_16S.clean.RDS")
 
-fefifo <- readRDS("C:/Users/syork/Desktop/Sayumi/C-MOOR/C-MOOR_DEVELOPMENT/C-MOOR_16S/CMOOR-16S DATA/16S FeFiFo data/fefifo.RDS")
-fefifo_counts <- readRDS("C:/Users/syork/Desktop/Sayumi/C-MOOR/C-MOOR_DEVELOPMENT/C-MOOR_16S/CMOOR-16S DATA/16S FeFiFo data/fefifo_counts.RDS")
+#fefifo <- readRDS("C:/Users/syork/Desktop/Sayumi/C-MOOR/C-MOOR_DEVELOPMENT/C-MOOR_16S/CMOOR-16S DATA/16S FeFiFo data/fefifo.RDS")
+#fefifo_counts <- readRDS("C:/Users/syork/Desktop/Sayumi/C-MOOR/C-MOOR_DEVELOPMENT/C-MOOR_16S/CMOOR-16S DATA/16S FeFiFo data/fefifo_counts.RDS")
 
 
-ad <- readRDS("C:/Users/syork/Desktop/Sayumi/C-MOOR/C-MOOR_DEVELOPMENT/C-MOOR_16S/CMOOR-16S DATA/16S Alzheimers/ad.RDS")
-ad_counts <- readRDS("C:/Users/syork/Desktop/Sayumi/C-MOOR/C-MOOR_DEVELOPMENT/C-MOOR_16S/CMOOR-16S DATA/16S Alzheimers/ad_counts.RDS")
+#ad <- readRDS("C:/Users/syork/Desktop/Sayumi/C-MOOR/C-MOOR_DEVELOPMENT/C-MOOR_16S/CMOOR-16S DATA/16S Alzheimers/ad.RDS")
+#ad_counts <- readRDS("C:/Users/syork/Desktop/Sayumi/C-MOOR/C-MOOR_DEVELOPMENT/C-MOOR_16S/CMOOR-16S DATA/16S Alzheimers/ad_counts.RDS")
 
-oc<-readRDS("C:/Users/syork/Desktop/Sayumi/C-MOOR/C-MOOR_DEVELOPMENT/C-MOOR_16S/CMOOR-16S DATA/16S Oral Contraceptives/oc.RDS")
-oc_counts<-readRDS("C:/Users/syork/Desktop/Sayumi/C-MOOR/C-MOOR_DEVELOPMENT/C-MOOR_16S/CMOOR-16S DATA/16S Oral Contraceptives/oc_counts.RDS")
-oc_no948N2_counts<-readRDS("C:/Users/syork/Desktop/Sayumi/C-MOOR/C-MOOR_DEVELOPMENT/C-MOOR_16S/CMOOR-16S DATA/16S Oral Contraceptives/oc_no948N2_counts.RDS")
-oc_no948N2<-readRDS("C:/Users/syork/Desktop/Sayumi/C-MOOR/C-MOOR_DEVELOPMENT/C-MOOR_16S/CMOOR-16S DATA/16S Oral Contraceptives/oc_no948N2.RDS")
+#oc<-readRDS("C:/Users/syork/Desktop/Sayumi/C-MOOR/C-MOOR_DEVELOPMENT/C-MOOR_16S/CMOOR-16S DATA/16S Oral Contraceptives/oc.RDS")
+#oc_counts<-readRDS("C:/Users/syork/Desktop/Sayumi/C-MOOR/C-MOOR_DEVELOPMENT/C-MOOR_16S/CMOOR-16S DATA/16S Oral Contraceptives/oc_counts.RDS")
+#oc_no948N2_counts<-readRDS("C:/Users/syork/Desktop/Sayumi/C-MOOR/C-MOOR_DEVELOPMENT/C-MOOR_16S/CMOOR-16S DATA/16S Oral Contraceptives/oc_no948N2_counts.RDS")
+#oc_no948N2<-readRDS("C:/Users/syork/Desktop/Sayumi/C-MOOR/C-MOOR_DEVELOPMENT/C-MOOR_16S/CMOOR-16S DATA/16S Oral Contraceptives/oc_no948N2.RDS")
 
 
 
@@ -72,22 +72,22 @@ oc_no948N2<-readRDS("C:/Users/syork/Desktop/Sayumi/C-MOOR/C-MOOR_DEVELOPMENT/C-M
 # #SciServer paths#
 # ########################
 # #Alzheimer's disease
-# ad <- readRDS("/home/idies/workspace/c_moor_data/16s-amplicon-data/ad/ad.RDS")
-# ad_counts<- readRDS("/home/idies/workspace/c_moor_data/16s-amplicon-data/ad/ad_counts.RDS")
+ad <- readRDS("/home/idies/workspace/c_moor_data/16s-amplicon-data/ad/ad.RDS")
+ad_counts<- readRDS("/home/idies/workspace/c_moor_data/16s-amplicon-data/ad/ad_counts.RDS")
 # 
 # #FeFiFo
-# fefifo <- readRDS("/home/idies/workspace/c_moor_data/16s-amplicon-data/fefifo/fefifo.RDS")
-# fefifo_counts<- readRDS("/home/idies/workspace/c_moor_data/16s-amplicon-data/fefifo/fefifo_counts.RDS")
+fefifo <- readRDS("/home/idies/workspace/c_moor_data/16s-amplicon-data/fefifo/fefifo.RDS")
+fefifo_counts<- readRDS("/home/idies/workspace/c_moor_data/16s-amplicon-data/fefifo/fefifo_counts.RDS")
 # 
 # #MISO
-# miso <- readRDS( "/home/idies/workspace/c_moor_data/16s-amplicon-data/miso/MISO_16S.prop.clean.rds" )
-# miso_counts <- readRDS("/home/idies/workspace/c_moor_data/16s-amplicon-data/miso/MISO_16S.clean.rds")
+miso <- readRDS( "/home/idies/workspace/c_moor_data/16s-amplicon-data/miso/MISO_16S.prop.clean.rds" )
+miso_counts <- readRDS("/home/idies/workspace/c_moor_data/16s-amplicon-data/miso/MISO_16S.clean.rds")
 # 
 # #Oral contraceptives (and prunes)
-# oc <- readRDS( "/home/idies/workspace/c_moor_data/16s-amplicon-data/oc/oc.rds" )
-# oc_counts <- readRDS( "/home/idies/workspace/c_moor_data/16s-amplicon-data/oc/oc_counts.rds" )
-# oc_no948N2 <- readRDS( "/home/idies/workspace/c_moor_data/16s-amplicon-data/oc/oc_no948N2.rds" )
-# oc_no948N2_counts <- readRDS( "/home/idies/workspace/c_moor_data/16s-amplicon-data/oc/oc_no948N2_counts.rds" )
+oc <- readRDS( "/home/idies/workspace/c_moor_data/16s-amplicon-data/oc/oc.rds" )
+oc_counts <- readRDS( "/home/idies/workspace/c_moor_data/16s-amplicon-data/oc/oc_counts.rds" )
+oc_no948N2 <- readRDS( "/home/idies/workspace/c_moor_data/16s-amplicon-data/oc/oc_no948N2.rds" )
+oc_no948N2_counts <- readRDS( "/home/idies/workspace/c_moor_data/16s-amplicon-data/oc/oc_no948N2_counts.rds" )
 # 
 
 
