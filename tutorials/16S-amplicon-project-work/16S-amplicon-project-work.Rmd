@@ -80,14 +80,14 @@ fefifo <- readRDS("/home/idies/workspace/c_moor_data/16s-amplicon-data/fefifo/fe
 fefifo_counts<- readRDS("/home/idies/workspace/c_moor_data/16s-amplicon-data/fefifo/fefifo_counts.RDS")
 # 
 # #MISO
-miso <- readRDS( "/home/idies/workspace/c_moor_data/16s-amplicon-data/miso/MISO_16S.prop.clean.rds" )
-miso_counts <- readRDS("/home/idies/workspace/c_moor_data/16s-amplicon-data/miso/MISO_16S.clean.rds")
+miso <- readRDS( "/home/idies/workspace/c_moor_data/16s-amplicon-data/miso/MISO_16S.prop.clean.RDS" )
+miso_counts <- readRDS("/home/idies/workspace/c_moor_data/16s-amplicon-data/miso/MISO_16S.clean.RDS")
 # 
 # #Oral contraceptives (and prunes)
-oc <- readRDS( "/home/idies/workspace/c_moor_data/16s-amplicon-data/oc/oc.rds" )
-oc_counts <- readRDS( "/home/idies/workspace/c_moor_data/16s-amplicon-data/oc/oc_counts.rds" )
-oc_no948N2 <- readRDS( "/home/idies/workspace/c_moor_data/16s-amplicon-data/oc/oc_no948N2.rds" )
-oc_no948N2_counts <- readRDS( "/home/idies/workspace/c_moor_data/16s-amplicon-data/oc/oc_no948N2_counts.rds" )
+oc <- readRDS( "/home/idies/workspace/c_moor_data/16s-amplicon-data/oc/oc.RDS" )
+oc_counts <- readRDS( "/home/idies/workspace/c_moor_data/16s-amplicon-data/oc/oc_counts.RDS" )
+oc_no948N2 <- readRDS( "/home/idies/workspace/c_moor_data/16s-amplicon-data/oc/oc_no948N2.RDS" )
+oc_no948N2_counts <- readRDS( "/home/idies/workspace/c_moor_data/16s-amplicon-data/oc/oc_no948N2_counts.RDS" )
 # 
 
 
