@@ -29,6 +29,7 @@ WIP:
   tutorial_dir:
     - "explore-phyloseq"
     - "analyze-phyloseq"
+    - "16S-amplicon-project-work"
     - "Biological_Databases_HPA-dev"
     - "Intro_R-dev"
 
