@@ -369,6 +369,32 @@ The figure above shows the study design for the FeFiFo study. You do not need to
 
 The study lasts a total of 17 weeks. Samples from the gut microbiota (among other blood samples) at **9 different timepoints** across all phases of the experiment. Unlike the MISO study, these timepoints are not assigned to distinct phases as some of them were taken during the transition periods between phases.
 
+### MISO phyloseq objects
+
+```{r miso_objects, exercise=TRUE, echo=FALSE}
+#A phyloseq object containing the normalized (proportions) data
+miso
+
+#A phyloseq object containing the data as raw counts
+miso_counts
+
+```
+
+```{r miso_block1, exercise=TRUE, echo=FALSE}
+
+
+```
+
+```{r miso_block2, exercise=TRUE, echo=FALSE}
+
+
+```
+
+```{r miso_block3, exercise=TRUE, echo=FALSE}
+
+
+```
+
 
 ### FeFiFo study design variables
 
@@ -401,6 +427,13 @@ We have a number of variables we can use in our analysis. Notice that the variab
 |bmi|The bmi of the subject|17.71-31.68|
 |waist|The waist measurement of the subject (cm) |27.56-46.85|
 
+### Some research ideas to get you started
+
+- How variable is the change of microbiome composition and alpha diversity across individuals? Do all individuals change the same amount or are there some individuals much more sensitive to their chosen food group?
+- What are the most abundant microbes in each treatment (fiber, fermented)? Are they similar taxa or different?
+- Is there any relationship between ethnicity, education, employment, relationship status and microbiome composition and/or alpha diversity?
+- Are the subject's microbiomes at a given timepoint similar to each other? Similar to other samples from the same subject no matter the timepoint?
+
 ### FeFiFo phyloseq objects
 
 ```{r fefifo_objects, exercise=TRUE, echo=FALSE}
@@ -412,12 +445,22 @@ fefifo_counts
 
 ```
 
-### Some research ideas to get you started
 
-- How variable is the change of microbiome composition and alpha diversity across individuals? Do all individuals change the same amount or are there some individuals much more sensitive to their chosen food group?
-- What are the most abundant microbes in each treatment (fiber, fermented)? Are they similar taxa or different?
-- Is there any relationship between ethnicity, education, employment, relationship status and microbiome composition and/or alpha diversity?
-- Are the subject's microbiomes at a given timepoint similar to each other? Similar to other samples from the same subject no matter the timepoint?
+```{r fefifo_block1, exercise=TRUE, echo=FALSE}
+
+
+```
+
+```{r fefifo_block2, exercise=TRUE, echo=FALSE}
+
+
+```
+
+```{r fefifo_block3, exercise=TRUE, echo=FALSE}
+
+
+```
+
 
 ## Meet the Alzheimer's study
 
@@ -449,6 +492,12 @@ We have a number of variables we can use in our analysis. Notice that the variab
 |sex|The gender of the subject|male, female| 
 |group|Whether the subject was in the AD group or control group|AD, control.|
 
+### Some research ideas to get you started
+
+- How similar are microbiomes between healthy and AD individuals in composition and/or alpha diversity?
+- Looking at other published research studies, are the microbial taxa associated with AD also found in this study?
+- Select a microbial taxa of interest (perhaps from the idea above) and explore it at increasing levels of resolution up to the level of species. Looking at other published research studies, what functions are these taxa associated with? Do they have any relation to AD or other neurodegenerative diseases?
+
 
 ### AD objects 
 
@@ -461,11 +510,20 @@ ad_counts
 
 ```
 
-### Some research ideas to get you started
+```{r ad_block1, exercise=TRUE, echo=FALSE}
 
-- How similar are microbiomes between healthy and AD individuals in composition and/or alpha diversity?
-- Looking at other published research studies, are the microbial taxa associated with AD also found in this study?
-- Select a microbial taxa of interest (perhaps from the idea above) and explore it at increasing levels of resolution up to the level of species. Looking at other published research studies, what functions are these taxa associated with? Do they have any relation to AD or other neurodegenerative diseases?
+
+```
+
+```{r ad_block2, exercise=TRUE, echo=FALSE}
+
+
+```
+
+```{r ad_block3, exercise=TRUE, echo=FALSE}
+
+
+```
 
 
 ## Meet the OC study
@@ -501,6 +559,13 @@ This study compared the microbiomes of women who were on OC and those who were n
 |BMperwk|Number of bowel movements per week|4-28|
 
 
+### Some research ideas to get you started
+
+- Is there any relationship between ethnicity, diet, OCE2dosage, or bowel movements and microbiome composition and/or alpha diversity?
+- Create a multidimensional analysis: how do samples cluster? By diet? Age? Subject? Dosage? Treatment?
+- How do the microbial compositions of different treatments at increasing levels of resolution (choosing the most abundant group each time)?
+
+
 ### OC objects 
 
 ```{r oc_objects, exercise=TRUE, echo=FALSE}
@@ -518,11 +583,23 @@ oc_no948N2_counts
 
 ```
 
-### Some research ideas to get you started
 
-- Is there any relationship between ethnicity, diet, OCE2dosage, or bowel movements and microbiome composition and/or alpha diversity?
-- Create a multidimensional analysis: how do samples cluster? By diet? Age? Subject? Dosage? Treatment?
-- How do the microbial compositions of different treatments at increasing levels of resolution (choosing the most abundant group each time)?
+```{r oc_block1, exercise=TRUE, echo=FALSE}
+
+
+```
+
+
+```{r oc_block2, exercise=TRUE, echo=FALSE}
+
+
+```
+
+
+```{r oc_block3, exercise=TRUE, echo=FALSE}
+
+
+```
 
 ## Bar plots
 - **Objective**: Vizualize the microbial composition of samples
@@ -542,10 +619,17 @@ plot_bar(my_subset, x= "subject", fill = "Class", title = "My title") +
   geom_bar(aes(color = Class, fill = Class), stat = "identity", position = "stack")
 ```
 
-```{r try_it_out_barplot, exercise=TRUE, echo=FALSE}
+```{r try_it_out_barplot1, exercise=TRUE, echo=FALSE}
 
 ```
 
+```{r try_it_out_barplot2, exercise=TRUE, echo=FALSE}
+
+```
+
+```{r try_it_out_barplot3, exercise=TRUE, echo=FALSE}
+
+```
 
 ## Alpha diversity
 <!-- Uses raw count data -->
@@ -570,7 +654,15 @@ plot_richness(my_subset, x="timepoint",
 
 ```
 
-```{r Try_it_plot_richness_blank, exercise=TRUE, echo=FALSE}
+```{r Try_it_plot_richness_blank1, exercise=TRUE, echo=FALSE}
+
+```
+
+```{r Try_it_plot_richness_blank2, exercise=TRUE, echo=FALSE}
+
+```
+
+```{r Try_it_plot_richness_blank3, exercise=TRUE, echo=FALSE}
 
 ```
 
@@ -603,7 +695,15 @@ plot_ordination(miso_subset, miso.pcoa.subset,
         title="My subsetted (Firmicutes) PCoA")
 ```
 
-```{r Try_it_PCoA_blank, exercise=TRUE, echo=FALSE}
+```{r Try_it_PCoA_blank1, exercise=TRUE, echo=FALSE}
+
+```
+
+```{r Try_it_PCoA_blank2, exercise=TRUE, echo=FALSE}
+
+```
+
+```{r Try_it_PCoA_blank3, exercise=TRUE, echo=FALSE}
 
 ```
 
@@ -644,10 +744,17 @@ ggplot(Significant_DEseq2_ASVs, aes(x = Phylum, y=log2FoldChange, color= Class))
 
 ```
 
-```{r Try_it_DA_blank, exercise=TRUE, echo=FALSE}
+```{r Try_it_DA_blank1, exercise=TRUE, echo=FALSE}
 
 ```
 
+```{r Try_it_DA_blank2, exercise=TRUE, echo=FALSE}
+
+```
+
+```{r Try_it_DA_blank3, exercise=TRUE, echo=FALSE}
+
+```
 
 ## Common errors
 
