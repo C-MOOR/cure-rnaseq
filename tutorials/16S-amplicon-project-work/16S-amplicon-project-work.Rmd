@@ -337,38 +337,6 @@ We have a number of variables we can use in our analysis. Notice that the variab
 |HIPP|Hippuric acid|A continuous variable from 16 to 1119| 
 |PAG|Phenylacetylglutamine|A continuous variable from 16 to 318| 
 
-### MISO objects 
-
-```{r miso_objects, exercise=TRUE, echo=FALSE}
-#A phyloseq object containing the normalized (proportions) data
-miso
-
-#A phyloseq object containing the data as raw counts
-miso_counts
-
-```
-
-## Meet FeFiFo
-
-These data are from **Gut-microbiota-targeted diets modulate human immune status** by Wastyk et al. (2021). We call this the FeFiFo study because the experimental design includes *fe*rmented and *fi*ber-rich *fo*od treatment groups!
-
-This study looked at the effect of either high fiber or fermented foods. Rather than controlling diet entirely through standardized portions, participants were allowed to select what foods they ate so long as these foods were high in fiber or were fermented. Additional metadata was collected from participants including ethnicity, relationship status, employment status, and education level.
-
-
-### FeFiFo study diet and sampling schedule
-
-![](images/fefifo_experimental_design.png){width=100%}
-<p class=caption> **Experimental design for the FeFiFo study by Wastyk et al. (2021)**: Figure edited by Sayumi York (July 11, 2025).</p>
-
-The figure above shows the study design for the FeFiFo study. You do not need to memorize all these details; feel free to refer to this page throughout the project:
-
-- Participants eat their usual, **baseline diet for 3 weeks**
-- Participants slowly increase their intake of intervention (fiber or fermented, not both!) foods, in the **ramp for 4 weeks**
-- Participants maintain their intervention during a **maintenance period of 6 weeks**
-- Participants can choose to eat what they want, including any intervention foods during the **choice period of 4 weeks**
-
-The study lasts a total of 17 weeks. Samples from the gut microbiota (among other blood samples) at **9 different timepoints** across all phases of the experiment. Unlike the MISO study, these timepoints are not assigned to distinct phases as some of them were taken during the transition periods between phases.
-
 ### MISO phyloseq objects
 
 ```{r miso_objects, exercise=TRUE, echo=FALSE}
@@ -395,6 +363,26 @@ miso_counts
 
 ```
 
+## Meet FeFiFo
+
+These data are from **Gut-microbiota-targeted diets modulate human immune status** by Wastyk et al. (2021). We call this the FeFiFo study because the experimental design includes *fe*rmented and *fi*ber-rich *fo*od treatment groups!
+
+This study looked at the effect of either high fiber or fermented foods. Rather than controlling diet entirely through standardized portions, participants were allowed to select what foods they ate so long as these foods were high in fiber or were fermented. Additional metadata was collected from participants including ethnicity, relationship status, employment status, and education level.
+
+
+### FeFiFo study diet and sampling schedule
+
+![](images/fefifo_experimental_design.png){width=100%}
+<p class=caption> **Experimental design for the FeFiFo study by Wastyk et al. (2021)**: Figure edited by Sayumi York (July 11, 2025).</p>
+
+The figure above shows the study design for the FeFiFo study. You do not need to memorize all these details; feel free to refer to this page throughout the project:
+
+- Participants eat their usual, **baseline diet for 3 weeks**
+- Participants slowly increase their intake of intervention (fiber or fermented, not both!) foods, in the **ramp for 4 weeks**
+- Participants maintain their intervention during a **maintenance period of 6 weeks**
+- Participants can choose to eat what they want, including any intervention foods during the **choice period of 4 weeks**
+
+The study lasts a total of 17 weeks. Samples from the gut microbiota (among other blood samples) at **9 different timepoints** across all phases of the experiment. Unlike the MISO study, these timepoints are not assigned to distinct phases as some of them were taken during the transition periods between phases.
 
 ### FeFiFo study design variables
 
