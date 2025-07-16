@@ -363,6 +363,21 @@ miso_counts
 
 ```
 
+```{r miso_block4, exercise=TRUE, echo=FALSE}
+
+
+```
+
+```{r miso_block5, exercise=TRUE, echo=FALSE}
+
+
+```
+
+```{r miso_block6, exercise=TRUE, echo=FALSE}
+
+
+```
+
 ## Meet FeFiFo
 
 These data are from **Gut-microbiota-targeted diets modulate human immune status** by Wastyk et al. (2021). We call this the FeFiFo study because the experimental design includes *fe*rmented and *fi*ber-rich *fo*od treatment groups!
@@ -450,6 +465,27 @@ fefifo_counts
 ```
 
 
+```{r fefifo_block4, exercise=TRUE, echo=FALSE}
+
+
+```
+
+
+
+```{r fefifo_block5, exercise=TRUE, echo=FALSE}
+
+
+```
+
+
+
+```{r fefifo_block6, exercise=TRUE, echo=FALSE}
+
+
+```
+
+
+
 ## Meet the Alzheimer's study
 
 These data are from **Gut microbiota is altered in patients with Alzheimer’s disease** by Zhuang et al. (2018). For convenience's sake we will refer to it as our AD study.
@@ -509,6 +545,18 @@ ad_counts
 ```
 
 ```{r ad_block3, exercise=TRUE, echo=FALSE}
+
+
+```
+```{r ad_block4, exercise=TRUE, echo=FALSE}
+
+
+```
+```{r ad_block5, exercise=TRUE, echo=FALSE}
+
+
+```
+```{r ad_block6, exercise=TRUE, echo=FALSE}
 
 
 ```
@@ -588,6 +636,18 @@ oc_no948N2_counts
 
 
 ```
+```{r oc_block4, exercise=TRUE, echo=FALSE}
+
+
+```
+```{r oc_block5, exercise=TRUE, echo=FALSE}
+
+
+```
+```{r oc_block6, exercise=TRUE, echo=FALSE}
+
+
+```
 
 ## Bar plots
 - **Objective**: Vizualize the microbial composition of samples
@@ -616,6 +676,15 @@ plot_bar(my_subset, x= "subject", fill = "Class", title = "My title") +
 ```
 
 ```{r try_it_out_barplot3, exercise=TRUE, echo=FALSE}
+
+```
+```{r try_it_out_barplot4, exercise=TRUE, echo=FALSE}
+
+```
+```{r try_it_out_barplot5, exercise=TRUE, echo=FALSE}
+
+```
+```{r try_it_out_barplot6, exercise=TRUE, echo=FALSE}
 
 ```
 
@@ -651,6 +720,15 @@ plot_richness(my_subset, x="timepoint",
 ```
 
 ```{r Try_it_plot_richness_blank3, exercise=TRUE, echo=FALSE}
+
+```
+```{r Try_it_plot_richness_blank4, exercise=TRUE, echo=FALSE}
+
+```
+```{r Try_it_plot_richness_blank5, exercise=TRUE, echo=FALSE}
+
+```
+```{r Try_it_plot_richness_blank6, exercise=TRUE, echo=FALSE}
 
 ```
 
@@ -692,6 +770,15 @@ plot_ordination(miso_subset, miso.pcoa.subset,
 ```
 
 ```{r Try_it_PCoA_blank3, exercise=TRUE, echo=FALSE}
+
+```
+```{r Try_it_PCoA_blank4, exercise=TRUE, echo=FALSE}
+
+```
+```{r Try_it_PCoA_blank5, exercise=TRUE, echo=FALSE}
+
+```
+```{r Try_it_PCoA_blank6, exercise=TRUE, echo=FALSE}
 
 ```
 
@@ -743,6 +830,18 @@ ggplot(Significant_DEseq2_ASVs, aes(x = Phylum, y=log2FoldChange, color= Class))
 ```{r Try_it_DA_blank3, exercise=TRUE, echo=FALSE}
 
 ```
+```{r Try_it_DA_blank4, exercise=TRUE, echo=FALSE}
+
+```
+
+```{r Try_it_DA_blank5, exercise=TRUE, echo=FALSE}
+
+```
+
+```{r Try_it_DA_blank6, exercise=TRUE, echo=FALSE}
+
+```
+
 
 ## Common errors
 
