@@ -46,49 +46,49 @@ tutorial_options(exercise.timelimit = 360)
 #Normalization by turning counts into proportions
 
 # #Local path
-
-
-#miso <- readRDS("C:/Users/syork/Desktop/Sayumi/C-MOOR/C-MOOR_DEVELOPMENT/C-MOOR_16S/CMOOR-16S DATA/16S MISO data/MISO_16S.prop.clean.RDS")
-#miso_counts <- readRDS("C:/Users/syork/Desktop/Sayumi/C-MOOR/C-MOOR_DEVELOPMENT/C-MOOR_16S/CMOOR-16S DATA/16S MISO data/#MISO_16S.clean.RDS")
-
-#fefifo <- readRDS("C:/Users/syork/Desktop/Sayumi/C-MOOR/C-MOOR_DEVELOPMENT/C-MOOR_16S/CMOOR-16S DATA/16S FeFiFo data/fefifo.RDS")
-#fefifo_counts <- readRDS("C:/Users/syork/Desktop/Sayumi/C-MOOR/C-MOOR_DEVELOPMENT/C-MOOR_16S/CMOOR-16S DATA/16S FeFiFo data/fefifo_counts.RDS")
-
-
-#ad <- readRDS("C:/Users/syork/Desktop/Sayumi/C-MOOR/C-MOOR_DEVELOPMENT/C-MOOR_16S/CMOOR-16S DATA/16S Alzheimers/ad.RDS")
-#ad_counts <- readRDS("C:/Users/syork/Desktop/Sayumi/C-MOOR/C-MOOR_DEVELOPMENT/C-MOOR_16S/CMOOR-16S DATA/16S Alzheimers/ad_counts.RDS")
-
-#oc<-readRDS("C:/Users/syork/Desktop/Sayumi/C-MOOR/C-MOOR_DEVELOPMENT/C-MOOR_16S/CMOOR-16S DATA/16S Oral Contraceptives/oc.RDS")
-#oc_counts<-readRDS("C:/Users/syork/Desktop/Sayumi/C-MOOR/C-MOOR_DEVELOPMENT/C-MOOR_16S/CMOOR-16S DATA/16S Oral Contraceptives/oc_counts.RDS")
-#oc_no948N2_counts<-readRDS("C:/Users/syork/Desktop/Sayumi/C-MOOR/C-MOOR_DEVELOPMENT/C-MOOR_16S/CMOOR-16S DATA/16S Oral Contraceptives/oc_no948N2_counts.RDS")
-#oc_no948N2<-readRDS("C:/Users/syork/Desktop/Sayumi/C-MOOR/C-MOOR_DEVELOPMENT/C-MOOR_16S/CMOOR-16S DATA/16S Oral Contraceptives/oc_no948N2.RDS")
-
-
-
-
-
 # 
+# 
+# miso <- readRDS("C:/Users/syork/Desktop/Sayumi/C-MOOR/C-MOOR_DEVELOPMENT/C-MOOR_16S/CMOOR-16S DATA/16S MISO data/MISO_16S.prop.clean.RDS")
+# miso_counts <- readRDS("C:/Users/syork/Desktop/Sayumi/C-MOOR/C-MOOR_DEVELOPMENT/C-MOOR_16S/CMOOR-16S DATA/16S MISO data/MISO_16S.clean.RDS")
+# 
+# fefifo <- readRDS("C:/Users/syork/Desktop/Sayumi/C-MOOR/C-MOOR_DEVELOPMENT/C-MOOR_16S/CMOOR-16S DATA/16S FeFiFo data/fefifo.RDS")
+# fefifo_counts <- readRDS("C:/Users/syork/Desktop/Sayumi/C-MOOR/C-MOOR_DEVELOPMENT/C-MOOR_16S/CMOOR-16S DATA/16S FeFiFo data/fefifo_counts.RDS")
+# 
+# 
+# ad <- readRDS("C:/Users/syork/Desktop/Sayumi/C-MOOR/C-MOOR_DEVELOPMENT/C-MOOR_16S/CMOOR-16S DATA/16S Alzheimers/ad.RDS")
+# ad_counts <- readRDS("C:/Users/syork/Desktop/Sayumi/C-MOOR/C-MOOR_DEVELOPMENT/C-MOOR_16S/CMOOR-16S DATA/16S Alzheimers/ad_counts.RDS")
+# 
+# oc<-readRDS("C:/Users/syork/Desktop/Sayumi/C-MOOR/C-MOOR_DEVELOPMENT/C-MOOR_16S/CMOOR-16S DATA/16S Oral Contraceptives/oc.RDS")
+# oc_counts<-readRDS("C:/Users/syork/Desktop/Sayumi/C-MOOR/C-MOOR_DEVELOPMENT/C-MOOR_16S/CMOOR-16S DATA/16S Oral Contraceptives/oc_counts.RDS")
+# oc_no948N2_counts<-readRDS("C:/Users/syork/Desktop/Sayumi/C-MOOR/C-MOOR_DEVELOPMENT/C-MOOR_16S/CMOOR-16S DATA/16S Oral Contraceptives/oc_no948N2_counts.RDS")
+# oc_no948N2<-readRDS("C:/Users/syork/Desktop/Sayumi/C-MOOR/C-MOOR_DEVELOPMENT/C-MOOR_16S/CMOOR-16S DATA/16S Oral Contraceptives/oc_no948N2.RDS")
+
+
+
+
+
+#
 # #########################
 # #SciServer paths#
 # ########################
-# #Alzheimer's disease
+# # #Alzheimer's disease
 ad <- readRDS("/home/idies/workspace/c_moor_data/16s-amplicon-data/ad/ad.RDS")
 ad_counts<- readRDS("/home/idies/workspace/c_moor_data/16s-amplicon-data/ad/ad_counts.RDS")
-# 
-# #FeFiFo
+# #
+# # #FeFiFo
 fefifo <- readRDS("/home/idies/workspace/c_moor_data/16s-amplicon-data/fefifo/fefifo.RDS")
 fefifo_counts<- readRDS("/home/idies/workspace/c_moor_data/16s-amplicon-data/fefifo/fefifo_counts.RDS")
-# 
-# #MISO
+# #
+# # #MISO
 miso <- readRDS( "/home/idies/workspace/c_moor_data/16s-amplicon-data/miso/MISO_16S.prop.clean.rds" )
 miso_counts <- readRDS("/home/idies/workspace/c_moor_data/16s-amplicon-data/miso/MISO_16S.clean.rds")
-# 
-# #Oral contraceptives (and prunes)
+# #
+# # #Oral contraceptives (and prunes)
 oc <- readRDS( "/home/idies/workspace/c_moor_data/16s-amplicon-data/oc/oc.RDS" )
 oc_counts <- readRDS( "/home/idies/workspace/c_moor_data/16s-amplicon-data/oc/oc_counts.RDS" )
 oc_no948N2 <- readRDS( "/home/idies/workspace/c_moor_data/16s-amplicon-data/oc/oc_no948N2.RDS" )
 oc_no948N2_counts <- readRDS( "/home/idies/workspace/c_moor_data/16s-amplicon-data/oc/oc_no948N2_counts.RDS" )
-# 
+# #
 
 
 # <!-- EXERCISE = should we see an interactive code chunk with this code? -->
@@ -154,6 +154,8 @@ Differential_Abundance <- function(x, y, z) {
   return(sigtab)
 }
 
+# For using a continuous variable during comparisons
+# log2foldchange is interpreted as the amount of change for each additional unit of the continuous avriable
 
 Differential_Abundance_Continuous <- function(x, y, z) {
   
@@ -212,6 +214,77 @@ Differential_Abundance_Continuous <- function(x, y, z) {
 
   return(sigtab)
 }
+
+# For 0-inflated data that gives the error:
+# every gene contains at least one zero, cannot compute log geometric means
+
+Differential_Abundance_AltGeo <- function(w, x, y, z) {
+  
+  # Accept the input and give it a human friendly name
+  my_counts <- w
+  my_DESeq2_object <- x
+  my_comparision_list <- y
+  my_pvalue <- z
+  
+  
+  
+  #Do the DESeq2 analysis
+  
+  gm_mean = function(x, na.rm = TRUE){
+    exp(sum(log(x[x > 0]), na.rm = na.rm) / length(x))
+  }
+  
+  geoMeans = apply(counts(my_DESeq2_object), 1, gm_mean)
+  my_DESeq2_object = estimateSizeFactors(my_DESeq2_object, geoMeans = geoMeans)
+  my_DESeq2_object = estimateDispersions(my_DESeq2_object, fitType = "parametric")
+  my_DESeq2_object <- nbinomWaldTest(my_DESeq2_object)
+  
+  #Change the contrast section to compare different variables and groups.
+  res = results(my_DESeq2_object, cooksCutoff = FALSE, contrast= my_comparision_list)
+  
+  #Select only abundances with a p-value of z or below
+  alpha = my_pvalue
+  sigtab = res[which(res$padj < alpha), ]
+  sigtab = cbind(as(sigtab, "data.frame"), as(tax_table(my_counts)[rownames(sigtab), ], "matrix"))
+  
+  #Let's look at the OTUs that were significantly different between the two groups. The following makes a nice ggplot2 summary of the results
+  theme_set(theme_bw())
+  scale_fill_discrete <- function(palname = "Set1", ...) {
+    scale_fill_brewer(palette = palname, ...)
+  }
+  # Phylum order
+  x = tapply(sigtab$log2FoldChange, sigtab$Phylum, function(x) max(x))
+  x = sort(x, TRUE)
+  sigtab$Phylum = factor(as.character(sigtab$Phylum), levels=names(x))
+  
+  # Class order
+  x = tapply(sigtab$log2FoldChange, sigtab$Class, function(x) max(x))
+  x = sort(x, TRUE)
+  sigtab$Class = factor(as.character(sigtab$Class), levels=names(x))
+  
+  # Order order
+  x = tapply(sigtab$log2FoldChange, sigtab$Order, function(x) max(x))
+  x = sort(x, TRUE)
+  sigtab$Order = factor(as.character(sigtab$Order), levels=names(x))
+  
+  # Family order
+  x = tapply(sigtab$log2FoldChange, sigtab$Family, function(x) max(x))
+  x = sort(x, TRUE)
+  sigtab$Family = factor(as.character(sigtab$Family), levels=names(x))
+  
+  # Genus order
+  x = tapply(sigtab$log2FoldChange, sigtab$Genus, function(x) max(x))
+  x = sort(x, TRUE)
+  sigtab$Genus = factor(as.character(sigtab$Genus), levels=names(x))
+  
+  # Species order
+  x = tapply(sigtab$log2FoldChange, sigtab$Species, function(x) max(x))
+  x = sort(x, TRUE)
+  sigtab$Species = factor(as.character(sigtab$Species), levels=names(x))
+  
+  return(sigtab)
+}
+
 
 ```
 
@@ -797,6 +870,27 @@ plot_ordination(miso_subset, miso.pcoa.subset,
 - **p-value**: The base p-value, without corrections for multiple comparisons. 
 - **p-adj**: The p-value after correcting for multiple comparisions. You should use p-adj when reporting your results.
 
+<br>
+
+:::{.attention_box_pause}
+:::{.attention_header_box_pause}
+:::{.attention_title}
+#### **Differential abundance functions: special cases**
+:::
+:::
+::: {.attention_content}
+We have two special cases for our differential expression analysis. 
+
+1. **Differential abundance concerned with a continuous variables** such as age, height, and metabolites: We will use the function Differential_Abundance_Continuous() instead of Differential_Abundance(). 
+
+2. **Differential abundance with 0-inflated data** that gives us the error: *Error in estimateSizeFactorsForMatrix(counts(object), locfunc = locfunc, : every gene contains at least one zero, cannot compute log geometric means*
+
+
+Please refer to the code chunks below with examples for those specific functions. Note that they have some slight differences from the original function!
+:::
+:::
+
+
 ### Differential abundance code template
 
 ```{r DESeq2_example, exercise=TRUE, echo=TRUE}
@@ -830,6 +924,7 @@ ggplot(Significant_DEseq2_ASVs, aes(x = Phylum, y=log2FoldChange, color= Class))
 ```{r Try_it_DA_blank3, exercise=TRUE, echo=FALSE}
 
 ```
+
 ```{r Try_it_DA_blank4, exercise=TRUE, echo=FALSE}
 
 ```
@@ -842,6 +937,108 @@ ggplot(Significant_DEseq2_ASVs, aes(x = Phylum, y=log2FoldChange, color= Class))
 
 ```
 
+### Differential abundance for continuous data code template
+
+#### What's different with continuous data?
+
+- **Interpreting the log2FoldChange**: In this case, the log2FoldChange is the difference in abundance for every unit increase of the design factor. In the example below, log2FoldChange represents the amount of change in the ASV's abundance for every year the subject grows older (since age is measured in years in the dataset).
+- **Changes in the code**: We do not need to specify groups for comparison. Notice how in step 2 we simply provide the continuous variable we are interested in.
+
+
+```{r Try_it_DA_continuous, exercise=TRUE, echo=FALSE}
+
+# STEP 1: Convert the phyloseq object to a DESeq2 object and tell R the experimental design
+my_miso_DESeq2 <- phyloseq_to_deseq2(miso_counts, design = ~ age)
+
+# STEP 2: Select the groups to compare
+name_for_comparision <-"age"
+
+# STEP 3: Run the differential abundance analysis at the chosen p-value
+Significant_DEseq2_ASVs<-Differential_Abundance_Continuous(my_miso_DESeq2, name_for_comparision, 0.05)
+
+# STEP 4: Retrieve the list of ASVs with a significant difference in abundance between the chosen groups
+Significant_DEseq2_ASVs
+
+# STEP 5: Plot the results with your chosen x axis and legend
+ggplot(Significant_DEseq2_ASVs, aes(x = Phylum, y=log2FoldChange, color= Class, shape = Order)) + geom_point(size=6) +
+  theme(axis.text.x = element_text(angle = -90, hjust = 0, vjust=0.5))
+
+```
+
+```{r Try_it_DA_Continuous_blank1, exercise=TRUE, echo=FALSE}
+
+```
+
+```{r Try_it_DA_Continuous_blank2, exercise=TRUE, echo=FALSE}
+
+```
+
+```{r Try_it_DA_Continuous_blank3, exercise=TRUE, echo=FALSE}
+
+```
+
+```{r Try_it_DA_Continuous_blank4, exercise=TRUE, echo=FALSE}
+
+```
+
+```{r Try_it_DA_Continuous_blank5, exercise=TRUE, echo=FALSE}
+
+```
+
+```{r Try_it_DA_Continuous_blank6, exercise=TRUE, echo=FALSE}
+
+```
+
+### Differential abundance for 0-inflated data code template
+
+#### What's different with 0-inflated data?
+
+- **What's going on underneath?**: We have too many ASVs with 0 counts in our dataset. DESeq2 was originally created for RNA-seq data, where this phenomenon is much rarer than in microbiome data. We will use a slightly different statistical approach in this function to get around this problem.
+- **Changes in the code**: In step 3 we will also provide our count data in addition to our DESeq2 object, comparision groups, and p-value cutoff. 
+
+
+```{r Try_it_DA_zero-inf, exercise=TRUE, echo=FALSE}
+# STEP 1: Convert the phyloseq object to a DESeq2 object and tell R the experimental design 
+my_ad_DESeq2 <- phyloseq_to_deseq2(ad_counts, design = ~group)
+
+# STEP 2: Select the groups to compare
+my_comparison <- c("group", "AD", "control")
+
+# STEP 3: Run the differential abundance analysis at the chosen p-value
+Significant_DEseq2_ASVs <- Differential_Abundance_AltGeo(ad_counts, my_ad_DESeq2, my_comparison, 0.05)
+
+# STEP 4: Retrieve the list of ASVs with a significant difference in abundance between the chosen groups
+Significant_DEseq2_ASVs
+
+# STEP 5: Plot the results with your chosen x axis and legend
+ggplot(Significant_DEseq2_ASVs, aes(x = Phylum, y=log2FoldChange, color= Class)) + geom_point(size=3, position = "jitter") +
+  theme(axis.text.x = element_text(angle = -90, hjust = 0, vjust=0.5))+
+  ggtitle("my title here")
+```
+
+```{r Try_it_DA_zero-inf_blank1, exercise=TRUE, echo=FALSE}
+
+```
+
+```{r Try_it_DA_zero-inf_blank2, exercise=TRUE, echo=FALSE}
+
+```
+
+```{r Try_it_DA_zero-inf_blank3, exercise=TRUE, echo=FALSE}
+
+```
+
+```{r Try_it_DA_zero-inf_blank4, exercise=TRUE, echo=FALSE}
+
+```
+
+```{r Try_it_DA_zero-inf_blank5, exercise=TRUE, echo=FALSE}
+
+```
+
+```{r Try_it_DA_zero-inf_blank6, exercise=TRUE, echo=FALSE}
+
+```
 
 ## Common errors
 
