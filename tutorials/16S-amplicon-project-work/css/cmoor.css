@@ -10,3 +10,105 @@
 .caption {
   font-size: 0.8em;
 }
+
+.attention_title{
+  display: inline-flex;
+  text-align: center;
+  align-items: center;
+  align-content: flex-start;
+  padding-left: 70px;
+}
+
+.attention_content{
+  background-color: white;
+  padding: 3px;
+  margin: 3px;
+  border-radius: 5px;
+}
+
+
+.attention_box_book{
+  border: 4px #2079de;
+  border-style: dashed;
+  background-color: #d1dfff;
+  padding: 5px;
+}
+
+.attention_header_box_book{
+  display: inline-flex;
+  width: 100%;
+  justify-content:baseline;
+  background-color: white;
+  border-radius: 5px;
+  padding: 5px;
+  margin: 3px;
+  background-repeat: no-repeat;
+  background-size: 50px;
+  background-image: url("Icons/Icon_packs_book.png");
+  background-position: 5px;
+}
+
+
+.attention_box_pause{
+  border: 4px #e83427;
+  border-style: dashed;
+  background-color: #ffeceb;
+  padding: 5px;
+}
+
+.attention_header_box_pause{
+  display: inline-flex;
+  width: 100%;
+  justify-content:baseline;
+  background-color: white;
+  border-radius: 5px;
+  padding: 5px;
+  margin: 3px;
+  background-repeat: no-repeat;
+  background-size: 50px;
+  background-image: url("Icons/Icon_packs_pause.png");
+  background-position: 5px;
+}
+
+
+.attention_box_star{
+  border: 4px #f28b3d;
+  border-style: dashed;
+  background-color: #fff4e0;
+  padding: 5px;
+}
+
+.attention_header_box_star{
+  display: inline-flex;
+  width: 100%;
+  justify-content:baseline;
+  background-color: white;
+  border-radius: 5px;
+  padding: 5px;
+  margin: 3px;
+  background-repeat: no-repeat;
+  background-size: 50px;
+  background-image: url("Icons/Icon_packs_star.png");
+  background-position: 5px;
+}
+
+.attention_box_list{
+  border: 4px #00c4a7;
+  border-style: dashed;
+  background-color: #d4fff8;
+  padding: 5px;
+}
+
+.attention_header_box_list{
+  display: inline-flex;
+  width: 100%;
+  justify-content:baseline;
+  background-color: white;
+  border-radius: 5px;
+  padding: 5px;
+  margin: 3px;
+  background-repeat: no-repeat;
+  background-size: 50px;
+  background-image: url("Icons/Icon_packs_numbered_list.png");
+  background-position: 5px;
+}

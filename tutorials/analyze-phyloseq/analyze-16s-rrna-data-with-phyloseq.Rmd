@@ -117,6 +117,8 @@ Differential_Abundance <- function(x, y, z) {
   return(sigtab)
 }
 
+# For using a continuous variable during comparisons
+# log2foldchange is interpreted as the amount of change for each additional unit of the continuous avriable
 
 Differential_Abundance_Continuous <- function(x, y, z) {
   
@@ -173,6 +175,75 @@ Differential_Abundance_Continuous <- function(x, y, z) {
   x = sort(x, TRUE)
   sigtab$Species = factor(as.character(sigtab$Species), levels=names(x))
 
+  return(sigtab)
+}
+
+# For 0-inflated data that gives the error:
+# every gene contains at least one zero, cannot compute log geometric means
+
+Differential_Abundance_AltGeo <- function(w, x, y, z) {
+  
+  # Accept the input and give it a human friendly name
+  my_counts <- w
+  my_DESeq2_object <- x
+  my_comparision_list <- y
+  my_pvalue <- z
+  
+  
+  #Do the DESeq2 analysis
+  
+  gm_mean = function(x, na.rm = TRUE){
+    exp(sum(log(x[x > 0]), na.rm = na.rm) / length(x))
+  }
+  
+  geoMeans = apply(counts(my_DESeq2_object), 1, gm_mean)
+  my_DESeq2_object = estimateSizeFactors(my_DESeq2_object, geoMeans = geoMeans)
+  my_DESeq2_object = estimateDispersions(my_DESeq2_object, fitType = "parametric")
+  my_DESeq2_object <- nbinomWaldTest(my_DESeq2_object)
+  
+  #Change the contrast section to compare different variables and groups.
+  res = results(my_DESeq2_object, cooksCutoff = FALSE, contrast= my_comparision_list)
+  
+  #Select only abundances with a p-value of z or below
+  alpha = my_pvalue
+  sigtab = res[which(res$padj < alpha), ]
+  sigtab = cbind(as(sigtab, "data.frame"), as(tax_table(my_counts)[rownames(sigtab), ], "matrix"))
+  
+  #Let's look at the OTUs that were significantly different between the two groups. The following makes a nice ggplot2 summary of the results
+  theme_set(theme_bw())
+  scale_fill_discrete <- function(palname = "Set1", ...) {
+    scale_fill_brewer(palette = palname, ...)
+  }
+  # Phylum order
+  x = tapply(sigtab$log2FoldChange, sigtab$Phylum, function(x) max(x))
+  x = sort(x, TRUE)
+  sigtab$Phylum = factor(as.character(sigtab$Phylum), levels=names(x))
+  
+  # Class order
+  x = tapply(sigtab$log2FoldChange, sigtab$Class, function(x) max(x))
+  x = sort(x, TRUE)
+  sigtab$Class = factor(as.character(sigtab$Class), levels=names(x))
+  
+  # Order order
+  x = tapply(sigtab$log2FoldChange, sigtab$Order, function(x) max(x))
+  x = sort(x, TRUE)
+  sigtab$Order = factor(as.character(sigtab$Order), levels=names(x))
+  
+  # Family order
+  x = tapply(sigtab$log2FoldChange, sigtab$Family, function(x) max(x))
+  x = sort(x, TRUE)
+  sigtab$Family = factor(as.character(sigtab$Family), levels=names(x))
+  
+  # Genus order
+  x = tapply(sigtab$log2FoldChange, sigtab$Genus, function(x) max(x))
+  x = sort(x, TRUE)
+  sigtab$Genus = factor(as.character(sigtab$Genus), levels=names(x))
+  
+  # Species order
+  x = tapply(sigtab$log2FoldChange, sigtab$Species, function(x) max(x))
+  x = sort(x, TRUE)
+  sigtab$Species = factor(as.character(sigtab$Species), levels=names(x))
+  
   return(sigtab)
 }
 
