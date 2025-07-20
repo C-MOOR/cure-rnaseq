@@ -47,8 +47,8 @@ tutorial_options(exercise.timelimit = 360)
 #Normalization by turning counts into proportions
 
 # #Local path
-#miso <- readRDS("MISO_16S.prop.clean.RDS")
-#miso_counts <- readRDS("MISO_16S.clean.RDS")
+ #miso <- readRDS("C:/Users/syork/Desktop/Sayumi/C-MOOR/C-MOOR_DEVELOPMENT/C-MOOR_16S/CMOOR-16S DATA/16S MISO data/MISO_16S.prop.clean.RDS")
+ #miso_counts <- readRDS("C:/Users/syork/Desktop/Sayumi/C-MOOR/C-MOOR_DEVELOPMENT/C-MOOR_16S/CMOOR-16S DATA/16S MISO data/MISO_16S.clean.RDS")
 
 #SciServer paths
 miso <- readRDS( "/home/idies/workspace/c_moor_data/miso-16s/MISO_16S.prop.clean.rds" )
@@ -60,11 +60,12 @@ miso_counts <- readRDS("/home/idies/workspace/c_moor_data/miso-16s/MISO_16S.clea
 # Significant_DEseq2_ASVs <-0
 # sigtab<-0
 
-Differential_Abundance <- function(x, y, z) {
+Differential_Abundance <- function(w, x, y, z) {
   
  # Accept the input and give it a human friendly name
+  my_counts <- w
   my_DESeq2_object <- x
-  my_comparision_list <- y
+  my_comparison_list <- y
   my_pvalue <- z
   
   
@@ -72,12 +73,12 @@ Differential_Abundance <- function(x, y, z) {
   my_DESeq2_object <- DESeq(my_DESeq2_object, test="Wald", fitType="parametric")
  
   #Change the contrast section to compare different variables and groups.
-  res = results(my_DESeq2_object, cooksCutoff = FALSE, contrast= my_comparision_list)
+  res = results(my_DESeq2_object, cooksCutoff = FALSE, contrast= my_comparison_list)
   
   #Select only abundances with a p-value of z or below
   alpha = my_pvalue
   sigtab = res[which(res$padj < alpha), ]
-  sigtab = cbind(as(sigtab, "data.frame"), as(tax_table(miso_counts)[rownames(sigtab), ], "matrix"))
+  sigtab = cbind(as(sigtab, "data.frame"), as(tax_table(my_counts)[rownames(sigtab), ], "matrix"))
 
   #Let's look at the OTUs that were significantly different between the two tissues. The following makes a nice ggplot2 summary of the results
   theme_set(theme_bw())
@@ -120,9 +121,10 @@ Differential_Abundance <- function(x, y, z) {
 # For using a continuous variable during comparisons
 # log2foldchange is interpreted as the amount of change for each additional unit of the continuous avriable
 
-Differential_Abundance_Continuous <- function(x, y, z) {
+Differential_Abundance_Continuous <- function(w, x, y, z) {
   
  # Accept the input and give it a human friendly name
+  my_counts <- w
   my_DESeq2_object <- x
   my_name <- y
   my_pvalue <- z
@@ -138,7 +140,7 @@ Differential_Abundance_Continuous <- function(x, y, z) {
   #Select only abundances with a p-value of z or below
   alpha = my_pvalue
   sigtab = res[which(res$padj < alpha), ]
-  sigtab = cbind(as(sigtab, "data.frame"), as(tax_table(miso_counts)[rownames(sigtab), ], "matrix"))
+  sigtab = cbind(as(sigtab, "data.frame"), as(tax_table(my_counts)[rownames(sigtab), ], "matrix"))
 
   #Let's look at the OTUs that were significantly different between the two tissues. The following makes a nice ggplot2 summary of the results
   theme_set(theme_bw())
@@ -579,7 +581,7 @@ my_miso_DESeq2 <- phyloseq_to_deseq2(miso_counts, design = ~ timepointgroup)
 ```
 
 ```{r run_differential_abundance, exercise=TRUE, eval=FALSE, exercise.setup= "prepare-forDESeq2"}
-Significant_DEseq2_ASVs<-Differential_Abundance(my_miso_DESeq2, my_comparision, 0.05)
+Significant_DEseq2_ASVs<-Differential_Abundance(miso_counts, my_miso_DESeq2, my_comparision, 0.05)
 Significant_DEseq2_ASVs
 ```
 
@@ -592,7 +594,7 @@ We include calling Significant_DEseq2_ASVs as step 4. While we won't check the o
 ```{r prepare-forDESeq2-2}
 my_comparision <-c("timepointgroup", "WO", "BD")
 my_miso_DESeq2 <- phyloseq_to_deseq2(miso_counts, design = ~ timepointgroup)
-Significant_DEseq2_ASVs<-Differential_Abundance(my_miso_DESeq2, my_comparision, 0.05)
+Significant_DEseq2_ASVs<-Differential_Abundance(miso_counts, my_miso_DESeq2, my_comparision, 0.05)
 ```
 
 ```{r significant_DEseq2_genes, exercise=TRUE, eval=FALSE, exercise.setup="prepare-forDESeq2-2"}
@@ -627,7 +629,7 @@ my_miso_DESeq2 <- phyloseq_to_deseq2(miso_counts, design = ~ timepointgroup)
 my_comparision <-c("timepointgroup", "WO", "BD")
 
 # STEP 3: Run the differential abundance analysis at the chosen p-value
-Significant_DEseq2_ASVs<-Differential_Abundance(my_miso_DESeq2, my_comparision, 0.05)
+Significant_DEseq2_ASVs<-Differential_Abundance(miso_counts, my_miso_DESeq2, my_comparision, 0.05)
 
 # STEP 4: Retrieve the list of ASVs with a significant difference in abundance between the chosen groups
 Significant_DEseq2_ASVs
@@ -704,7 +706,7 @@ my_miso_DESeq2 <- phyloseq_to_deseq2(miso_counts, design = ~ timepointgroup)
 my_comparision <-c("timepointgroup", "WO", "BD")
 
 # STEP 3: Run the differential abundance analysis at the chosen p-value
-Significant_DEseq2_ASVs<-Differential_Abundance(my_miso_DESeq2, my_comparision, 0.05)
+Significant_DEseq2_ASVs<-Differential_Abundance(miso_counts, my_miso_DESeq2, my_comparision, 0.05)
 
 # STEP 4: Retrieve the list of ASVs with a significant difference in abundance between the chosen groups
 Significant_DEseq2_ASVs
@@ -754,7 +756,7 @@ my_miso_DESeq2 <- phyloseq_to_deseq2(miso_counts, design = ~ timepointgroup)
 my_comparision <-c("timepointgroup", "WO", "BD")
 
 # STEP 3: Run the differential abundance analysis at the chosen p-value
-Significant_DEseq2_ASVs<-Differential_Abundance(my_miso_DESeq2, my_comparision, 0.05)
+Significant_DEseq2_ASVs<-Differential_Abundance(miso_counts, my_miso_DESeq2, my_comparision, 0.05)
 
 # STEP 4: Retrieve the list of ASVs with a significant difference in abundance between the chosen groups
 Significant_DEseq2_ASVs
@@ -846,7 +848,7 @@ my_miso_DESeq2 <- phyloseq_to_deseq2(miso_counts, design = ~ timepointgroup)
 my_comparision <-c("timepointgroup", "WO", "HD")
 
 # STEP 3: Run the differential abundance analysis at the chosen p-value
-Significant_DEseq2_ASVs<-Differential_Abundance(my_miso_DESeq2, my_comparision, 0.05)
+Significant_DEseq2_ASVs<-Differential_Abundance(miso_counts,my_miso_DESeq2, my_comparision, 0.05)
 
 # STEP 4: Retrieve the list of ASVs with a significant difference in abundance between the chosen groups
 Significant_DEseq2_ASVs
