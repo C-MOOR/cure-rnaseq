@@ -48,20 +48,22 @@ tutorial_options(exercise.timelimit = 360)
 # #Local path
 # 
 # 
-# miso <- readRDS("C:/Users/syork/Desktop/Sayumi/C-MOOR/C-MOOR_DEVELOPMENT/C-MOOR_16S/CMOOR-16S DATA/16S MISO data/MISO_16S.prop.clean.RDS")
-# miso_counts <- readRDS("C:/Users/syork/Desktop/Sayumi/C-MOOR/C-MOOR_DEVELOPMENT/C-MOOR_16S/CMOOR-16S DATA/16S MISO data/MISO_16S.clean.RDS")
+ # miso <- readRDS("C:/Users/syork/Desktop/Sayumi/C-MOOR/C-MOOR_DEVELOPMENT/C-MOOR_16S/CMOOR-16S DATA/16S MISO data/MISO_16S.prop.clean.RDS")
+ # miso_counts <- readRDS("C:/Users/syork/Desktop/Sayumi/C-MOOR/C-MOOR_DEVELOPMENT/C-MOOR_16S/CMOOR-16S DATA/16S MISO data/MISO_16S.clean.RDS")
+# # 
+#  fefifo <- readRDS("C:/Users/syork/Desktop/Sayumi/C-MOOR/C-MOOR_DEVELOPMENT/C-MOOR_16S/CMOOR-16S DATA/16S FeFiFo data/fefifo.RDS")
+#  fefifo_counts <- readRDS("C:/Users/syork/Desktop/Sayumi/C-MOOR/C-MOOR_DEVELOPMENT/C-MOOR_16S/CMOOR-16S DATA/16S FeFiFo data/fefifo_counts.RDS")
 # 
-# fefifo <- readRDS("C:/Users/syork/Desktop/Sayumi/C-MOOR/C-MOOR_DEVELOPMENT/C-MOOR_16S/CMOOR-16S DATA/16S FeFiFo data/fefifo.RDS")
-# fefifo_counts <- readRDS("C:/Users/syork/Desktop/Sayumi/C-MOOR/C-MOOR_DEVELOPMENT/C-MOOR_16S/CMOOR-16S DATA/16S FeFiFo data/fefifo_counts.RDS")
-# 
-# 
-# ad <- readRDS("C:/Users/syork/Desktop/Sayumi/C-MOOR/C-MOOR_DEVELOPMENT/C-MOOR_16S/CMOOR-16S DATA/16S Alzheimers/ad.RDS")
-# ad_counts <- readRDS("C:/Users/syork/Desktop/Sayumi/C-MOOR/C-MOOR_DEVELOPMENT/C-MOOR_16S/CMOOR-16S DATA/16S Alzheimers/ad_counts.RDS")
-# 
-# oc<-readRDS("C:/Users/syork/Desktop/Sayumi/C-MOOR/C-MOOR_DEVELOPMENT/C-MOOR_16S/CMOOR-16S DATA/16S Oral Contraceptives/oc.RDS")
-# oc_counts<-readRDS("C:/Users/syork/Desktop/Sayumi/C-MOOR/C-MOOR_DEVELOPMENT/C-MOOR_16S/CMOOR-16S DATA/16S Oral Contraceptives/oc_counts.RDS")
+# # 
+#  ad <- readRDS("C:/Users/syork/Desktop/Sayumi/C-MOOR/C-MOOR_DEVELOPMENT/C-MOOR_16S/CMOOR-16S DATA/16S Alzheimers/ad.RDS")
+#  ad_counts <- readRDS("C:/Users/syork/Desktop/Sayumi/C-MOOR/C-MOOR_DEVELOPMENT/C-MOOR_16S/CMOOR-16S DATA/16S Alzheimers/ad_counts.RDS")
+# # 
+#  oc<-readRDS("C:/Users/syork/Desktop/Sayumi/C-MOOR/C-MOOR_DEVELOPMENT/C-MOOR_16S/CMOOR-16S DATA/16S Oral Contraceptives/oc.RDS")
+#  oc_counts<-readRDS("C:/Users/syork/Desktop/Sayumi/C-MOOR/C-MOOR_DEVELOPMENT/C-MOOR_16S/CMOOR-16S DATA/16S Oral Contraceptives/oc_counts.RDS")
 # oc_no948N2_counts<-readRDS("C:/Users/syork/Desktop/Sayumi/C-MOOR/C-MOOR_DEVELOPMENT/C-MOOR_16S/CMOOR-16S DATA/16S Oral Contraceptives/oc_no948N2_counts.RDS")
-# oc_no948N2<-readRDS("C:/Users/syork/Desktop/Sayumi/C-MOOR/C-MOOR_DEVELOPMENT/C-MOOR_16S/CMOOR-16S DATA/16S Oral Contraceptives/oc_no948N2.RDS")
+#  oc_no948N2<-readRDS("C:/Users/syork/Desktop/Sayumi/C-MOOR/C-MOOR_DEVELOPMENT/C-MOOR_16S/CMOOR-16S DATA/16S Oral Contraceptives/oc_no948N2.RDS")
+#  oc_dosage_counts<-readRDS("C:/Users/syork/Desktop/Sayumi/C-MOOR/C-MOOR_DEVELOPMENT/C-MOOR_16S/CMOOR-16S DATA/16S Oral Contraceptives/oc_dosage_counts.RDS")
+#  oc_dosage<-readRDS("C:/Users/syork/Desktop/Sayumi/C-MOOR/C-MOOR_DEVELOPMENT/C-MOOR_16S/CMOOR-16S DATA/16S Oral Contraceptives/oc_dosage.RDS")
 
 
 
@@ -78,7 +80,7 @@ ad_counts<- readRDS("/home/idies/workspace/c_moor_data/16s-amplicon-data/ad/ad_c
 # # #FeFiFo
 fefifo <- readRDS("/home/idies/workspace/c_moor_data/16s-amplicon-data/fefifo/fefifo.RDS")
 fefifo_counts<- readRDS("/home/idies/workspace/c_moor_data/16s-amplicon-data/fefifo/fefifo_counts.RDS")
-# #
+# # #
 # # #MISO
 miso <- readRDS( "/home/idies/workspace/c_moor_data/16s-amplicon-data/miso/MISO_16S.prop.clean.rds" )
 miso_counts <- readRDS("/home/idies/workspace/c_moor_data/16s-amplicon-data/miso/MISO_16S.clean.rds")
@@ -88,6 +90,8 @@ oc <- readRDS( "/home/idies/workspace/c_moor_data/16s-amplicon-data/oc/oc.RDS" )
 oc_counts <- readRDS( "/home/idies/workspace/c_moor_data/16s-amplicon-data/oc/oc_counts.RDS" )
 oc_no948N2 <- readRDS( "/home/idies/workspace/c_moor_data/16s-amplicon-data/oc/oc_no948N2.RDS" )
 oc_no948N2_counts <- readRDS( "/home/idies/workspace/c_moor_data/16s-amplicon-data/oc/oc_no948N2_counts.RDS" )
+oc_dosage <- readRDS( "/home/idies/workspace/c_moor_data/16s-amplicon-data/oc/oc_dosage.RDS" )
+oc_dosage_counts <- readRDS( "/home/idies/workspace/c_moor_data/16s-amplicon-data/oc/oc_dosage_counts.RDS" )
 # #
 
 
@@ -97,11 +101,12 @@ oc_no948N2_counts <- readRDS( "/home/idies/workspace/c_moor_data/16s-amplicon-da
 # Significant_DEseq2_ASVs <-0
 # sigtab<-0
 
-Differential_Abundance <- function(x, y, z) {
+Differential_Abundance <- function(w, x, y, z) {
   
  # Accept the input and give it a human friendly name
+  my_counts <- w
   my_DESeq2_object <- x
-  my_comparision_list <- y
+  my_comparison_list <- y
   my_pvalue <- z
   
   
@@ -109,12 +114,12 @@ Differential_Abundance <- function(x, y, z) {
   my_DESeq2_object <- DESeq(my_DESeq2_object, test="Wald", fitType="parametric")
  
   #Change the contrast section to compare different variables and groups.
-  res = results(my_DESeq2_object, cooksCutoff = FALSE, contrast= my_comparision_list)
+  res = results(my_DESeq2_object, cooksCutoff = FALSE, contrast= my_comparison_list)
   
   #Select only abundances with a p-value of z or below
   alpha = my_pvalue
   sigtab = res[which(res$padj < alpha), ]
-  sigtab = cbind(as(sigtab, "data.frame"), as(tax_table(miso_counts)[rownames(sigtab), ], "matrix"))
+  sigtab = cbind(as(sigtab, "data.frame"), as(tax_table(my_counts)[rownames(sigtab), ], "matrix"))
 
   #Let's look at the OTUs that were significantly different between the two tissues. The following makes a nice ggplot2 summary of the results
   theme_set(theme_bw())
@@ -157,9 +162,10 @@ Differential_Abundance <- function(x, y, z) {
 # For using a continuous variable during comparisons
 # log2foldchange is interpreted as the amount of change for each additional unit of the continuous avriable
 
-Differential_Abundance_Continuous <- function(x, y, z) {
+Differential_Abundance_Continuous <- function(w, x, y, z) {
   
  # Accept the input and give it a human friendly name
+  my_counts <- w
   my_DESeq2_object <- x
   my_name <- y
   my_pvalue <- z
@@ -175,7 +181,7 @@ Differential_Abundance_Continuous <- function(x, y, z) {
   #Select only abundances with a p-value of z or below
   alpha = my_pvalue
   sigtab = res[which(res$padj < alpha), ]
-  sigtab = cbind(as(sigtab, "data.frame"), as(tax_table(miso_counts)[rownames(sigtab), ], "matrix"))
+  sigtab = cbind(as(sigtab, "data.frame"), as(tax_table(my_counts)[rownames(sigtab), ], "matrix"))
 
   #Let's look at the OTUs that were significantly different between the two tissues. The following makes a nice ggplot2 summary of the results
   theme_set(theme_bw())
@@ -214,6 +220,7 @@ Differential_Abundance_Continuous <- function(x, y, z) {
 
   return(sigtab)
 }
+
 
 # For 0-inflated data that gives the error:
 # every gene contains at least one zero, cannot compute log geometric means
@@ -690,6 +697,12 @@ oc_no948N2
 #A phyloseq object containing the data as raw counts without the outlier sample (948N2)
 oc_no948N2_counts
 
+#A phyloseq object containing the normalized (proportions) data of all samples with dosage data (oestrogen level: 20, 30 and 35 mcg))
+oc_dosage
+
+#A phyloseq object containing the data as raw counts of all samples with dosage data (oestrogen level: 20, 30 and 35 mcg))
+oc_dosage_counts
+
 ```
 
 
@@ -898,10 +911,10 @@ Please refer to the code chunks below with examples for those specific functions
 my_miso_DESeq2 <- phyloseq_to_deseq2(miso_counts, design = ~ timepointgroup)
 
 # STEP 2: Select the groups to compare
-my_comparision <-c("timepointgroup", "WO", "BD")
+my_comparison <-c("timepointgroup", "WO", "BD")
 
 # STEP 3: Run the differential abundance analysis at the chosen p-value
-Significant_DEseq2_ASVs<-Differential_Abundance(my_miso_DESeq2, my_comparision, 0.05)
+Significant_DEseq2_ASVs<-Differential_Abundance(miso_counts, my_miso_DESeq2, my_comparison, 0.05)
 
 # STEP 4: Retrieve the list of ASVs with a significant difference in abundance between the chosen groups
 Significant_DEseq2_ASVs
@@ -951,10 +964,10 @@ ggplot(Significant_DEseq2_ASVs, aes(x = Phylum, y=log2FoldChange, color= Class))
 my_miso_DESeq2 <- phyloseq_to_deseq2(miso_counts, design = ~ age)
 
 # STEP 2: Select the groups to compare
-name_for_comparision <-"age"
+name_for_comparison <-"age"
 
 # STEP 3: Run the differential abundance analysis at the chosen p-value
-Significant_DEseq2_ASVs<-Differential_Abundance_Continuous(my_miso_DESeq2, name_for_comparision, 0.05)
+Significant_DEseq2_ASVs<-Differential_Abundance_Continuous(miso_counts, my_miso_DESeq2, name_for_comparison, 0.05)
 
 # STEP 4: Retrieve the list of ASVs with a significant difference in abundance between the chosen groups
 Significant_DEseq2_ASVs
