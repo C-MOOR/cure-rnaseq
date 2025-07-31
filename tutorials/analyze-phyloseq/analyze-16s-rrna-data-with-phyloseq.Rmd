@@ -42,6 +42,12 @@ library("DESeq2")
 #Uncomment exercise timelimit when deployed
 tutorial_options(exercise.timelimit = 360)
 
+# <!-- EXERCISE = should we see an interactive code chunk with this code? -->
+# <!-- EVAL = should you run this code? -->
+# <!-- ECHO = should you print the code? -->
+
+
+
 #Load MISO_16S.prop.RDS
 #Normalized data from Leah Guthrie's original phyloseq object, miso2ps.rds
 #Normalization by turning counts into proportions
@@ -50,15 +56,29 @@ tutorial_options(exercise.timelimit = 360)
  #miso <- readRDS("C:/Users/syork/Desktop/Sayumi/C-MOOR/C-MOOR_DEVELOPMENT/C-MOOR_16S/CMOOR-16S DATA/16S MISO data/MISO_16S.prop.clean.RDS")
  #miso_counts <- readRDS("C:/Users/syork/Desktop/Sayumi/C-MOOR/C-MOOR_DEVELOPMENT/C-MOOR_16S/CMOOR-16S DATA/16S MISO data/MISO_16S.clean.RDS")
 
-#SciServer paths
-miso <- readRDS( "/home/idies/workspace/c_moor_data/miso-16s/MISO_16S.prop.clean.rds" )
-miso_counts <- readRDS("/home/idies/workspace/c_moor_data/miso-16s/MISO_16S.clean.rds")
+###################################################################
+#Cloud paths
+###################################################################
 
-# <!-- EXERCISE = should we see an interactive code chunk with this code? -->
-# <!-- EVAL = should you run this code? -->
-# <!-- ECHO = should you print the code? -->
-# Significant_DEseq2_ASVs <-0
-# sigtab<-0
+#Check if we are on SciServer by seeing if the file path to 16S amplicon data on SciServer is available.
+file_path <- "/home/idies/workspace/c_moor_data/16s-amplicon-data/"
+if (file.exists(file_path)) {
+
+  # #########################
+  # #SciServer paths#
+  # ########################
+ 
+  #MISO
+  miso <- readRDS( "/home/idies/workspace/c_moor_data/16s-amplicon-data/miso/MISO_16S.prop.clean.rds" )
+  miso_counts <- readRDS("/home/idies/workspace/c_moor_data/16s-amplicon-data/miso/MISO_16S.clean.rds")
+  
+
+} else {
+  #If not, assume we are on AnVIL and load in the data through packages
+  library("GuthrieMisoData")
+}
+
+
 
 Differential_Abundance <- function(w, x, y, z) {
   
