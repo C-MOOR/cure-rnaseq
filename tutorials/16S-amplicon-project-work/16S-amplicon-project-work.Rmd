@@ -94,6 +94,8 @@ if (file.exists(file_path)) {
   oc_no948N2_counts <- readRDS( "/home/idies/workspace/c_moor_data/16s-amplicon-data/oc/oc_no948N2_counts.RDS" )
   oc_dosage <- readRDS( "/home/idies/workspace/c_moor_data/16s-amplicon-data/oc/oc_dosage.RDS" )
   oc_dosage_counts <- readRDS( "/home/idies/workspace/c_moor_data/16s-amplicon-data/oc/oc_dosage_counts.RDS" )
+  oc_agefirstOCuse <- readRDS( "/home/idies/workspace/c_moor_data/16s-amplicon-data/oc/oc_agefirstOCuse.RDS" )
+  oc_agefirstOCuse_counts <- readRDS( "/home/idies/workspace/c_moor_data/16s-amplicon-data/oc/oc_agefirstOCuse.RDS" )
 
 
 } else {
@@ -294,6 +296,72 @@ Differential_Abundance_AltGeo <- function(w, x, y, z) {
   return(sigtab)
 }
 
+Differential_Abundance_ContinuousAltGeo <- function(w, x, y, z) {
+  
+  # Accept the input and give it a human friendly name
+  my_counts <- w
+  my_DESeq2_object <- x
+  my_name <- y
+  my_pvalue <- z
+  
+  
+  
+  #Do the DESeq2 analysis
+  
+  gm_mean = function(x, na.rm = TRUE){
+    exp(sum(log(x[x > 0]), na.rm = na.rm) / length(x))
+  }
+  
+  geoMeans = apply(counts(my_DESeq2_object), 1, gm_mean)
+  my_DESeq2_object = estimateSizeFactors(my_DESeq2_object, geoMeans = geoMeans)
+  my_DESeq2_object = estimateDispersions(my_DESeq2_object, fitType = "parametric")
+  my_DESeq2_object <- nbinomWaldTest(my_DESeq2_object)
+  
+  #Change the contrast section to compare different variables and groups.
+  res = results(my_DESeq2_object, cooksCutoff = FALSE, name=my_name)
+  
+  #Select only abundances with a p-value of z or below
+  alpha = my_pvalue
+  sigtab = res[which(res$padj < alpha), ]
+  sigtab = cbind(as(sigtab, "data.frame"), as(tax_table(my_counts)[rownames(sigtab), ], "matrix"))
+  
+  #Let's look at the OTUs that were significantly different between the two groups. The following makes a nice ggplot2 summary of the results
+  theme_set(theme_bw())
+  scale_fill_discrete <- function(palname = "Set1", ...) {
+    scale_fill_brewer(palette = palname, ...)
+  }
+  # Phylum order
+  x = tapply(sigtab$log2FoldChange, sigtab$Phylum, function(x) max(x))
+  x = sort(x, TRUE)
+  sigtab$Phylum = factor(as.character(sigtab$Phylum), levels=names(x))
+  
+  # Class order
+  x = tapply(sigtab$log2FoldChange, sigtab$Class, function(x) max(x))
+  x = sort(x, TRUE)
+  sigtab$Class = factor(as.character(sigtab$Class), levels=names(x))
+  
+  # Order order
+  x = tapply(sigtab$log2FoldChange, sigtab$Order, function(x) max(x))
+  x = sort(x, TRUE)
+  sigtab$Order = factor(as.character(sigtab$Order), levels=names(x))
+  
+  # Family order
+  x = tapply(sigtab$log2FoldChange, sigtab$Family, function(x) max(x))
+  x = sort(x, TRUE)
+  sigtab$Family = factor(as.character(sigtab$Family), levels=names(x))
+  
+  # Genus order
+  x = tapply(sigtab$log2FoldChange, sigtab$Genus, function(x) max(x))
+  x = sort(x, TRUE)
+  sigtab$Genus = factor(as.character(sigtab$Genus), levels=names(x))
+  
+  # Species order
+  x = tapply(sigtab$log2FoldChange, sigtab$Species, function(x) max(x))
+  x = sort(x, TRUE)
+  sigtab$Species = factor(as.character(sigtab$Species), levels=names(x))
+  
+  return(sigtab)
+}
 
 ```
 
@@ -900,6 +968,7 @@ We have two special cases for our differential expression analysis.
 
 2. **Differential abundance with 0-inflated data** that gives us the error: *Error in estimateSizeFactorsForMatrix(counts(object), locfunc = locfunc, : every gene contains at least one zero, cannot compute log geometric means*
 
+3. **Differential abundance concerned with a continuous variables in 0-inflated data** for data that meets both conditions outlined above. 
 
 Please refer to the code chunks below with examples for those specific functions. Note that they have some slight differences from the original function!
 :::
@@ -1009,7 +1078,6 @@ ggplot(Significant_DEseq2_ASVs, aes(x = Phylum, y=log2FoldChange, color= Class, 
 #### What's different with 0-inflated data?
 
 - **What's going on underneath?**: We have too many ASVs with 0 counts in our dataset. DESeq2 was originally created for RNA-seq data, where this phenomenon is much rarer than in microbiome data. We will use a slightly different statistical approach in this function to get around this problem.
-- **Changes in the code**: In step 3 we will also provide our count data in addition to our DESeq2 object, comparision groups, and p-value cutoff. 
 
 
 ```{r Try_it_DA_zero-inf, exercise=TRUE, echo=FALSE}
@@ -1052,6 +1120,56 @@ ggplot(Significant_DEseq2_ASVs, aes(x = Phylum, y=log2FoldChange, color= Class))
 ```
 
 ```{r Try_it_DA_zero-inf_blank6, exercise=TRUE, echo=FALSE}
+
+```
+
+### Differential abundance with continuous variables for 0-inflated data code template
+
+#### What's different here?
+
+- **How does this function differ from the above**: If you're here, that means you have a 0-inflated dataset AND are exploring the data using a continuous variable. 
+- **Changes in the code**: This code is identical to the 0-inflated data code; we have changed the underlying function to handle 0-inflated data but these changes are invisible to you.
+
+```{r Try_it_DA_continuous0inf, exercise=TRUE, echo=FALSE}
+# STEP 1: Convert the phyloseq object to a DESeq2 object and tell R the experimental design
+my_DESeq2 <- phyloseq_to_deseq2(oc_dosage_counts, design = ~ totalyearsonOC)
+
+# STEP 2: Select the groups to compare
+name_for_comparison <-"totalyearsonOC"
+
+# STEP 3: Run the differential abundance analysis at the chosen p-value
+Significant_DEseq2_ASVs<-Differential_Abundance_ContinuousAltGeo(oc_dosage_counts, my_DESeq2, name_for_comparison, 0.05)
+
+# STEP 4: Retrieve the list of ASVs with a significant difference in abundance between the chosen groups
+Significant_DEseq2_ASVs
+
+# STEP 5: Plot the results with your chosen x axis and legend
+ggplot(Significant_DEseq2_ASVs, aes(x = Phylum, y=log2FoldChange, color= Class)) + geom_point(size=3, position = "jitter") +
+  theme(axis.text.x = element_text(angle = -90, hjust = 0, vjust=0.5))+
+  ggtitle("my title here")
+```
+
+```{r Try_it_DA_continuous0inf_blank1, exercise=TRUE, echo=FALSE}
+
+```
+
+```{r Try_it_DA_continuous0inf_blank2, exercise=TRUE, echo=FALSE}
+
+```
+
+```{r Try_it_DA_continuous0inf_blank3, exercise=TRUE, echo=FALSE}
+
+```
+
+```{r Try_it_DA_continuous0inf_blank4, exercise=TRUE, echo=FALSE}
+
+```
+
+```{r Try_it_DA_continuous0inf_blank5, exercise=TRUE, echo=FALSE}
+
+```
+
+```{r Try_it_DA_continuous0inf_blank6, exercise=TRUE, echo=FALSE}
 
 ```
 
