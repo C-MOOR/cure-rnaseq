@@ -773,6 +773,12 @@ oc_dosage
 #A phyloseq object containing the data as raw counts of all samples with dosage data (oestrogen level: 20, 30 and 35 mcg))
 oc_dosage_counts
 
+#A phyloseq object containing the normalized (proportions) data of all samples with agefirstOCuse data
+oc_agefirstOCuse
+
+#A phyloseq object containing the data as raw counts of all samples with agefirstOCuse data 
+oc_agefirstOCuse_counts
+
 ```
 
 
