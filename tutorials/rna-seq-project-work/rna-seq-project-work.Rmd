@@ -1,0 +1,408 @@
+---
+title: "RNA-seq Project Work"
+output:
+  learnr::tutorial:
+    css: css/cmoor.css
+    progressive: false #set to true to force stop until exercises are completed with 100% score
+    version: 2.0
+subtitle: |
+  ![](images/cmoor_logo_notext.png){width=60%}
+  [Get Help](https://help.c-moor.org/){target="_blank"}
+runtime: shiny_prerendered
+
+# The fields below will be used to create the first page of the tutorial.  You can use markdown.
+# For summary, all new lines must be indented to the same level as the first line.
+# The image must be surrounded with quotes
+summary: |
+  This module is meant to provide students with a working space for their RNA-seq projects. In addition to the midgut dataset from the main differential expression module, we have a number of other datasets you can explore here as well as code chunks and starting off points to help get you started!
+image: ""
+image_caption: ""
+author:
+  - "Sayumi York, Notre Dame of Maryland University"
+  - "Gauri Paul, Clovis Community College"
+learning_goals:
+  - "Familiarize the datasets available to you"
+  - "Select a dataset that you'd like to work on for your research project"
+  - "Begin your exploratory analysis of your chosen dataset to refine your research questions"
+time: ""
+prerequisites: "None"
+---
+
+```{r setup, include=FALSE}
+#Load learnr
+library(learnr)
+knitr::opts_chunk$set(echo = FALSE)
+tutorial_options(exercise.completion=TRUE) #Uncomment to enable 
+
+#Uncomment exercise timelimit when deployed
+tutorial_options(exercise.timelimit = 360)
+
+#Load libraries
+library("DESeq2")
+library("clusterProfiler")
+library("org.Dm.eg.db")
+library("tidyverse")
+library("org.Mm.eg.db")
+library("MarianesMidgutData")
+
+#####################################
+#Define functions
+####################################
+
+# Generic functions
+
+formatDESeq2Results <- function( x ) {
+  df <- as.data.frame(x)
+  df <- data.frame(rownames(df), df)
+  colnames(df) <- c("GeneID", colnames(df)[-1])
+  rownames(df) <- c()
+  return(df)
+}
+
+# Fly functions
+
+runClusterProfiler <- function (x) {
+  ids <- bitr( x$GeneID, "ENSEMBL", "ENTREZID", "org.Dm.eg.db" )
+  kegg <- enrichKEGG(ids$ENTREZID, "dme", keyType="ncbi-geneid")
+  kegg@result$Description <- sub( " - Drosophila melanogaster \\(fruit fly\\)", "", kegg@result$Description )
+  return(kegg)
+}
+
+getClusterProfilerGenes <- function (x, i) {
+  data.frame( x ) %>%
+    filter( str_detect( Description, i ) ) %>%
+    pull( geneID ) %>%
+    strsplit( "/" ) %>%
+    unlist() %>%
+    bitr( fromType="ENTREZID", toType="SYMBOL", OrgDb="org.Dm.eg.db") %>%
+    pull( SYMBOL )
+}
+
+plotAcrossRegions <- function( x ) {
+  df <- data.frame(counts(midgut)[x,], midgut_tsv$condition)
+  colnames(df) <- c("counts", "region")
+  df <- df[10:30,]
+  df$region <- fct_relevel( factor( df$region ), "a1", "a2_3", "Cu", "LFCFe", "Fe", "p1", "p2_4" )
+  ggplot( df ) +
+    geom_bar( aes( region, counts ), stat="identity" ) +    
+    ggtitle(x)+
+    theme_bw() + 
+    theme( axis.text.x = element_text( angle=90, vjust=0.5 ) )
+}
+
+#Mouse functions
+runClusterProfilerMouse <- function (x) {
+  ids <- bitr( x$GeneID, "ENSEMBL", "ENTREZID", "org.Mm.eg.db" )
+  kegg <- enrichKEGG(ids$ENTREZID, "mmu", keyType="ncbi-geneid")
+  kegg@result$Description <- sub( " - Mus musculus \\(house mouse\\)", "", kegg@result$Description )
+  return(kegg)
+}
+
+getClusterProfilerGenesMouse <- function (x, i) {
+  data.frame( x ) %>%
+    filter( str_detect( Description, i ) ) %>%
+    pull( geneID ) %>%
+    strsplit( "/" ) %>%
+    unlist() %>%
+    bitr( fromType="ENTREZID", toType="SYMBOL", OrgDb="org.Mm.eg.db") %>%
+    pull( SYMBOL )
+}
+
+plotAcrossRegionsMouse <- function( x ) {
+  df <- data.frame(counts(midgut)[x,], midgut_tsv$condition)
+  colnames(df) <- c("counts", "region")
+  df <- df[10:30,]
+  df$region <- fct_relevel( factor( df$region ), "a1", "a2_3", "Cu", "LFCFe", "Fe", "p1", "p2_4" )
+  ggplot( df ) +
+    geom_bar( aes( region, counts ), stat="identity" ) +
+    theme( axis.text.x = element_text( angle=90, vjust=0.5 ) )
+}
+
+
+
+#####################################
+#Local paths
+####################################
+
+#####################################
+#Sciserver paths
+####################################
+
+#####################################
+#Packages
+####################################
+
+
+```
+
+
+<!---
+Don't edit the Welcome page, it will be filled in automatically using the information from the YAML header
+Edit the rest of the document as you like
+There are some suggested sections to provide a standard order across our tutorials, but they may not all be needed/appropriate for all tutorials.
+Section 1. Content 1 has example quizes and exercises
+-->
+
+## Welcome {.splashpage}
+
+### `r rmarkdown::metadata$title`
+
+<div class="splashpage-container">
+  <figure class="splashpage-image">
+  `r rmarkdown::metadata$image`{width=100%}
+  <figcaption class="caption">`r rmarkdown::metadata$image_caption`</figcaption>
+  </figure>
+
+  `r rmarkdown::metadata$summary`
+  
+
+</div>
+
+
+#### Learning Goals
+
+```{r}
+# Extract learning goals from YAML and add HTML tags to make an ordered list
+learningGoals <- rmarkdown::metadata$learning_goals
+learningGoals <- paste("<li>", learningGoals, "</li>", sep="", collapse="")
+
+```
+
+<ol>
+`r learningGoals`
+</ol>
+
+#### Authors:
+
+```{r}
+# Extract authors from YAML and add HTML tags to make a list
+authorList <- rmarkdown::metadata$author
+authorList <- paste("<li>", authorList, "</li>", sep="", collapse="")
+
+```
+
+<ul>
+`r authorList`
+</ul>
+
+
+```{r}
+# Extract the tutorial version from the YAML data and store it so we can print it using inline r code below.  This can't be done directly inline because the code for extracting the YAML data uses backticks
+tv <- rmarkdown::metadata$output$`learnr::tutorial`$version
+```
+
+#### Version: `r tv`
+
+## Research project brainstorming
+
+Coming up with a good research project idea can be an exciting but daunting challenge. <mark>We recommend reviewing the available datasets in this document and choose one to focus on, then trying one of the following approaches.</mark> If you're working with a group, considering assigning every member be responsible for a particular approach and have everyone bring 1 or 2 ideas to your next meeting to vote on.
+
+### Approach 1 - Start with a gene of interest
+
+- Suggested for students that come with a biological phenomenon of interest
+- Involves looking for differentially expressed genes involved in that interest
+
+**1. Identify a biological interest of yours.**: Do you have a disease state or condition you are interested in? How about a particular organ, organ system, cell type, or organelle? You might think about things you've heard on the news or in social media relating to human health. 
+
+**2. Find genes that are involved in your chosen interest**: Look up research papers through sites like PubMed and Google Scholar to look up studies that identify genes of interest for your particular topic. Skim through at least 4-5 different papers that contain some type of gene name or a process (like a metabolic process). Don't delve too deep or get stuck in the details. Just start creating a list of genes.
+
+**3. Confirm that the gene exists in both humans and Drosophila**: If you started with a gene found in humans, look it up on FlyBase to get an "FBgn" ID. If you started with a fly gene, you will have to get the "FBgn" ID on FlyBase and search for an ortholog in Human Protein Atlas. Note that some genes may have slightly different names in each species. 
+
+
+![](images/good-candidate.png){width=100%}
+
+![](images/bad-candidates.png){width=100%}
+
+**4. Use plotAcrossRegions to see if there is an interesting story within your list of genes**: Jump over to the plotAcrossRegions section and run the code on your chosen genes using their FBgn ID. Genes that are likely to be differentially expressed and serve a specialized function in the midgut show an uneven expression across regions. Pay attention to the y-axis. Genes that are unevenly expressed but are found in low counts across all regions are not likely to be key genes.
+
+**5. Confirm that the gene is significantly differentially expressed between regions using the table generated by the DESeq2 analysis**: Compare the regions with the highest and lowest expression (counts). In the generated table, check that the *padj* value is less than 0.05. 
+
+### Approach 2 - Select a category of differentially expressed genes from the ClusterProfiler dot plot
+
+- Suggested for students that aren't sure what they're interested in
+- Start with a group of genes identified as differentially expressed
+- Find an interesting biological story to tell within those genes
+
+**1. Run a ClusterProfiler analysis on two regions.**: Jump to the ClusterProfiler analysis section and choose two sections of the midgut to run the analysis on. From within your dotplot results, choose a catagory with a with low
+*padj* value and high count value. 
+
+**2. Run getClusterProfilerGenes on that category to get a list of differentially expressed genes within the category**: Remember to run getClusterProfilerGenes in the same code chunk as the rest of the ClusterProfiler analysis. 
+
+**3. Pick a gene and follow steps 3-5 from Approach 1**: Repeat for all genes to make an interesting poster based on your chosen metabolic process.
+
+
+### Approach 3 - Select highly differentially expressed genes from the DESeq2 results table
+
+This approach is similar to approach 2.
+
+- Suggested for students that aren't sure what they're interested in
+- Start with a table of significantly differentially expressed genes
+- Find an interesting biological story to tell within those genes
+
+**1. Run the DESeq2 analysis and get a results table**: Choose any two regions of your choice to run through the DESeq2 analysis.
+
+**2. Filter genes with significant *padj* value**: Use the filter function to get a list of genes that are significantly (<0.05 or <0.01 or even <0.001) expressed in the two regions of your choice. Remember to run the filter function within the same code block as the DESeq2 code.
+
+**3. Pick a gene and follow steps 3-5 from Approach 1**: Choose 2-3 from this process that you think have a specialized role in the midgut.
+
+**4. Use databases and read preivously published research to figure out what function your genes are involved in**: Look for a story that is presentable. What is special about this gene? What function does it have? What interactions does it have with other genes? What does being differential expressed signify for this gene? What metabolic process is this gene a part of? Are there any studies done on your gene? What diseases or conditions is the gene linked to?
+
+**5. Use databases to find related genes**: These genes could be involved the in the same biological process; they do not have to be differentially expressed to be able to tell a good story.
+
+## Meet the midgut dataset
+
+The data presented here are from the 2013 study by Marianes and Spradling, **Physiological and stem cell compartmentalization within the Drosophila midgut**. We refer to this study as the midgut study. To best make use of this data we recommend you complete the following modules, some of which use these data as an example for related analyses:
+
+- Model Organisms: *Drosophila melanogaster*
+- Biological Databases: FlyBase
+- Introduction to RNA-seq data
+- Differential expression with DESeq2
+
+### Why should we study the Drosophila midgut?
+
+![](images/sadaqat.png){width=100%}
+
+<p class=caption> **A figure comparing the human intestine and fly intestine by Sadaqat et al. 2021**: Different colored sections represent sections that serve a similar function between the two species.</p>
+
+*Drosophila melanogaster*, the fruit fly, is one of the most popular model organisms in research. *Drosophila* and humans have many **orthologs** - genes that come from the same ancestor - that make them useful for foundational research. Scientists start with cheap models like the fly and build a body of evidence before moving on to more complex organisms including vertebrates like mice and humans themselves. The image above shows how the human intestine is similar to the fly intestine (note that not all structures/functions are shared in both).
+
+### Different parts of the midgut we can compare
+
+Just like the human intestine, the *Drosophila* midgut can be seen as different specialized sections, each of which serves a particular role in digestion. Understanding what genes are expressed in each section of the *Drosophila* midgut can give us a clue to what the human ortholog might be doing.
+
+> "…certain digestive processes—such as the breakdown or uptake of particular nutrients—are known to occur only in a specific portion of the intestine. For example, in fruit flies, a region in the middle of the intestine is acidified, and may act like an extra stomach. And in both fruit flies and mammals, iron is taken up mostly in the area of the gut just after the stomach."
+
+> Marianes & Spradling, (2013)
+
+![](images/midgut_objects.png){width=100%}
+
+We have subsetted the data to make research easier for you. The above image shows the general functions of each section of the midgut. The bolded text (example: a1) is what you will use in your code when referring to that specific section.
+
+## Meet the gutbrain dataset
+
+:::{.attention_box_pause}
+:::{.attention_header_box_pause}
+:::{.attention_title}
+#### **The gutbrain dataset is still in development**
+:::
+:::
+::: {.attention_content}
+This dataset is currently undergoing pilot testing at Clovis Community College (Fall 2025). We do not have as extensive materials to support some resources such as the Mouse Genome Informatics (MGI) database yet. Regardless, interested students are welcome to test these data. We look forward to your research posters!
+:::
+:::
+
+<br>
+
+These data are from the 2019 study by Sharon et al. titled **Human Gut Microbiota from Autism Spectrum Disorder Promote Behavioral Symptoms in Mice**. We will refer to these data as the gutbrain dataset, as the original study explores the gut-brain axis - the link between the gut microbiome and the central nervous system. To best make use of this data we recommend you complete the following modules: 
+
+- Model Organisms: *Mus musculus* (In development)
+- Biological Databases: Mouse Genome Informatics (In development)
+- Introduction to RNA-seq data
+- Differential expression with DESeq2
+
+### The gut-brain axis and Autism spectrum disorder
+
+Over the last couple of decades, considerable research effort has been invested into exploring the **gut-brain axis**. It is now widely accepted that the gastrointestinal tract has a bidirectional relationship with the central nervous system, wherein each provides molecular feedback to each other. Consequently, many scientists are interested how the gut microbiome (the microbes that live in your GI tract) could impact human health, including chronic health conditions and neurodiverse development such as autism spectrum disorder (ASD).
+
+Autism is a developmental disorder characterized by atypical social behaviors and experiences as well as repetitive behaviors. The exact number of people with autism in the US is unknown, some estimate that 1 in approximately 60 individuals are affected. 
+
+### The gutbrain study design
+
+
+![](images/sharon-study-design.png){width=100%}
+
+Sharon et al. took gut microbiome (fecal) samples from children diagnosed with ASD and neurotypical children (controls) and implanted them into germ-free mice (mice without a microbiome). This parental generation of mice bred amongst themselves and produced offspring that were randomly selected for either behavior tests or brain tissue sampling.
+
+The behavioral tests showed that offspring generation mice whose parents had a microbiome transplant from a child with ASD had more behavior characteristic of ASD, such as decreased movement and communication compared to the offspring of control-implanted mice.  
+
+Brain tissue samples included two areas of the brain responsible for social behavior, the **Prefrontal cortex (PFC)** and the **Striatum (STR)**. In addition to gene expression from RNA-seq data, the researchers also explored alternative splicing and metabolomics analyses. 
+
+
+![](images/sharon-comparisons.png){width=100%}
+Although there are more comparisons than the above 4 listed, we recommend your analyses focus on one of these 4, as they are the most straightforward comparisons.
+
+### Working with mouse functions and resources
+
+Our standard RNA-seq miniCURE focuses on the midgut dataset and uses *Drosophila* based resources, such as FlyBase. Since the gutbrain dataset is based on mouse samples we have databases and functions specifically for mice that you should use instead:
+
+
+![](images/mgi_format.png){width=100%}
+- [**Mouse genome informatics (MGI)**](https://www.informatics.jax.org/) is the database you should use instead of FlyBase. MGI uses the Ensembl Gene Model ID format, where mouse genes take the format ENSMUG###########. Of course, since they're in different formats, you will get no results if you search for a fly gene in MGI or a mouse gene in FlyBase. 
+
+- **Use the specialized functions getClusterProfilerGenesMouse, plotAcrossRegionsMouse, and runClusterProfilerMouse**: These functions should work seamlessly with mouse data with no changes in how the code looks to you. 
+
+
+
+## DESeq2: Differential expression analysis
+- **Objective**:
+- **Best for questions like**:
+- **Example question**: 
+- **Data format**: 
+
+
+### Bar plot code template
+
+```{r barplot, exercise=TRUE, echo=FALSE}
+#Subsetting based on a group
+my_subset <- subset_taxa(miso, Phylum == "Firmicutes")
+
+#Plotting using the new subset
+plot_bar(my_subset, x= "subject", fill = "Class", title = "My title") +
+  geom_bar(aes(color = Class, fill = Class), stat = "identity", position = "stack")
+```
+
+```{r try_it_out_barplot1, exercise=TRUE, echo=FALSE}
+
+```
+
+```{r try_it_out_barplot2, exercise=TRUE, echo=FALSE}
+
+```
+
+```{r try_it_out_barplot3, exercise=TRUE, echo=FALSE}
+
+```
+```{r try_it_out_barplot4, exercise=TRUE, echo=FALSE}
+
+```
+```{r try_it_out_barplot5, exercise=TRUE, echo=FALSE}
+
+```
+```{r try_it_out_barplot6, exercise=TRUE, echo=FALSE}
+
+```
+
+## Common errors
+
+
+## Works cited
+
+- Sadaqat, Zoha, Shivam Kaushik, and Pinky Kain. "Gut Feeding the Brain: Drosophila Gut an Animal Model for Medicine to Understand Mechanisms Mediating Food Preferences." Preclinical Animal Modeling in Medicine. IntechOpen, 2021.
+
+- Love, Michael I., Wolfgang Huber, and Simon Anders. "Moderated estimation of fold change and dispersion for RNA-seq data with DESeq2." Genome biology 15 (2014): 1-21.
+
+
+- Aden-Buie G, Schloerke B, Allaire J, Rossell Hayes A (2023). learnr: Interactive Tutorials for R. <https://rstudio.github.io/learnr/>, <https://github.com/rstudio/learnr>
+
+- Sharon, Gil, et al. "Human gut microbiota from autism spectrum disorder promote behavioral symptoms in mice." Cell 177.6 (2019): 1600-1618.
+
+- R Core Team (2024). R: A Language and Environment for Statistical Computing. R Foundation for Statistical Computing, Vienna, Austria.
+  <https://www.R-project.org/>.
+  
+- Stoudt, Sara, Anthony D. Scotina, and Karsten Luebke. "Supporting Statistics and Data Science Education with learnr." Technology Innovations in Statistics Education 14.1 (2022).
+
+- Wickham, Hadley. "ggplot2." Wiley interdisciplinary reviews: computational statistics 3.2 (2011): 180-185.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
