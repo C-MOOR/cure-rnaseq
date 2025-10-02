@@ -195,7 +195,7 @@ tv <- rmarkdown::metadata$output$`learnr::tutorial`$version
 
 ## Research project brainstorming
 
-Coming up with a good research project idea can be an exciting but daunting challenge. <mark>We recommend reviewing the available datasets in this document and choose one to focus on, then trying one of the following approaches.</mark> If you're working with a group, considering assigning every member be responsible for a particular approach and have everyone bring 1 or 2 ideas to your next meeting to vote on.
+Coming up with a good research project idea can be an exciting but daunting challenge. <mark>**We recommend reviewing the available datasets in this document and choose one to focus on, then trying one of the following approaches.**</mark> If you're working with a group, considering assigning every member be responsible for a particular approach and have everyone bring 1 or 2 ideas to your next meeting to vote on.
 
 ### Approach 1 - Start with a gene of interest
 
@@ -287,6 +287,72 @@ You will need to identify genes of interest, formulate a research question aroun
 - The leaky gut hypothesis is centered on the idea that conditions like Celiac's disease may be caused by irregular gut intestine permeability. What genes are involved in maintaining the gut's defenses and are they the same across all gut regions? 
 - What genes are involved in gut inflammation and how might they impact other genes in shared pathways?
 
+### Differential expression template (Drosophila midgut dataset)
+
+```{r deseq2-table-one-pager, exercise=TRUE, echo=FALSE}
+temp <- results(midgut, contrast = c("condition", "REGION1", "REGION2") )
+R1_vs_R2 <- formatDESeq2Results(temp)
+R1_vs_R2
+```
+
+```{r try_it_out_deseq2-table-a, exercise=TRUE, echo=FALSE}
+
+```
+```{r try_it_out_deseq2-table-b, exercise=TRUE, echo=FALSE}
+
+```
+```{r try_it_out_deseq2-table-c, exercise=TRUE, echo=FALSE}
+
+```
+
+### ClusterProfiler the for Drosophila midgut dataset
+
+```{r clusterprofiler_drosophila-onepager, exercise=TRUE, echo=FALSE}
+# Run differential expression analysis
+temp <- results(midgut, contrast = c("condition", "REGION1", "REGION2") )
+R1_vs_R2 <- formatDESeq2Results(temp)
+sig_genes <- filter(R1_vs_R2, padj <= 0.01)
+
+# Run ClusterProfiler analysis
+R1_vs_R2_clusters <- runClusterProfiler(sig_genes)
+
+# Look at the dotplot to see the groups of genes
+dim(R1_vs_R2_clusters)
+dotplot(R1_vs_R2_clusters, showCategory=34, title="YOUR TITLE HERE", font.size=10, label_format = 50)
+
+# Get the gene symbols for a group of genes
+getClusterProfilerGenes(R1_vs_R2_clusters, "YOUR CATEGORY HERE")
+```
+
+```{r try_it_out_clusterprofiler_drosophila-a, exercise=TRUE, echo=FALSE}
+
+```
+```{r try_it_out_clusterprofiler_drosophila-b, exercise=TRUE, echo=FALSE}
+
+```
+```{r try_it_out_clusterprofiler_drosophila-c, exercise=TRUE, echo=FALSE}
+
+```
+
+### plotAcrossRegions the for Drosophila midgut dataset
+
+- FlyBase IDs take the format FBgn#######
+
+```{r plotAcrossRegions_drosophila-one-pager, exercise=TRUE, echo=FALSE}
+plotAcrossRegions("YOUR FLYBASE ID HERE")
+```
+
+
+```{r plotAcrossRegions_drosophila-try-it-a, exercise=TRUE, echo=FALSE}
+
+```
+```{r plotAcrossRegions_drosophila-try-it-b, exercise=TRUE, echo=FALSE}
+
+```
+```{r plotAcrossRegions_drosophila-try-it-c, exercise=TRUE, echo=FALSE}
+
+```
+
 
 ## Meet the gutbrain dataset
 
@@ -350,49 +416,259 @@ You will need to identify genes of interest, formulate a research question aroun
 - Phineas Gage was involved in an accident that damaged his frontal lobe, which contains the prefrontal cortex. Following this incident, his personality underwent a dramatic change, suggesting that the frontal lobe regulates one's personality, executive decision making, and interactions with others. What genes are involved in executive function and focus, and how might they impact individuals with ASD and neurotypical individuals?
 - Phineas Gage's case also demonstrated for us how brain regions are specialized. What genes are only expressed in the striatum or prefrontal cortex? What genes and/or pathways are involved in the two regions communicating with each other?
 
+### Differential expression template (Mouse gutbrain dataset)
+
+```{r deseq2-tablemouse-one-pager, exercise=TRUE, echo=FALSE}
+temp <- results(gutbrain, contrast = c("condition", "REGION1", "REGION2") )
+R1_vs_R2 <- formatDESeq2Results(temp)
+R1_vs_R2
+```
+
+```{r try_it_out_deseq2-tablemouse-a, exercise=TRUE, echo=FALSE}
+
+```
+```{r try_it_out_deseq2-tablemouse-b, exercise=TRUE, echo=FALSE}
+
+```
+```{r try_it_out_deseq2-tablemouse-c, exercise=TRUE, echo=FALSE}
+
+```
+
+
+### ClusterProfiler for the mouse gutbrain dataset
+
+```{r clusterprofiler_mouse-one-pager, exercise=TRUE, echo=FALSE}
+# Run differential expression analysis
+temp <- results(gutbrain, contrast = c("condition", "REGION1", "REGION2") )
+R1_vs_R2 <- formatDESeq2Results(temp)
+sig_genes <- filter(R1_vs_R2, padj <= 0.01)
+
+# Run ClusterProfiler analysis
+R1_vs_R2_clusters <- runClusterProfilerMouse(sig_genes)
+
+# Look at the dotplot to see the groups of genes
+dim(R1_vs_R2_clusters)
+dotplot(R1_vs_R2_clusters, showCategory=34, title="YOUR TITLE HERE", font.size=10, label_format = 50)
+
+# Get the gene symbols for a group of genes
+getClusterProfilerGenesMouse(R1_vs_R2_clusters, "YOUR CATEGORY HERE")
+```
+
+```{r try_it_out_clusterprofiler_mouse-a, exercise=TRUE, echo=FALSE}
+
+```
+```{r try_it_out_clusterprofiler_mouse-b, exercise=TRUE, echo=FALSE}
+
+```
+```{r try_it_out_clusterprofiler_mouse-c, exercise=TRUE, echo=FALSE}
+
+```
+
+
+### plotAcrossRegionsMouse the for mouse gutbrain dataset
+
+- MGI IDs take the format ENSMUG########### 
+
+```{r plotAcrossRegions_mouse-one-pager, exercise=TRUE, echo=FALSE}
+plotAcrossRegionsMouse("YOUR MGI ID HERE")
+```
+
+```{r plotAcrossRegions_mouse-try-it-a, exercise=TRUE, echo=FALSE}
+
+```
+```{r plotAcrossRegions_mouse-try-it-b, exercise=TRUE, echo=FALSE}
+
+```
+```{r plotAcrossRegions_mouse-try-it-c, exercise=TRUE, echo=FALSE}
+
+```
 
 
 
 ## DESeq2: Differential expression analysis
-- **Objective**:
-- **Best for questions like**:
-- **Example question**: 
-- **Data format**: 
+
+- **Objective**: Identify what genes are significantly differentially expressed between different conditions
+- **Example question**: What genes are expressed in the anterior vs posterior regions of the gut? What genes are expressed in muscle cells vs. neurons? 
+- **Why is this important**: It can help us figure out what genes are important in different places of the body and/or the function of the gene/body part. 
+
+Not every gene is made in every cell in the body. Different cells have different genes “turned on” to create specialized shapes and functions. When we say a gene is on, we mean that the cell is expressing that gene – creating the protein the gene codes for. Higher gene expression means that more of that protein is being made in that cell/body part/condition compared to some other cell/body part/condition. When one gene is highly expressed in one condition compared to others, this suggests that the gene serves an important, perhaps specialized function, in this condition.
+
+### REGION1 and REGION2
+
+![](images/deseq2-regions.png){width=100%}
+
+- **REGION1**: Put the name of one of the groups you're interested in here.
+- **REGION2**: Put the other group you're interested in here. This region is the baseline condition.
 
 
-### Bar plot code template
+### Interpreting results
 
-```{r barplot, exercise=TRUE, echo=FALSE}
-#Subsetting based on a group
-my_subset <- subset_taxa(miso, Phylum == "Firmicutes")
+- **baseMean**: The mean expression level for this gene across all samples in reads
+- **log2FoldChange**: How much higher this gene is expressed in the first region (REGION1) than in the second region (REGION2) in a log2 scale. A positive number means the gene is higher in REGION1 than in REGION2, and a negative number means the gene is lower in REGION1 than in REGION2
+- ***padj***: (If this variable doesn’t show up on your screen, click the little arrow at the top right of the table, next to the column names. This will let you scroll through all the columns if they don’t fit on your screen). This is the “adjusted p-value” for the gene after statistical corrections are made for multiple comparisons. Use this, not pvalue when reporting your results.
 
-#Plotting using the new subset
-plot_bar(my_subset, x= "subject", fill = "Class", title = "My title") +
-  geom_bar(aes(color = Class, fill = Class), stat = "identity", position = "stack")
+
+### Differential expression template (Drosophila midgut dataset)
+
+```{r deseq2-table, exercise=TRUE, echo=FALSE}
+temp <- results(midgut, contrast = c("condition", "REGION1", "REGION2") )
+R1_vs_R2 <- formatDESeq2Results(temp)
+R1_vs_R2
 ```
 
-```{r try_it_out_barplot1, exercise=TRUE, echo=FALSE}
+```{r try_it_out_deseq2-table-1, exercise=TRUE, echo=FALSE}
+
+```
+```{r try_it_out_deseq2-table-2, exercise=TRUE, echo=FALSE}
+
+```
+```{r try_it_out_deseq2-table-3, exercise=TRUE, echo=FALSE}
+
+```
+### Differential expression template (Mouse gutbrain dataset)
+
+```{r deseq2-tablemouse, exercise=TRUE, echo=FALSE}
+temp <- results(gutbrain, contrast = c("condition", "REGION1", "REGION2") )
+R1_vs_R2 <- formatDESeq2Results(temp)
+R1_vs_R2
+```
+
+```{r try_it_out_deseq2-table-4, exercise=TRUE, echo=FALSE}
+
+```
+```{r try_it_out_deseq2-table-5, exercise=TRUE, echo=FALSE}
+
+```
+```{r try_it_out_deseq2-table-6, exercise=TRUE, echo=FALSE}
 
 ```
 
-```{r try_it_out_barplot2, exercise=TRUE, echo=FALSE}
+
+## ClusterProfiler: Differential expression analysis
+
+- **Objective(s)**: **1)** Get information on what the biological importance of the differentially expressed genes (what do they do?), **2)** identify what biological pathways have the highest count of differentially expressed genes, and **3)** get the name of genes within these pathways.
+
+- **Example question**: What biological pathways have the most number of differentially expressed genes?
+
+- **Why is this important**: We can use this analysis to get genes of interest and also get a rough idea of how many related genes are also differentially expressed.
+
+### REGION 1, REGION2, and a category
+
+- **REGION1**: Put the name of one of the groups you're interested in here.
+- **REGION2**: Put the other group you're interested in here. This region is the baseline condition.
+- **YOUR CATEGORY HERE**: Choose a category from the dotplot on the Y-axis. Make sure your spelling is correct. This input is also case sensitive. If you do not include this line of code or provide a category the analysis will not give you the gene names.
+
+### Interpreting results
+
+- **p.adjust:** A significance score assigned to the overall pathway that tells us to what degree the pathway is differentially expressed. A lower number (more red in the dotplot) represents a higher significance score. In this case, our dotplot only shows significantly differentially expressed genes (padj<0.05). However, some genes are still more significantly differentially expressed than others.
+- **count:** The number of differentially expressed genes in a given pathway.
+- **GeneRatio:** The proportion of genes in a given pathway that are differentially expressed, given as a decimal. Imagine a scenario where you have 5 differentially expressed genes in a pathway of 10 genes. A whopping 50% of the genes in the pathway are differentially expressed! This could signify a deep link between this biological pathway and your two conditions. If you instead have 5 differentially expressed genes in a pathway of 100, that means only 5% of genes within the pathway are different between the two conditions. While this does not discredit these individual genes, it implies that overall the pathway is not strongly affected between the two conditions.
+- **List of genes**: If a category from the y-axis is swapped out for YOUR CATEGORY HERE, a list of differentially expressed genes in the chosen category/pathway will be listed.
+
+### ClusterProfiler the for Drosophila midgut dataset
+
+```{r clusterprofiler_drosophila, exercise=TRUE, echo=FALSE}
+# Run differential expression analysis
+temp <- results(midgut, contrast = c("condition", "REGION1", "REGION2") )
+R1_vs_R2 <- formatDESeq2Results(temp)
+sig_genes <- filter(R1_vs_R2, padj <= 0.01)
+
+# Run ClusterProfiler analysis
+R1_vs_R2_clusters <- runClusterProfiler(sig_genes)
+
+# Look at the dotplot to see the groups of genes
+dim(R1_vs_R2_clusters)
+dotplot(R1_vs_R2_clusters, showCategory=34, title="YOUR TITLE HERE", font.size=10, label_format = 50)
+
+# Get the gene symbols for a group of genes
+getClusterProfilerGenes(R1_vs_R2_clusters, "YOUR CATEGORY HERE")
+```
+
+```{r try_it_out_clusterprofiler_drosophila-1, exercise=TRUE, echo=FALSE}
+
+```
+```{r try_it_out_clusterprofiler_drosophila-2, exercise=TRUE, echo=FALSE}
+
+```
+```{r try_it_out_clusterprofiler_drosophila-3, exercise=TRUE, echo=FALSE}
 
 ```
 
-```{r try_it_out_barplot3, exercise=TRUE, echo=FALSE}
+
+### ClusterProfiler for the mouse gutbrain dataset
+
+```{r clusterprofiler_mouse, exercise=TRUE, echo=FALSE}
+# Run differential expression analysis
+temp <- results(gutbrain, contrast = c("condition", "REGION1", "REGION2") )
+R1_vs_R2 <- formatDESeq2Results(temp)
+sig_genes <- filter(R1_vs_R2, padj <= 0.01)
+
+# Run ClusterProfiler analysis
+R1_vs_R2_clusters <- runClusterProfilerMouse(sig_genes)
+
+# Look at the dotplot to see the groups of genes
+dim(R1_vs_R2_clusters)
+dotplot(R1_vs_R2_clusters, showCategory=34, title="YOUR TITLE HERE", font.size=10, label_format = 50)
+
+# Get the gene symbols for a group of genes
+getClusterProfilerGenesMouse(R1_vs_R2_clusters, "YOUR CATEGORY HERE")
+```
+
+```{r try_it_out_clusterprofiler_mouse-4, exercise=TRUE, echo=FALSE}
 
 ```
-```{r try_it_out_barplot4, exercise=TRUE, echo=FALSE}
+```{r try_it_out_clusterprofiler_mouse-5, exercise=TRUE, echo=FALSE}
 
 ```
-```{r try_it_out_barplot5, exercise=TRUE, echo=FALSE}
-
-```
-```{r try_it_out_barplot6, exercise=TRUE, echo=FALSE}
+```{r try_it_out_clusterprofiler_mouse-6, exercise=TRUE, echo=FALSE}
 
 ```
 
-## Common errors
+## plotAcrossRegions
+
+- **Objective**: Create a graph that shows us the gene expression for a single gene across all conditions (regions)
+
+- **Example questions**: In what region of the midgut is this gene expressed? Is this gene expressed in both the striatum and prefrontal cortex? In both ASD and control individuals?
+
+- **Why is this important**: This helps us profile what genes are specialized for a given condition based on their level of gene expression across all conditions. Some genes may be used in all conditions and have a less specialized function. Genes that exclusively expressed in only some (or one) condition at high levels likely play a specialized function in that condition.
+
+### plotAcrossRegions the for Drosophila midgut dataset
+
+- FlyBase IDs take the format FBgn#######
+
+```{r plotAcrossRegions_drosophila, exercise=TRUE, echo=FALSE}
+plotAcrossRegions("YOUR FLYBASE ID HERE")
+```
+
+
+```{r plotAcrossRegions_drosophila-try-it-1, exercise=TRUE, echo=FALSE}
+
+```
+```{r plotAcrossRegions_drosophila-try-it-2, exercise=TRUE, echo=FALSE}
+
+```
+```{r plotAcrossRegions_drosophila-try-it-3, exercise=TRUE, echo=FALSE}
+
+```
+
+
+### plotAcrossRegionsMouse the for mouse gutbrain dataset
+
+- MGI IDs take the format ENSMUG########### 
+
+```{r plotAcrossRegions_mouse, exercise=TRUE, echo=FALSE}
+plotAcrossRegionsMouse("YOUR MGI ID HERE")
+```
+
+```{r plotAcrossRegions_mouse-try-it-1, exercise=TRUE, echo=FALSE}
+
+```
+```{r plotAcrossRegions_mouse-try-it-2, exercise=TRUE, echo=FALSE}
+
+```
+```{r plotAcrossRegions_mouse-try-it-3, exercise=TRUE, echo=FALSE}
+
+```
 
 
 ## Works cited
