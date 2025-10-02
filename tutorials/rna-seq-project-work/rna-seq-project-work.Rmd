@@ -278,6 +278,16 @@ Just like the human intestine, the *Drosophila* midgut can be seen as different 
 
 We have subsetted the data to make research easier for you. The above image shows the general functions of each section of the midgut. The bolded text (example: a1) is what you will use in your code when referring to that specific section.
 
+### Some research ideas to get you started
+
+You will need to identify genes of interest, formulate a research question around them, and check that they are in the midgut dataset.
+
+- Look up gastrointestinal conditions such as diabetes, irritable bowel syndrome, and Celiac's disease. What genes and/or pathways are involved in these disorders?
+- We now know the gut is inextricably linked to our brains, immune system, and circadian rhythms. What genes are involved in these connecting systems? What genes are used to communicate between these systems?
+- The leaky gut hypothesis is centered on the idea that conditions like Celiac's disease may be caused by irregular gut intestine permeability. What genes are involved in maintaining the gut's defenses and are they the same across all gut regions? 
+- What genes are involved in gut inflammation and how might they impact other genes in shared pathways?
+
+
 ## Meet the gutbrain dataset
 
 :::{.attention_box_pause}
@@ -330,6 +340,16 @@ Our standard RNA-seq miniCURE focuses on the midgut dataset and uses *Drosophila
 - [**Mouse genome informatics (MGI)**](https://www.informatics.jax.org/) is the database you should use instead of FlyBase. MGI uses the Ensembl Gene Model ID format, where mouse genes take the format ENSMUG###########. Of course, since they're in different formats, you will get no results if you search for a fly gene in MGI or a mouse gene in FlyBase. 
 
 - **Use the specialized functions getClusterProfilerGenesMouse, plotAcrossRegionsMouse, and runClusterProfilerMouse**: These functions should work seamlessly with mouse data with no changes in how the code looks to you. 
+
+### Some research ideas to get you started
+
+You will need to identify genes of interest, formulate a research question around them, and check that they are in the gutbrain dataset.
+
+- People with ASD often have neurological comorbidities (additional medical conditions), such as OCD, ADHD, anxiety, migranes, and epilepsy. What genes are linked to these conditions
+- Some people with ASD have a greatly expanded memory, especially for a topic of interest. Other individuals have a reduced working memory compared to neurotypical people. What genes are involved in memory? Are there different pathways involved in long-term and short-term memory? How about genes relating to recognizing specific kinds of information, such as language, numbers, or faces? 
+- Phineas Gage was involved in an accident that damaged his frontal lobe, which contains the prefrontal cortex. Following this incident, his personality underwent a dramatic change, suggesting that the frontal lobe regulates one's personality, executive decision making, and interactions with others. What genes are involved in executive function and focus, and how might they impact individuals with ASD and neurotypical individuals?
+- Phineas Gage's case also demonstrated for us how brain regions are specialized. What genes are only expressed in the striatum or prefrontal cortex? What genes and/or pathways are involved in the two regions communicating with each other?
+
 
 
 
