@@ -90,6 +90,7 @@ plotAcrossRegions <- function( x ) {
     theme( axis.text.x = element_text( angle=90, vjust=0.5 ) )
 }
 
+
 #Mouse functions
 runClusterProfilerMouse <- function (x) {
   ids <- bitr( x$GeneID, "ENSEMBL", "ENTREZID", "org.Mm.eg.db" )
@@ -108,21 +109,53 @@ getClusterProfilerGenesMouse <- function (x, i) {
     pull( SYMBOL )
 }
 
-plotAcrossRegionsMouse <- function( x ) {
-  df <- data.frame(counts(midgut)[x,], midgut_tsv$condition)
-  colnames(df) <- c("counts", "region")
-  df <- df[10:30,]
-  df$region <- fct_relevel( factor( df$region ), "a1", "a2_3", "Cu", "LFCFe", "Fe", "p1", "p2_4" )
+plotAcrossTissue <- function( x ) {
+  df <- data.frame(counts(brain)[x,], brain_metadata$tissue, row.names = row.names(brain_metadata))
+  colnames(df) <- c("counts", "tissue")  
+  df$tissue<- fct_relevel( factor( df$tissue), "STR", "PFC")
   ggplot( df ) +
-    geom_bar( aes( region, counts ), stat="identity" ) +
+    geom_bar( aes( tissue, counts ), stat="identity" ) +
+    ggtitle(x)+
+    theme_bw() + 
     theme( axis.text.x = element_text( angle=90, vjust=0.5 ) )
 }
 
+plotAcrossMice <- function( x ) {
+  df <- data.frame(counts(brain)[x,], brain_metadata$bio_sample, row.names = row.names(brain_metadata))
+  colnames(df) <- c("counts", "bio_sample")  
+  df$bio_sample <- fct_relevel( factor( df$bio_sample), "PFC_TD_1_1", "PFC_TD_1_2", "PFC_TD_1_3","PFC_TD_1_4",
+                               "PFC_TD_2_1", "PFC_TD_2_2", "PFC_TD_2_3","PFC_TD_2_4",
+                               "PFC_TD_3_1","PFC_TD_3_2","PFC_TD_3_3","PFC_TD_3_4","PFC_TD_3_5","PFC_TD_3_6","PFC_TD_3_7",
+                               "Striatum_TD_1_1","Striatum_TD_1_2","Striatum_TD_1_3","Striatum_TD_1_4",
+                               "Striatum_TD_2_1","Striatum_TD_2_2","Striatum_TD_2_3","Striatum_TD_2_4",
+                               "Striatum_TD_3_1","Striatum_TD_3_2","Striatum_TD_3_3","Striatum_TD_3_4","Striatum_TD_3_6","Striatum_TD_3_7")
+  ggplot( df ) +
+    geom_bar( aes( bio_sample, counts ), stat="identity" ) +
+    ggtitle(x)+
+    theme_bw() + 
+    theme( axis.text.x = element_text( angle=90, vjust=0.5 ) )
+}
+
+
+plotAcrossHostDonor<- function( x ) {
+  df <- data.frame(counts(brain)[x,], brain_metadata$host_donor_tissue, row.names = row.names(brain_metadata))
+  colnames(df) <- c("counts", "host_donor_tissue")  
+  df$host_donor_tissue <- fct_relevel( factor( df$host_donor_tissue), "TD_1_STR","TD_2_STR","TD_3_STR","TD_1_PFC", "TD_2_PFC", "TD_3_PFC")
+  ggplot( df ) +
+    geom_bar( aes( host_donor_tissue, counts ), stat="identity" ) +
+    ggtitle(x)+
+    theme_bw() + 
+    theme( axis.text.x = element_text( angle=90, vjust=0.5 ) )
+}
 
 
 #####################################
 #Local paths
 ####################################
+
+brain<-readRDS("brain.RDS")
+brain_metadata<-read.csv("brain_metadata.csv", row.names = 1)
+
 
 #####################################
 #Sciserver paths
@@ -197,6 +230,8 @@ tv <- rmarkdown::metadata$output$`learnr::tutorial`$version
 
 Coming up with a good research project idea can be an exciting but daunting challenge. <mark>**We recommend reviewing the available datasets in this document and choose one to focus on, then trying one of the following approaches.**</mark> If you're working with a group, considering assigning every member be responsible for a particular approach and have everyone bring 1 or 2 ideas to your next meeting to vote on.
 
+The following text assumes you are using the midgut dataset. However, a similar approach could be used for a different dataset.
+
 ### Approach 1 - Start with a gene of interest
 
 - Suggested for students that come with a biological phenomenon of interest
@@ -210,8 +245,11 @@ Coming up with a good research project idea can be an exciting but daunting chal
 
 
 ![](images/good-candidate.png){width=100%}
+<p class=caption> **An example of a promising gene of interest for a student research project**: This gene is expressed in all regions but in one region (Cu) much more than all others. It is likely that the gene plays a key role in the Cu region and has an interesting biological story.</p>
 
 ![](images/bad-candidates.png){width=100%}
+<p class=caption> **An examples of genes that should be avoided in a student research project**: Genes that show a relatively consistent expression level across conditions or whose counts are minimal may be housekeeping genes that do not have a specialized role or are not important to the body and do not have an interesting biological story.</p>
+
 
 **4. Use plotAcrossRegions to see if there is an interesting story within your list of genes**: Jump over to the plotAcrossRegions section and run the code on your chosen genes using their FBgn ID. Genes that are likely to be differentially expressed and serve a specialized function in the midgut show an uneven expression across regions. Pay attention to the y-axis. Genes that are unevenly expressed but are found in low counts across all regions are not likely to be key genes.
 
@@ -275,6 +313,7 @@ Just like the human intestine, the *Drosophila* midgut can be seen as different 
 > Marianes & Spradling, (2013)
 
 ![](images/midgut_objects.png){width=100%}
+<p class=caption> **The *Drosophila* midgut**: Different sections of the midgut are associated with specific functions. The large bolded text represents how you can call that given section in an analysis. Image from Marianes & Spradling (2013). </p>
 
 We have subsetted the data to make research easier for you. The above image shows the general functions of each section of the midgut. The bolded text (example: a1) is what you will use in your code when referring to that specific section.
 
@@ -312,6 +351,8 @@ R1_vs_R2
 temp <- results(midgut, contrast = c("condition", "REGION1", "REGION2") )
 R1_vs_R2 <- formatDESeq2Results(temp)
 sig_genes <- filter(R1_vs_R2, padj <= 0.01)
+dim(sig_genes)
+R1_vs_R2
 
 # Run ClusterProfiler analysis
 R1_vs_R2_clusters <- runClusterProfiler(sig_genes)
@@ -354,12 +395,12 @@ plotAcrossRegions("YOUR FLYBASE ID HERE")
 ```
 
 
-## Meet the gutbrain dataset
+## Meet the brain dataset
 
 :::{.attention_box_pause}
 :::{.attention_header_box_pause}
 :::{.attention_title}
-#### **The gutbrain dataset is still in development**
+#### **The brain dataset is still in development**
 :::
 :::
 ::: {.attention_content}
@@ -369,58 +410,63 @@ This dataset is currently undergoing pilot testing at Clovis Community College (
 
 <br>
 
-These data are from the 2019 study by Sharon et al. titled **Human Gut Microbiota from Autism Spectrum Disorder Promote Behavioral Symptoms in Mice**. We will refer to these data as the gutbrain dataset, as the original study explores the gut-brain axis - the link between the gut microbiome and the central nervous system. To best make use of this data we recommend you complete the following modules: 
+These data are from the 2019 study by Sharon et al. titled **Human Gut Microbiota from Autism Spectrum Disorder Promote Behavioral Symptoms in Mice**. We will refer to these data as the brain dataset. To best make use of this data we recommend you complete the following modules: 
 
-- Model Organisms: *Mus musculus* (In development)
-- Biological Databases: Mouse Genome Informatics (In development)
 - Introduction to RNA-seq data
 - Differential expression with DESeq2
 
-### The gut-brain axis and Autism spectrum disorder
+### The brain, its functions, and the gut-brain axis
 
-Over the last couple of decades, considerable research effort has been invested into exploring the **gut-brain axis**. It is now widely accepted that the gastrointestinal tract has a bidirectional relationship with the central nervous system, wherein each provides molecular feedback to each other. Consequently, many scientists are interested how the gut microbiome (the microbes that live in your GI tract) could impact human health, including chronic health conditions and neurodiverse development such as autism spectrum disorder (ASD).
+![](images/hpa_brains.png){width=100%}
+<p class=caption> **Comparing homologous regions in the human and mouse brains**: Despite being vastly different in shape and size, our brains share a surprising amount of homology. Colored regions distinguish tissues from each other. Each tissue is associated with specialized functions. Regions that are close together are more likely to have similar functions than those that are far apart. Image from Human Protein Atlas, edited by Sayumi York.</p>
 
-Autism is a developmental disorder characterized by atypical social behaviors and experiences as well as repetitive behaviors. The exact number of people with autism in the US is unknown, some estimate that 1 in approximately 60 individuals are affected. 
+Although drastically different in overall shape and size, the human and mouse brain are remarkably similar in structure and organization and show homology in neural pathways. Specific parts of the brain are responsible for a specific function. For example, the amygdala is known to control emotions. 
 
-### The gutbrain study design
+Despite advancements in our understanding of the brain there is still much we don't yet know about what each region does or how they interact with one another, let alone how they connect to different disease states or developmental pathways.
+
+Over the last couple of decades, considerable research effort has been invested into exploring the **gut-brain axis**. It is now widely accepted that the gastrointestinal tract has a bidirectional relationship with the central nervous system, wherein each provides molecular feedback to each other. Consequently, many scientists are interested how the gut microbiome (the microbes that live in your GI tract) could impact human health, including chronic health conditions and neurodiverse development.
+
+### The mouse brain study design
 
 
 ![](images/sharon-study-design.png){width=100%}
+<p class=caption> **Study design from Sharon et al. (2020)**: Germ-free mice were transplated with gut microbiomes from human children and bred. Their offspring were then harvested for brain tissue for RNA-seq analysis. Note that this is a subset of a larger dataset. </p>
 
-Sharon et al. took gut microbiome (fecal) samples from children diagnosed with ASD and neurotypical children (controls) and implanted them into germ-free mice (mice without a microbiome). This parental generation of mice bred amongst themselves and produced offspring that were randomly selected for either behavior tests or brain tissue sampling.
+Sharon et al. took gut microbiome (fecal) samples from typically developing (TD) human children and implanted them into germ-free mice (mice without a microbiome). This parental generation of mice bred amongst themselves and produced offspring from which brain tissue samples were taken.
 
-The behavioral tests showed that offspring generation mice whose parents had a microbiome transplant from a child with ASD had more behavior characteristic of ASD, such as decreased movement and communication compared to the offspring of control-implanted mice.  
-
-Brain tissue samples included two areas of the brain responsible for social behavior, the **Prefrontal cortex (PFC)** and the **Striatum (STR)**. In addition to gene expression from RNA-seq data, the researchers also explored alternative splicing and metabolomics analyses. 
-
-
-![](images/sharon-comparisons.png){width=100%}
-Although there are more comparisons than the above 4 listed, we recommend your analyses focus on one of these 4, as they are the most straightforward comparisons.
+Brain tissue samples included two areas of the brain responsible for social behavior, the **Prefrontal cortex (PFC)** and the **Striatum (STR)**. These two brain sections are in close proximity to each other and are hypothesized to have similar functions, though each region's exact purpose and their relationship to each other are still being studied. 
 
 ### Working with mouse functions and resources
 
-Our standard RNA-seq miniCURE focuses on the midgut dataset and uses *Drosophila* based resources, such as FlyBase. Since the gutbrain dataset is based on mouse samples we have databases and functions specifically for mice that you should use instead:
+Our standard RNA-seq miniCURE focuses on the midgut dataset and uses *Drosophila* based resources, such as FlyBase. Since the brain dataset is based on mouse samples we have databases and functions specifically for mice that you should use instead:
 
 
 ![](images/mgi_format.png){width=100%}
-- [**Mouse genome informatics (MGI)**](https://www.informatics.jax.org/) is the database you should use instead of FlyBase. MGI uses the Ensembl Gene Model ID format, where mouse genes take the format ENSMUG###########. Of course, since they're in different formats, you will get no results if you search for a fly gene in MGI or a mouse gene in FlyBase. 
+<p class=caption> **The Mouse Genome Informatics homepage**: Analagous to FlyBase for Drosophila, MGI allows you to search up genes found in mice and learn more about their function. </p>
 
-- **Use the specialized functions getClusterProfilerGenesMouse, plotAcrossRegionsMouse, and runClusterProfilerMouse**: These functions should work seamlessly with mouse data with no changes in how the code looks to you. 
+- [**Mouse Genome Informatics (MGI)**](https://www.informatics.jax.org/) is the database you should use instead of FlyBase. MGI uses the Ensembl Gene Model ID format, where mouse genes take the format ENSMUG###########. Of course, since they're in different formats, you will get no results if you search for a fly gene in MGI or a mouse gene in FlyBase. 
+
+- **Use the specialized functions for the mouse dataset**: This includes getClusterProfilerGenesMouse, plotAcrossTissue, plotAcrossHostDonor, and plotAcrossMice. These functions should work seamlessly with the mouse brain data with no changes in how the code looks to you. 
 
 ### Some research ideas to get you started
 
-You will need to identify genes of interest, formulate a research question around them, and check that they are in the gutbrain dataset.
+You will need to identify genes of interest, formulate a research question around them, and check that they are in the brain dataset.
 
-- People with ASD often have neurological comorbidities (additional medical conditions), such as OCD, ADHD, anxiety, migranes, and epilepsy. What genes are linked to these conditions
-- Some people with ASD have a greatly expanded memory, especially for a topic of interest. Other individuals have a reduced working memory compared to neurotypical people. What genes are involved in memory? Are there different pathways involved in long-term and short-term memory? How about genes relating to recognizing specific kinds of information, such as language, numbers, or faces? 
-- Phineas Gage was involved in an accident that damaged his frontal lobe, which contains the prefrontal cortex. Following this incident, his personality underwent a dramatic change, suggesting that the frontal lobe regulates one's personality, executive decision making, and interactions with others. What genes are involved in executive function and focus, and how might they impact individuals with ASD and neurotypical individuals?
-- Phineas Gage's case also demonstrated for us how brain regions are specialized. What genes are only expressed in the striatum or prefrontal cortex? What genes and/or pathways are involved in the two regions communicating with each other?
+- Phineas Gage was involved in an accident that damaged his frontal lobe, which contains the PFC. Following this incident, his personality underwent a dramatic change, suggesting that the frontal lobe regulates one's personality, executive decision making, and interactions with others. By looking at genes that are highly and/or differentially expressed in the PFC we can find genes of interest that might be involved in these functions.
+- Many conditions such as autism spectrum disorder, schizophrenia, and dementia present as a change in personality or how one interprets and presents socially. What genes are hypothesized to be involved in these conditions and are they found in our dataset?
+- Personality differs widely by individual and is impacted by both genetics and the environment. Although we often treat mice in research as a uniform group of animals that act nearly identically, mice (as many pet owners would contest) have their own personalities and a complex social structure. Rather than comparing samples at the level of human microbiome donor (plotAcrossHostDonor) or overall tissue (plotAcrossTissue), consider profiling gene expression at the level of individual mouse (plotAcrossMice). 
+- The STR is well known for its connection to reward pathways. Understanding these pathways better could help us understand addiction and ADHD. What genes are differentially expressed in the STR and how might they impact a functioning reward system?
 
-### Differential expression template (Mouse gutbrain dataset)
+
+### Differential expression template (Mouse brain dataset)
+
+Since there are only two conditions, the prefrontal cortex (PFC) and striatum (STR), we have filled in the first line of the code for you in the DESeq2 and clusterProfiler analyses.
 
 ```{r deseq2-tablemouse-one-pager, exercise=TRUE, echo=FALSE}
-temp <- results(gutbrain, contrast = c("condition", "REGION1", "REGION2") )
+temp <- results(brain, contrast = c("tissue", "PFC", "STR") )
 R1_vs_R2 <- formatDESeq2Results(temp)
+sig_genes <- filter(R1_vs_R2, padj <= 0.05)
+dim(sig_genes)
 R1_vs_R2
 ```
 
@@ -435,13 +481,16 @@ R1_vs_R2
 ```
 
 
-### ClusterProfiler for the mouse gutbrain dataset
+### ClusterProfiler for the mouse brain dataset
+
 
 ```{r clusterprofiler_mouse-one-pager, exercise=TRUE, echo=FALSE}
 # Run differential expression analysis
-temp <- results(gutbrain, contrast = c("condition", "REGION1", "REGION2") )
+temp <- results(brain, contrast = c("tissue", "PFC", "STR") )
 R1_vs_R2 <- formatDESeq2Results(temp)
-sig_genes <- filter(R1_vs_R2, padj <= 0.01)
+sig_genes <- filter(R1_vs_R2, padj <= 0.05)
+dim(sig_genes)
+R1_vs_R2
 
 # Run ClusterProfiler analysis
 R1_vs_R2_clusters <- runClusterProfilerMouse(sig_genes)
@@ -465,24 +514,54 @@ getClusterProfilerGenesMouse(R1_vs_R2_clusters, "YOUR CATEGORY HERE")
 ```
 
 
-### plotAcrossRegionsMouse the for mouse gutbrain dataset
+### plotAcrossRegions for the mouse brain dataset
 
+- Multiple functions are available to compare the variation of a gene's expression at different levels.
 - MGI IDs take the format ENSMUG########### 
 
-```{r plotAcrossRegions_mouse-one-pager, exercise=TRUE, echo=FALSE}
-plotAcrossRegionsMouse("YOUR MGI ID HERE")
+#### plotAcrossTissue
+
+- Compares gene expression across the 2 available tissues, the prefrontal cortex (PFC) and striatum (STR), which are shown on the X-axis.
+
+```{r plotAcrossTissue_mouse-one-pager1, exercise=TRUE, echo=FALSE}
+plotAcrossTissue("ENSMUG###########")
 ```
 
-```{r plotAcrossRegions_mouse-try-it-a, exercise=TRUE, echo=FALSE}
-
-```
-```{r plotAcrossRegions_mouse-try-it-b, exercise=TRUE, echo=FALSE}
-
-```
-```{r plotAcrossRegions_mouse-try-it-c, exercise=TRUE, echo=FALSE}
-
+```{r plotAcrossTissue_mouse-one-pager2, exercise=TRUE, echo=FALSE}
+plotAcrossTissue("ENSMUG###########")
 ```
 
+```{r plotAcrossTissue_mouse-one-pager3, exercise=TRUE, echo=FALSE}
+plotAcrossTissue("ENSMUG###########")
+```
+
+#### plotAcrossHostDonor
+
+- Compares gene expression across the 2 available tissues, the prefrontal cortex (PFC) and striatum (STR), and across the human child who donated their microbiome. This graph would show the overall trends in gene expression between the prefrontal cortex and striatum as well as any effect of the individual human donor.
+
+```{r plotAcrossHostDonor_mouse-one-pager1, exercise=TRUE, echo=FALSE}
+plotAcrossHostDonor("ENSMUG###########")
+```
+```{r plotAcrossHostDonor_mouse-one-pager2, exercise=TRUE, echo=FALSE}
+plotAcrossHostDonor("ENSMUG###########")
+```
+```{r plotAcrossHostDonor_mouse-one-pager3, exercise=TRUE, echo=FALSE}
+plotAcrossHostDonor("ENSMUG###########")
+```
+
+#### plotAcrossMice
+
+- Compares gene expression between the 2 available tissues, the prefrontal cortex (PFC) and striatum (STR) at the level of individual mouse whose tissues were harvested. This graph represents the overall trend in gene expression across the striatum and prefrontal cortex as well as the variation of each human donor and individual mouse.
+
+```{r plotAcrossMice_mouse-one-pager1, exercise=TRUE, echo=FALSE}
+plotAcrossMice("ENSMUG###########")
+```
+```{r plotAcrossMice_mouse-one-pager2, exercise=TRUE, echo=FALSE}
+plotAcrossMice("ENSMUG###########")
+```
+```{r plotAcrossMice_mouse-one-pager3, exercise=TRUE, echo=FALSE}
+plotAcrossMice("ENSMUG###########")
+```
 
 
 ## DESeq2: Differential expression analysis
@@ -513,6 +592,8 @@ Not every gene is made in every cell in the body. Different cells have different
 ```{r deseq2-table, exercise=TRUE, echo=FALSE}
 temp <- results(midgut, contrast = c("condition", "REGION1", "REGION2") )
 R1_vs_R2 <- formatDESeq2Results(temp)
+sig_genes <- filter(R1_vs_R2, padj <= 0.05)
+dim(sig_genes)
 R1_vs_R2
 ```
 
@@ -525,11 +606,13 @@ R1_vs_R2
 ```{r try_it_out_deseq2-table-3, exercise=TRUE, echo=FALSE}
 
 ```
-### Differential expression template (Mouse gutbrain dataset)
+### Differential expression template (Mouse brain dataset)
 
 ```{r deseq2-tablemouse, exercise=TRUE, echo=FALSE}
-temp <- results(gutbrain, contrast = c("condition", "REGION1", "REGION2") )
+temp <- results(brain, contrast = c("tissue", "PFC", "STR") )
 R1_vs_R2 <- formatDESeq2Results(temp)
+sig_genes <- filter(R1_vs_R2, padj <= 0.05)
+dim(sig_genes)
 R1_vs_R2
 ```
 
@@ -546,10 +629,8 @@ R1_vs_R2
 
 ## ClusterProfiler: Differential expression analysis
 
-- **Objective(s)**: **1)** Get information on what the biological importance of the differentially expressed genes (what do they do?), **2)** identify what biological pathways have the highest count of differentially expressed genes, and **3)** get the name of genes within these pathways.
-
+- **Objective(s)**: 1) Get information on what the biological importance of the differentially expressed genes (what do they do?), 2) identify what biological pathways have the highest count of differentially expressed genes, and 3) get the name of genes within these pathways.
 - **Example question**: What biological pathways have the most number of differentially expressed genes?
-
 - **Why is this important**: We can use this analysis to get genes of interest and also get a rough idea of how many related genes are also differentially expressed.
 
 ### REGION 1, REGION2, and a category
@@ -569,9 +650,11 @@ R1_vs_R2
 
 ```{r clusterprofiler_drosophila, exercise=TRUE, echo=FALSE}
 # Run differential expression analysis
-temp <- results(midgut, contrast = c("condition", "REGION1", "REGION2") )
+temp <- results(midgut, contrast = c("tissue", "PFC", "STR") )
 R1_vs_R2 <- formatDESeq2Results(temp)
 sig_genes <- filter(R1_vs_R2, padj <= 0.01)
+dim(sig_genes)
+R1_vs_R2
 
 # Run ClusterProfiler analysis
 R1_vs_R2_clusters <- runClusterProfiler(sig_genes)
@@ -595,13 +678,15 @@ getClusterProfilerGenes(R1_vs_R2_clusters, "YOUR CATEGORY HERE")
 ```
 
 
-### ClusterProfiler for the mouse gutbrain dataset
+### ClusterProfiler for the mouse brain dataset
 
 ```{r clusterprofiler_mouse, exercise=TRUE, echo=FALSE}
 # Run differential expression analysis
-temp <- results(gutbrain, contrast = c("condition", "REGION1", "REGION2") )
+temp <- results(brain, contrast = c("tissue", "PFC", "STR") )
 R1_vs_R2 <- formatDESeq2Results(temp)
 sig_genes <- filter(R1_vs_R2, padj <= 0.01)
+dim(sig_genes)
+R1_vs_R2
 
 # Run ClusterProfiler analysis
 R1_vs_R2_clusters <- runClusterProfilerMouse(sig_genes)
@@ -626,9 +711,9 @@ getClusterProfilerGenesMouse(R1_vs_R2_clusters, "YOUR CATEGORY HERE")
 
 ## plotAcrossRegions
 
-- **Objective**: Create a graph that shows us the gene expression for a single gene across all conditions (regions)
+- **Objective**: Create a graph that shows us the gene expression for a single gene across all chosen conditions (ex. midgut regions, brain tissue, individuals)
 
-- **Example questions**: In what region of the midgut is this gene expressed? Is this gene expressed in both the striatum and prefrontal cortex? In both ASD and control individuals?
+- **Example questions**: In what region of the midgut is this gene expressed? Is this gene expressed in both the striatum and prefrontal cortex? Is there one individual/sample that has higher expression than all others?
 
 - **Why is this important**: This helps us profile what genes are specialized for a given condition based on their level of gene expression across all conditions. Some genes may be used in all conditions and have a less specialized function. Genes that exclusively expressed in only some (or one) condition at high levels likely play a specialized function in that condition.
 
@@ -652,43 +737,77 @@ plotAcrossRegions("YOUR FLYBASE ID HERE")
 ```
 
 
-### plotAcrossRegionsMouse the for mouse gutbrain dataset
+### plotAcrossRegions the for mouse brain dataset
 
+- Multiple functions are available to compare the variation of a gene's expression at different levels.
 - MGI IDs take the format ENSMUG########### 
 
-```{r plotAcrossRegions_mouse, exercise=TRUE, echo=FALSE}
-plotAcrossRegionsMouse("YOUR MGI ID HERE")
+#### plotAcrossTissue
+
+- Compares gene expression across the 2 available tissues, the prefrontal cortex (PFC) and striatum (STR), which are shown on the X-axis.
+
+```{r plotAcrossTissue_mouse-1, exercise=TRUE, echo=FALSE}
+plotAcrossTissue("ENSMUG###########")
 ```
 
-```{r plotAcrossRegions_mouse-try-it-1, exercise=TRUE, echo=FALSE}
-
+```{r plotAcrossTissue_mouse-2, exercise=TRUE, echo=FALSE}
+plotAcrossTissue("ENSMUG###########")
 ```
-```{r plotAcrossRegions_mouse-try-it-2, exercise=TRUE, echo=FALSE}
 
+```{r plotAcrossTissue_mouse-3, exercise=TRUE, echo=FALSE}
+plotAcrossTissue("ENSMUG###########")
 ```
-```{r plotAcrossRegions_mouse-try-it-3, exercise=TRUE, echo=FALSE}
 
+#### plotAcrossHostDonor
+
+- Compares gene expression across the 2 available tissues, the prefrontal cortex (PFC) and striatum (STR), and across the human child who donated their microbiome. This graph would show the overall trends in gene expression between the prefrontal cortex and striatum as well as any effect of the individual human donor.
+
+```{r plotAcrossHostDonor_mouse-1, exercise=TRUE, echo=FALSE}
+plotAcrossHostDonor("ENSMUG###########")
+```
+```{r plotAcrossHostDonor_mouse-2, exercise=TRUE, echo=FALSE}
+plotAcrossHostDonor("ENSMUG###########")
+```
+```{r plotAcrossHostDonor_mouse-3, exercise=TRUE, echo=FALSE}
+plotAcrossHostDonor("ENSMUG###########")
+```
+
+#### plotAcrossMice
+
+- Compares gene expression between the 2 available tissues, the prefrontal cortex (PFC) and striatum (STR) at the level of individual mouse whose tissues were harvested. This graph represents the overall trend in gene expression across the striatum and prefrontal cortex as well as the variation of each human donor and individual mouse.
+
+```{r plotAcrossMice_mouse-1, exercise=TRUE, echo=FALSE}
+plotAcrossMice("ENSMUG###########")
+```
+```{r plotAcrossMice_mouse-2, exercise=TRUE, echo=FALSE}
+plotAcrossMice("ENSMUG###########")
+```
+```{r plotAcrossMice_mouse-3, exercise=TRUE, echo=FALSE}
+plotAcrossMice("ENSMUG###########")
 ```
 
 
 ## Works cited
 
-- Sadaqat, Zoha, Shivam Kaushik, and Pinky Kain. "Gut Feeding the Brain: Drosophila Gut an Animal Model for Medicine to Understand Mechanisms Mediating Food Preferences." Preclinical Animal Modeling in Medicine. IntechOpen, 2021.
+- Aden-Buie G, Schloerke B, Allaire J, Rossell Hayes A (2023). learnr: Interactive Tutorials for R. <https://rstudio.github.io/learnr/>, <https://github.com/rstudio/learnr>
+
+- Baldarelli, Richard M., et al. "Mouse Genome Informatics: an integrated knowledgebase system for the laboratory mouse." Genetics 227.1 (2024): iyae031.
 
 - Love, Michael I., Wolfgang Huber, and Simon Anders. "Moderated estimation of fold change and dispersion for RNA-seq data with DESeq2." Genome biology 15 (2014): 1-21.
 
+- Marianes, Alexis, and Allan C. Spradling. "Physiological and stem cell compartmentalization within the Drosophila midgut." elife 2 (2013): e00886.
 
-- Aden-Buie G, Schloerke B, Allaire J, Rossell Hayes A (2023). learnr: Interactive Tutorials for R. <https://rstudio.github.io/learnr/>, <https://github.com/rstudio/learnr>
+- Pontén, Fredrik, Karin Jirström, and Matthias Uhlen. "The Human Protein Atlas—a tool for pathology." The Journal of Pathology: A Journal of the Pathological Society of Great Britain and Ireland 216.4 (2008): 387-393.
+
+- R Core Team (2024). R: A Language and Environment for Statistical Computing. R Foundation for Statistical Computing, Vienna, Austria. <https://www.R-project.org/>.
+  
+- Sadaqat, Zoha, Shivam Kaushik, and Pinky Kain. "Gut Feeding the Brain: Drosophila Gut an Animal Model for Medicine to Understand Mechanisms Mediating Food Preferences." Preclinical Animal Modeling in Medicine. IntechOpen, 2021.
 
 - Sharon, Gil, et al. "Human gut microbiota from autism spectrum disorder promote behavioral symptoms in mice." Cell 177.6 (2019): 1600-1618.
 
-- R Core Team (2024). R: A Language and Environment for Statistical Computing. R Foundation for Statistical Computing, Vienna, Austria.
-  <https://www.R-project.org/>.
-  
 - Stoudt, Sara, Anthony D. Scotina, and Karsten Luebke. "Supporting Statistics and Data Science Education with learnr." Technology Innovations in Statistics Education 14.1 (2022).
 
 - Wickham, Hadley. "ggplot2." Wiley interdisciplinary reviews: computational statistics 3.2 (2011): 180-185.
-
 
 
 
