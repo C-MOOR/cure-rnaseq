@@ -21,7 +21,7 @@ author:
   - "Sayumi York, Notre Dame of Maryland University"
   - "Gauri Paul, Clovis Community College"
 learning_goals:
-  - "Familiarize the datasets available to you"
+  - "Familiarize the RNA-seq datasets available to you"
   - "Select a dataset that you'd like to work on for your research project"
   - "Begin your exploratory analysis of your chosen dataset to refine your research questions"
 time: ""
@@ -43,7 +43,36 @@ library("clusterProfiler")
 library("org.Dm.eg.db")
 library("tidyverse")
 library("org.Mm.eg.db")
-library("MarianesMidgutData")
+
+
+#########################
+#Cloud paths
+#########################
+
+#####################################
+#Local paths
+####################################
+
+#Check if we are on SciServer by seeing if the file path to marianes-regions on SciServer is available.
+file_path <- "/home/idies/workspace/c_moor_data/marianes-regions/htseq/"
+if (file.exists(file_path)) {
+
+  midgut_tsv <- read.table("/home/idies/workspace/c_moor_data/marianes-regions/htseq/midgut.tsv", header=TRUE)
+  midgut <- readRDS("~/workspace/c_moor_data/instructors/preprocessed_data/marianes/marianes_htseq_DESeq.rds")
+  a1_vs_p1_clusters <- readRDS("~/workspace/c_moor_data/instructors/preprocessed_data/marianes/a1_vs_p1_clusters.rds")
+
+
+  brain<-readRDS("/home/idies/workspace/c_moor_data/sharon-brain/brain.RDS")
+  brain_metadata<-read.csv("/home/idies/workspace/c_moor_data/sharon-brain/brain_metadata.csv", row.names = 1)
+
+
+} else {
+  #If not, assume we are on AnVIL and load in the data through packages
+  library("MarianesMidgutData")
+  library("SharonBrainData")
+}
+
+
 
 #####################################
 #Define functions
@@ -149,21 +178,6 @@ plotAcrossHostDonor<- function( x ) {
 }
 
 
-#####################################
-#Local paths
-####################################
-
-brain<-readRDS("brain.RDS")
-brain_metadata<-read.csv("brain_metadata.csv", row.names = 1)
-
-
-#####################################
-#Sciserver paths
-####################################
-
-#####################################
-#Packages
-####################################
 
 
 ```
@@ -228,7 +242,7 @@ tv <- rmarkdown::metadata$output$`learnr::tutorial`$version
 
 ## Research project brainstorming
 
-Coming up with a good research project idea can be an exciting but daunting challenge. <mark>**We recommend reviewing the available datasets in this document and choose one to focus on, then trying one of the following approaches.**</mark> If you're working with a group, considering assigning every member be responsible for a particular approach and have everyone bring 1 or 2 ideas to your next meeting to vote on.
+Coming up with a good research project idea can be an exciting but daunting challenge. <mark>**We recommend reviewing the available datasets in this document and choose one to focus on, then trying one of the following approaches.**</mark> If you're working with a group, considering assigning every member be responsible for a particular approach and have everyone bring 1 or 2 ideas to discuss.
 
 The following text assumes you are using the midgut dataset. However, a similar approach could be used for a different dataset.
 
@@ -261,12 +275,13 @@ The following text assumes you are using the midgut dataset. However, a similar 
 - Start with a group of genes identified as differentially expressed
 - Find an interesting biological story to tell within those genes
 
-**1. Run a ClusterProfiler analysis on two regions.**: Jump to the ClusterProfiler analysis section and choose two sections of the midgut to run the analysis on. From within your dotplot results, choose a catagory with a with low
-*padj* value and high count value. 
+**1. Run a ClusterProfiler analysis on two regions.**: Jump to the ClusterProfiler analysis section and choose two sections of the midgut to run the analysis on. From within your dotplot results, choose a category with a with low *padj* value and high count value. 
 
 **2. Run getClusterProfilerGenes on that category to get a list of differentially expressed genes within the category**: Remember to run getClusterProfilerGenes in the same code chunk as the rest of the ClusterProfiler analysis. 
 
 **3. Pick a gene and follow steps 3-5 from Approach 1**: Repeat for all genes to make an interesting poster based on your chosen metabolic process.
+
+**4. Craft an engaging biological story from your genes**: This story should focus on the category you chose when looking at your clusterProfiler dot plot. How might this pathway be connected to the model organism and/or the samples you are looking at? What is important about this pathway and how might disruption cause atypical function in the body?
 
 
 ### Approach 3 - Select highly differentially expressed genes from the DESeq2 results table
@@ -331,6 +346,8 @@ You will need to identify genes of interest, formulate a research question aroun
 ```{r deseq2-table-one-pager, exercise=TRUE, echo=FALSE}
 temp <- results(midgut, contrast = c("condition", "REGION1", "REGION2") )
 R1_vs_R2 <- formatDESeq2Results(temp)
+sig_genes <- filter(R1_vs_R2, padj <= 0.01)
+dim(sig_genes)
 R1_vs_R2
 ```
 
@@ -351,8 +368,6 @@ R1_vs_R2
 temp <- results(midgut, contrast = c("condition", "REGION1", "REGION2") )
 R1_vs_R2 <- formatDESeq2Results(temp)
 sig_genes <- filter(R1_vs_R2, padj <= 0.01)
-dim(sig_genes)
-R1_vs_R2
 
 # Run ClusterProfiler analysis
 R1_vs_R2_clusters <- runClusterProfiler(sig_genes)
@@ -420,9 +435,7 @@ These data are from the 2019 study by Sharon et al. titled **Human Gut Microbiot
 ![](images/hpa_brains.png){width=100%}
 <p class=caption> **Comparing homologous regions in the human and mouse brains**: Despite being vastly different in shape and size, our brains share a surprising amount of homology. Colored regions distinguish tissues from each other. Each tissue is associated with specialized functions. Regions that are close together are more likely to have similar functions than those that are far apart. Image from Human Protein Atlas, edited by Sayumi York.</p>
 
-Although drastically different in overall shape and size, the human and mouse brain are remarkably similar in structure and organization and show homology in neural pathways. Specific parts of the brain are responsible for a specific function. For example, the amygdala is known to control emotions. 
-
-Despite advancements in our understanding of the brain there is still much we don't yet know about what each region does or how they interact with one another, let alone how they connect to different disease states or developmental pathways.
+Although drastically different in overall shape and size, the human and mouse brain are remarkably similar in structure and organization and show homology in neural pathways. Specific parts of the brain are known to be responsible for a specific function. For example, the amygdala is known to control emotions. Despite advancements in our understanding of the brain there is still much we don't yet know about what each region does or how they interact with one another, let alone how they connect to different disease states or developmental pathways.
 
 Over the last couple of decades, considerable research effort has been invested into exploring the **gut-brain axis**. It is now widely accepted that the gastrointestinal tract has a bidirectional relationship with the central nervous system, wherein each provides molecular feedback to each other. Consequently, many scientists are interested how the gut microbiome (the microbes that live in your GI tract) could impact human health, including chronic health conditions and neurodiverse development.
 
@@ -454,7 +467,7 @@ You will need to identify genes of interest, formulate a research question aroun
 
 - Phineas Gage was involved in an accident that damaged his frontal lobe, which contains the PFC. Following this incident, his personality underwent a dramatic change, suggesting that the frontal lobe regulates one's personality, executive decision making, and interactions with others. By looking at genes that are highly and/or differentially expressed in the PFC we can find genes of interest that might be involved in these functions.
 - Many conditions such as autism spectrum disorder, schizophrenia, and dementia present as a change in personality or how one interprets and presents socially. What genes are hypothesized to be involved in these conditions and are they found in our dataset?
-- Personality differs widely by individual and is impacted by both genetics and the environment. Although we often treat mice in research as a uniform group of animals that act nearly identically, mice (as many pet owners would contest) have their own personalities and a complex social structure. Rather than comparing samples at the level of human microbiome donor (plotAcrossHostDonor) or overall tissue (plotAcrossTissue), consider profiling gene expression at the level of individual mouse (plotAcrossMice). 
+- Personality differs widely by individual and is impacted by both genetics and the environment. Although we often treat mice in research as a uniform group of animals that act nearly identically, mice (as many pet owners would contest) have their own personalities and a complex social structure. Rather than comparing samples at the level of human microbiome donor (plotAcrossHostDonor) or overall tissue (plotAcrossTissue), consider profiling gene expression at the level of individual mouse (plotAcrossMice). How much variation do we see at different levels of comparisions?
 - The STR is well known for its connection to reward pathways. Understanding these pathways better could help us understand addiction and ADHD. What genes are differentially expressed in the STR and how might they impact a functioning reward system?
 
 
@@ -489,8 +502,6 @@ R1_vs_R2
 temp <- results(brain, contrast = c("tissue", "PFC", "STR") )
 R1_vs_R2 <- formatDESeq2Results(temp)
 sig_genes <- filter(R1_vs_R2, padj <= 0.05)
-dim(sig_genes)
-R1_vs_R2
 
 # Run ClusterProfiler analysis
 R1_vs_R2_clusters <- runClusterProfilerMouse(sig_genes)
@@ -570,14 +581,14 @@ plotAcrossMice("ENSMUG###########")
 - **Example question**: What genes are expressed in the anterior vs posterior regions of the gut? What genes are expressed in muscle cells vs. neurons? 
 - **Why is this important**: It can help us figure out what genes are important in different places of the body and/or the function of the gene/body part. 
 
-Not every gene is made in every cell in the body. Different cells have different genes “turned on” to create specialized shapes and functions. When we say a gene is on, we mean that the cell is expressing that gene – creating the protein the gene codes for. Higher gene expression means that more of that protein is being made in that cell/body part/condition compared to some other cell/body part/condition. When one gene is highly expressed in one condition compared to others, this suggests that the gene serves an important, perhaps specialized function, in this condition.
+Not every gene is expressed in every cell in the body. Different cells have different genes “turned on” to create specialized forms and functions. When we say a gene is on, we mean that the cell is expressing that gene – creating the protein the gene codes for. Higher gene expression means that more of that protein is being made in that cell/body part/condition compared to some other cell/body part/condition. When one gene is highly expressed in one condition compared to others, this suggests that the gene serves an important, perhaps specialized function, in this condition.
 
 ### REGION1 and REGION2
 
 ![](images/deseq2-regions.png){width=100%}
 
 - **REGION1**: Put the name of one of the groups you're interested in here.
-- **REGION2**: Put the other group you're interested in here. This region is the baseline condition.
+- **REGION2**: Put the other group you're interested in here. <mark>This region is the baseline condition</mark>.
 
 
 ### Interpreting results
@@ -631,7 +642,7 @@ R1_vs_R2
 
 - **Objective(s)**: 1) Get information on what the biological importance of the differentially expressed genes (what do they do?), 2) identify what biological pathways have the highest count of differentially expressed genes, and 3) get the name of genes within these pathways.
 - **Example question**: What biological pathways have the most number of differentially expressed genes?
-- **Why is this important**: We can use this analysis to get genes of interest and also get a rough idea of how many related genes are also differentially expressed.
+- **Why is this important**: We can use this analysis to get genes of interest and also get a rough idea of how many related genes are also differentially expressed. For example, a pathway where only 1% of genes are differentially expressed is likely not as important as a pathway where 30% of genes are differentially expressed.
 
 ### REGION 1, REGION2, and a category
 
@@ -650,11 +661,9 @@ R1_vs_R2
 
 ```{r clusterprofiler_drosophila, exercise=TRUE, echo=FALSE}
 # Run differential expression analysis
-temp <- results(midgut, contrast = c("tissue", "PFC", "STR") )
+temp <- results(midgut, contrast = c("condition", "REGION1", "REGION2") )
 R1_vs_R2 <- formatDESeq2Results(temp)
 sig_genes <- filter(R1_vs_R2, padj <= 0.01)
-dim(sig_genes)
-R1_vs_R2
 
 # Run ClusterProfiler analysis
 R1_vs_R2_clusters <- runClusterProfiler(sig_genes)
@@ -685,8 +694,6 @@ getClusterProfilerGenes(R1_vs_R2_clusters, "YOUR CATEGORY HERE")
 temp <- results(brain, contrast = c("tissue", "PFC", "STR") )
 R1_vs_R2 <- formatDESeq2Results(temp)
 sig_genes <- filter(R1_vs_R2, padj <= 0.01)
-dim(sig_genes)
-R1_vs_R2
 
 # Run ClusterProfiler analysis
 R1_vs_R2_clusters <- runClusterProfilerMouse(sig_genes)
@@ -712,9 +719,7 @@ getClusterProfilerGenesMouse(R1_vs_R2_clusters, "YOUR CATEGORY HERE")
 ## plotAcrossRegions
 
 - **Objective**: Create a graph that shows us the gene expression for a single gene across all chosen conditions (ex. midgut regions, brain tissue, individuals)
-
 - **Example questions**: In what region of the midgut is this gene expressed? Is this gene expressed in both the striatum and prefrontal cortex? Is there one individual/sample that has higher expression than all others?
-
 - **Why is this important**: This helps us profile what genes are specialized for a given condition based on their level of gene expression across all conditions. Some genes may be used in all conditions and have a less specialized function. Genes that exclusively expressed in only some (or one) condition at high levels likely play a specialized function in that condition.
 
 ### plotAcrossRegions the for Drosophila midgut dataset
