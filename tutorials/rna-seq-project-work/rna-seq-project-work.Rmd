@@ -346,9 +346,9 @@ You will need to identify genes of interest, formulate a research question aroun
 ```{r deseq2-table-one-pager, exercise=TRUE, echo=FALSE}
 temp <- results(midgut, contrast = c("condition", "REGION1", "REGION2") )
 R1_vs_R2 <- formatDESeq2Results(temp)
-sig_genes <- filter(R1_vs_R2, padj <= 0.01)
+sig_genes <- filter(R1_vs_R2, padj <= 0.05)
 dim(sig_genes)
-R1_vs_R2
+sig_genes
 ```
 
 ```{r try_it_out_deseq2-table-a, exercise=TRUE, echo=FALSE}
@@ -360,6 +360,27 @@ R1_vs_R2
 ```{r try_it_out_deseq2-table-c, exercise=TRUE, echo=FALSE}
 
 ```
+
+### Get differential expression results for a single gene in the Drosophila midgut dataset
+
+```{r filter-by-name-drosophila, exercise=TRUE, echo=FALSE}
+temp <- results(midgut, contrast = c("condition", "REGION1", "REGION2") )
+R1_vs_R2 <- formatDESeq2Results(temp)
+
+my_gene <- filter(R1_vs_R2, GeneID=="FBgn#######")
+my_gene
+```
+
+```{r filter-by-name-drosophila_tryit_1, exercise=TRUE, echo=FALSE}
+
+```
+```{r filter-by-name-drosophila_tryit_2, exercise=TRUE, echo=FALSE}
+
+```
+```{r filter-by-name-drosophila_tryit_3, exercise=TRUE, echo=FALSE}
+
+```
+
 
 ### clusterProfiler the for Drosophila midgut dataset
 
@@ -480,7 +501,7 @@ temp <- results(brain, contrast = c("tissue", "PFC", "STR") )
 R1_vs_R2 <- formatDESeq2Results(temp)
 sig_genes <- filter(R1_vs_R2, padj <= 0.05)
 dim(sig_genes)
-R1_vs_R2
+sig_genes
 ```
 
 ```{r try_it_out_deseq2-tablemouse-a, exercise=TRUE, echo=FALSE}
@@ -490,6 +511,25 @@ R1_vs_R2
 
 ```
 ```{r try_it_out_deseq2-tablemouse-c, exercise=TRUE, echo=FALSE}
+
+```
+
+### Get differential expression results for a single gene in the mouse brain dataset
+
+```{r filter-by-name-mouse, exercise=TRUE, echo=FALSE}
+temp <- results(brain, contrast = c("tissue", "PFC", "STR") )
+R1_vs_R2 <- formatDESeq2Results(temp)
+my_gene <- filter(R1_vs_R2, GeneID=="ENSMUG###########")
+my_gene
+```
+
+```{r filter-by-name-mouse_tryit_1, exercise=TRUE, echo=FALSE}
+
+```
+```{r filter-by-name-mouse_tryit_2, exercise=TRUE, echo=FALSE}
+
+```
+```{r filter-by-name-mouse_tryit_3, exercise=TRUE, echo=FALSE}
 
 ```
 
@@ -589,6 +629,7 @@ Not every gene is expressed in every cell in the body. Different cells have diff
 
 - **REGION1**: Put the name of one of the groups you're interested in here.
 - **REGION2**: Put the other group you're interested in here. <mark>This region is the baseline condition</mark>.
+- ***padj***: Use this to control what (modified) p-value you are using to filter out genes. At default, the code shows only genes that have a padj of 0.05 or below. A lower padj is a more stingent, or strict cutoff - the lower the padj, the more sigificantly differentially expressed the genes are. To see all genes, set padj in the code to 1.
 
 
 ### Interpreting results
@@ -605,7 +646,7 @@ temp <- results(midgut, contrast = c("condition", "REGION1", "REGION2") )
 R1_vs_R2 <- formatDESeq2Results(temp)
 sig_genes <- filter(R1_vs_R2, padj <= 0.05)
 dim(sig_genes)
-R1_vs_R2
+sig_genes
 ```
 
 ```{r try_it_out_deseq2-table-1, exercise=TRUE, echo=FALSE}
@@ -617,6 +658,28 @@ R1_vs_R2
 ```{r try_it_out_deseq2-table-3, exercise=TRUE, echo=FALSE}
 
 ```
+
+### Get differential expression results for a single gene in the Drosophila midgut dataset
+
+```{r filter-by-name-drosophila-deseq2, exercise=TRUE, echo=FALSE}
+temp <- results(midgut, contrast = c("condition", "REGION1", "REGION2") )
+R1_vs_R2 <- formatDESeq2Results(temp)
+
+my_gene <- filter(R1_vs_R2, GeneID=="FBgn#######")
+my_gene
+```
+
+```{r filter-by-name-drosophila_tryit_4, exercise=TRUE, echo=FALSE}
+
+```
+```{r filter-by-name-drosophila_tryit_5, exercise=TRUE, echo=FALSE}
+
+```
+```{r filter-by-name-drosophila_tryit_6, exercise=TRUE, echo=FALSE}
+
+```
+
+
 ### Differential expression template (Mouse brain dataset)
 
 ```{r deseq2-tablemouse, exercise=TRUE, echo=FALSE}
@@ -624,7 +687,7 @@ temp <- results(brain, contrast = c("tissue", "PFC", "STR") )
 R1_vs_R2 <- formatDESeq2Results(temp)
 sig_genes <- filter(R1_vs_R2, padj <= 0.05)
 dim(sig_genes)
-R1_vs_R2
+sig_genes
 ```
 
 ```{r try_it_out_deseq2-table-4, exercise=TRUE, echo=FALSE}
@@ -637,6 +700,24 @@ R1_vs_R2
 
 ```
 
+### Get differential expression results for a single gene in the mouse brain dataset
+
+```{r filter-by-name-mousebrain-deseq2, exercise=TRUE,echo=FALSE}
+temp <- results(brain, contrast = c("tissue", "PFC", "STR") )
+R1_vs_R2 <- formatDESeq2Results(temp)
+my_gene <- filter(R1_vs_R2, GeneID=="ENSMUG###########")
+my_gene
+```
+
+```{r filter-by-name-mouse_tryit_4, exercise=TRUE, echo=FALSE}
+
+```
+```{r filter-by-name-mouse_tryit_5, exercise=TRUE, echo=FALSE}
+
+```
+```{r filter-by-name-mouse_tryit_6, exercise=TRUE, echo=FALSE}
+
+```
 
 ## clusterProfiler: Differential expression analysis
 
