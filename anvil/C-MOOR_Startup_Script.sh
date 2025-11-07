@@ -18,7 +18,7 @@
     R -e "remotes::install_github('C-MOOR/SharonBrainData')"
     R -e "remotes::install_github('C-MOOR/HumanGutMicrobiomeData')"
     
-    git clone -b meet-sharongutbrain https://github.com/c-moor/cure-rnaseq/ /home/rstudio/cure-rnaseq
+    git clone https://github.com/c-moor/cure-rnaseq/ /home/rstudio/cure-rnaseq
     chown -R 1000 /home/rstudio/cure-rnaseq
     mv cure-rnaseq cmoor-files
 
