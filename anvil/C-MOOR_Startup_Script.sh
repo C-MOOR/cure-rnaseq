@@ -41,6 +41,6 @@
     ln -s /home/rstudio/cmoor-files/tutorials/analyze-phyloseq/ /home/rstudio/16s/2-analyze-ps
     ln -s /home/rstudio/cmoor-files/tutorials/16S-amplicon-project-work/ /home/rstudio/16s/3-16s-project
 
-   
+
 
 
