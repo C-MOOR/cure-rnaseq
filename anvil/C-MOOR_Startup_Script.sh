@@ -3,10 +3,8 @@
     chown -R 1000 /home/rstudio
     mkdir rnaseq
     mkdir 16s
-    mkdir ABRCMS
     chown -R 1000 /home/rstudio/16s
     chown -R 1000 /home/rstudio/rnaseq
-    chown -R 1000 /home/rstudio/ABRCMS
 
     R -e "install.packages('learnr')"
     R -e "BiocManager::install('clusterProfiler')"
@@ -42,10 +40,6 @@
     ln -s /home/rstudio/cmoor-files/tutorials/explore-phyloseq/ /home/rstudio/16s/1-explore-ps
     ln -s /home/rstudio/cmoor-files/tutorials/analyze-phyloseq/ /home/rstudio/16s/2-analyze-ps
     ln -s /home/rstudio/cmoor-files/tutorials/16S-amplicon-project-work/ /home/rstudio/16s/3-16s-project
-
-    cd /home/rstudio/ABRCMS
-    /home/rstudio/cmoor-files/tutorials/test_driveR /home/rstudio/ABRCMS
-    mv test_driveR.Rmd rnaseq_sample.Rmd
 
    
 
