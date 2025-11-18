@@ -44,7 +44,7 @@
     ln -s /home/rstudio/cmoor-files/tutorials/16S-amplicon-project-work/ /home/rstudio/16s/3-16s-project
 
     cd /home/rstudio/ABRCMS
-    /home/rstudio/cmoor-files/tutorials/test_driveR /home/rstudio/ABRCMS
+    ln -s /home/rstudio/cmoor-files/tutorials/test_driveR /home/rstudio/ABRCMS
     mv test_driveR.Rmd rnaseq_sample.Rmd
 
    
