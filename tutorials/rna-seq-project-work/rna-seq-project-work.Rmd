@@ -358,7 +358,7 @@ getClusterProfilerGenes(R1_vs_R2_clusters, "YOUR CATEGORY HERE")
 - FlyBase IDs take the format FBgn#######
 
 ```{r plotAcrossRegions_drosophila-one-pager, exercise=TRUE, echo=FALSE}
-plotAcrossRegions("YOUR FLYBASE ID HERE")
+plotAcrossRegions("FBgn#######")
 ```
 
 
@@ -387,7 +387,7 @@ This dataset is currently undergoing pilot testing at Clovis Community College (
 :::
 
 <br>
-
+ 
 These data are from the 2019 study by Sharon et al. titled **Human Gut Microbiota from Autism Spectrum Disorder Promote Behavioral Symptoms in Mice**. We will refer to these data as the brain dataset. To best make use of this data we recommend you complete the following modules: 
 
 - Introduction to RNA-seq data
@@ -420,7 +420,7 @@ Our standard RNA-seq miniCURE focuses on the midgut dataset and uses *Drosophila
 ![](images/mgi_format.png){width=100%}
 <p class=caption> **The Mouse Genome Informatics homepage**: Analagous to FlyBase for Drosophila, MGI allows you to search up genes found in mice and learn more about their function. </p>
 
-- [**Mouse Genome Informatics (MGI)**](https://www.informatics.jax.org/) is the database you should use instead of FlyBase. MGI uses the Ensembl Gene Model ID format, where mouse genes take the format ENSMUG###########. Of course, since they're in different formats, you will get no results if you search for a fly gene in MGI or a mouse gene in FlyBase. 
+- [**Mouse Genome Informatics (MGI)**](https://www.informatics.jax.org/) is the database you should use instead of FlyBase. MGI uses the Ensembl Gene Model ID format, where mouse genes take the format ENSMUSG###########. Of course, since they're in different formats, you will get no results if you search for a fly gene in MGI or a mouse gene in FlyBase. 
 
 - **Use the specialized functions for the mouse dataset**: This includes getClusterProfilerGenesMouse, plotAcrossTissue, plotAcrossHostDonor, and plotAcrossMice. These functions should work seamlessly with the mouse brain data with no changes in how the code looks to you. 
 
@@ -461,7 +461,7 @@ sig_genes
 ```{r filter-by-name-mouse, exercise=TRUE, echo=FALSE}
 temp <- results(brain, contrast = c("tissue", "PFC", "STR") )
 R1_vs_R2 <- formatDESeq2Results(temp)
-my_gene <- filter(R1_vs_R2, GeneID=="ENSMUG###########")
+my_gene <- filter(R1_vs_R2, GeneID=="ENSMUSG###########")
 my_gene
 ```
 
@@ -510,22 +510,22 @@ getClusterProfilerGenesMouse(R1_vs_R2_clusters, "YOUR CATEGORY HERE")
 ### plotAcrossRegions for the mouse brain dataset
 
 - Multiple functions are available to compare the variation of a gene's expression at different levels.
-- MGI IDs take the format ENSMUG########### 
+- MGI IDs take the format ENSMUSG########### 
 
 #### plotAcrossTissue
 
 - Compares gene expression across the 2 available tissues, the prefrontal cortex (PFC) and striatum (STR), which are shown on the X-axis.
 
 ```{r plotAcrossTissue_mouse-one-pager1, exercise=TRUE, echo=FALSE}
-plotAcrossTissue("ENSMUG###########")
+plotAcrossTissue("ENSMUSG###########")
 ```
 
 ```{r plotAcrossTissue_mouse-one-pager2, exercise=TRUE, echo=FALSE}
-plotAcrossTissue("ENSMUG###########")
+plotAcrossTissue("ENSMUSG###########")
 ```
 
 ```{r plotAcrossTissue_mouse-one-pager3, exercise=TRUE, echo=FALSE}
-plotAcrossTissue("ENSMUG###########")
+plotAcrossTissue("ENSMUSG###########")
 ```
 
 #### plotAcrossHostDonor
@@ -533,13 +533,13 @@ plotAcrossTissue("ENSMUG###########")
 - Compares gene expression across the 2 available tissues, the prefrontal cortex (PFC) and striatum (STR), and across the human child who donated their microbiome. This graph would show the overall trends in gene expression between the prefrontal cortex and striatum as well as any effect of the individual human donor.
 
 ```{r plotAcrossHostDonor_mouse-one-pager1, exercise=TRUE, echo=FALSE}
-plotAcrossHostDonor("ENSMUG###########")
+plotAcrossHostDonor("ENSMUSG###########")
 ```
 ```{r plotAcrossHostDonor_mouse-one-pager2, exercise=TRUE, echo=FALSE}
-plotAcrossHostDonor("ENSMUG###########")
+plotAcrossHostDonor("ENSMUSG###########")
 ```
 ```{r plotAcrossHostDonor_mouse-one-pager3, exercise=TRUE, echo=FALSE}
-plotAcrossHostDonor("ENSMUG###########")
+plotAcrossHostDonor("ENSMUSG###########")
 ```
 
 #### plotAcrossMice
@@ -547,13 +547,13 @@ plotAcrossHostDonor("ENSMUG###########")
 - Compares gene expression between the 2 available tissues, the prefrontal cortex (PFC) and striatum (STR) at the level of individual mouse whose tissues were harvested. This graph represents the overall trend in gene expression across the striatum and prefrontal cortex as well as the variation of each human donor and individual mouse.
 
 ```{r plotAcrossMice_mouse-one-pager1, exercise=TRUE, echo=FALSE}
-plotAcrossMice("ENSMUG###########")
+plotAcrossMice("ENSMUSG###########")
 ```
 ```{r plotAcrossMice_mouse-one-pager2, exercise=TRUE, echo=FALSE}
-plotAcrossMice("ENSMUG###########")
+plotAcrossMice("ENSMUSG###########")
 ```
 ```{r plotAcrossMice_mouse-one-pager3, exercise=TRUE, echo=FALSE}
-plotAcrossMice("ENSMUG###########")
+plotAcrossMice("ENSMUSG###########")
 ```
 
 
@@ -647,7 +647,7 @@ sig_genes
 ```{r filter-by-name-mousebrain-deseq2, exercise=TRUE,echo=FALSE}
 temp <- results(brain, contrast = c("tissue", "PFC", "STR") )
 R1_vs_R2 <- formatDESeq2Results(temp)
-my_gene <- filter(R1_vs_R2, GeneID=="ENSMUG###########")
+my_gene <- filter(R1_vs_R2, GeneID=="ENSMUSG###########")
 my_gene
 ```
 
@@ -750,7 +750,7 @@ getClusterProfilerGenesMouse(R1_vs_R2_clusters, "YOUR CATEGORY HERE")
 - FlyBase IDs take the format FBgn#######
 
 ```{r plotAcrossRegions_drosophila, exercise=TRUE, echo=FALSE}
-plotAcrossRegions("YOUR FLYBASE ID HERE")
+plotAcrossRegions("FBgn#######")
 ```
 
 
@@ -768,22 +768,22 @@ plotAcrossRegions("YOUR FLYBASE ID HERE")
 ### plotAcrossRegions the for mouse brain dataset
 
 - Multiple functions are available to compare the variation of a gene's expression at different levels.
-- MGI IDs take the format ENSMUG########### 
+- MGI IDs take the format ENSMUSG########### 
 
 #### plotAcrossTissue
 
 - Compares gene expression across the 2 available tissues, the prefrontal cortex (PFC) and striatum (STR), which are shown on the X-axis.
 
 ```{r plotAcrossTissue_mouse-1, exercise=TRUE, echo=FALSE}
-plotAcrossTissue("ENSMUG###########")
+plotAcrossTissue("ENSMUSG###########")
 ```
 
 ```{r plotAcrossTissue_mouse-2, exercise=TRUE, echo=FALSE}
-plotAcrossTissue("ENSMUG###########")
+plotAcrossTissue("ENSMUSG###########")
 ```
 
 ```{r plotAcrossTissue_mouse-3, exercise=TRUE, echo=FALSE}
-plotAcrossTissue("ENSMUG###########")
+plotAcrossTissue("ENSMUSG###########")
 ```
 
 #### plotAcrossHostDonor
@@ -791,13 +791,13 @@ plotAcrossTissue("ENSMUG###########")
 - Compares gene expression across the 2 available tissues, the prefrontal cortex (PFC) and striatum (STR), and across the human child who donated their microbiome. This graph would show the overall trends in gene expression between the prefrontal cortex and striatum as well as any effect of the individual human donor.
 
 ```{r plotAcrossHostDonor_mouse-1, exercise=TRUE, echo=FALSE}
-plotAcrossHostDonor("ENSMUG###########")
+plotAcrossHostDonor("ENSMUSG###########")
 ```
 ```{r plotAcrossHostDonor_mouse-2, exercise=TRUE, echo=FALSE}
-plotAcrossHostDonor("ENSMUG###########")
+plotAcrossHostDonor("ENSMUSG###########")
 ```
 ```{r plotAcrossHostDonor_mouse-3, exercise=TRUE, echo=FALSE}
-plotAcrossHostDonor("ENSMUG###########")
+plotAcrossHostDonor("ENSMUSG###########")
 ```
 
 #### plotAcrossMice
@@ -805,13 +805,13 @@ plotAcrossHostDonor("ENSMUG###########")
 - Compares gene expression between the 2 available tissues, the prefrontal cortex (PFC) and striatum (STR) at the level of individual mouse whose tissues were harvested. This graph represents the overall trend in gene expression across the striatum and prefrontal cortex as well as the variation of each human donor and individual mouse.
 
 ```{r plotAcrossMice_mouse-1, exercise=TRUE, echo=FALSE}
-plotAcrossMice("ENSMUG###########")
+plotAcrossMice("ENSMUSG###########")
 ```
 ```{r plotAcrossMice_mouse-2, exercise=TRUE, echo=FALSE}
-plotAcrossMice("ENSMUG###########")
+plotAcrossMice("ENSMUSG###########")
 ```
 ```{r plotAcrossMice_mouse-3, exercise=TRUE, echo=FALSE}
-plotAcrossMice("ENSMUG###########")
+plotAcrossMice("ENSMUSG###########")
 ```
 
 
