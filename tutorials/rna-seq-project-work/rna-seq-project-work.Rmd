@@ -108,7 +108,7 @@ getClusterProfilerGenes <- function (x, i) {
 }
 
 plotAcrossRegions <- function( x ) {
-  df <- data.frame(counts(midgut)[x,], midgut_tsv$condition)
+  df <- data.frame(counts(midgut, normalized = TRUE)[x,], midgut_tsv$condition)
   colnames(df) <- c("counts", "region")
   df <- df[10:30,]
   df$region <- fct_relevel( factor( df$region ), "a1", "a2_3", "Cu", "LFCFe", "Fe", "p1", "p2_4" )
@@ -118,9 +118,6 @@ plotAcrossRegions <- function( x ) {
     theme_bw() + 
     theme( axis.text.x = element_text( angle=90, vjust=0.5 ) )
 }
-
-
-
 
 ```
 

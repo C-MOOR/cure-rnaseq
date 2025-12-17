@@ -83,7 +83,7 @@ getClusterProfilerGenes <- function (x, i) {
 }
 
 plotAcrossRegions <- function( x ) {
-  df <- data.frame(counts(midgut)[x,], midgut_tsv$condition)
+  df <- data.frame(counts(midgut, normalized = TRUE)[x,], midgut_tsv$condition)
   colnames(df) <- c("counts", "region")
   df <- df[10:30,]
   df$region <- fct_relevel( factor( df$region ), "a1", "a2_3", "Cu", "LFCFe", "Fe", "p1", "p2_4" )
@@ -758,7 +758,7 @@ Plotting gene expression out across all regions again takes some reformatting of
 plotAcrossRegions("FBgn0000003")
 ```
 
-This allows us to see patterns of gene expression across all regions.  In this case, FBgn0000003 is only expressed in the a1 and Fe regions.
+This allows us to see patterns of gene expression across all regions.  In this case, FBgn0000003 is only expressed in the a1 and Fe regions, and looking at the y-axis, to a very low level of expression.
 
 How do you decide what gene to look at?
 
@@ -773,13 +773,13 @@ a1_vs_p1_sorted <- arrange(a1_vs_p1, padj)
 head(a1_vs_p1_sorted)
 ```
 
-In this case, FBgn0035665 has the lowest padj score when comparing regions a1 and p1.  Let's plot it across all regions:
+In this case, FBgn0035665 has the lowest padj score when comparing regions a1 and p1. Let's plot it across all regions:
 
 ```{r, echo=TRUE}
 plotAcrossRegions("FBgn0035665")
 ```
 
-Now we can see that it's generally more highly expressed towards the anterior and is expressed at a low level in posterior regions, but there is also high expression in the Fe region.
+Now we can see that it's generally more highly expressed towards the anterior and is expressed at a low level in posterior regions, but there is also moderate expression in the Fe region.
 
 ## Try it Out!
 
