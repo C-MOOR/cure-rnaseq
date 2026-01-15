@@ -208,7 +208,7 @@ Differential_Abundance_AltGeo <- function(w, x, y, z) {
   # Accept the input and give it a human friendly name
   my_counts <- w
   my_DESeq2_object <- x
-  my_comparision_list <- y
+  my_comparison_list <- y
   my_pvalue <- z
   
   
@@ -224,7 +224,7 @@ Differential_Abundance_AltGeo <- function(w, x, y, z) {
   my_DESeq2_object <- nbinomWaldTest(my_DESeq2_object)
   
   #Change the contrast section to compare different variables and groups.
-  res = results(my_DESeq2_object, cooksCutoff = FALSE, contrast= my_comparision_list)
+  res = results(my_DESeq2_object, cooksCutoff = FALSE, contrast= my_comparison_list)
   
   #Select only abundances with a p-value of z or below
   alpha = my_pvalue
@@ -354,7 +354,7 @@ This module assumes that you have previously completed our "Exploring 16S data w
 
 We can measure biodiversity by taking a measure of each sample's alpha diversity (diversity within a sample) and comparing these measurements. We will use **Simpson's index** to calculate alpha diversity here. Simpson's alpha diversity measure is based on the number of unique ASVs (species richness) and their proportion of them within sample (species evenness), taking into account which species are more dominant and which are more rare.
 
-***Note that with Simpson's index, a HIGHER score on the scale (0-1) means a LOWER alpha diversity.***
+***Note: Here we are using Gini-Simpson's index, where a HIGHER score on the scale (0-1) means a HIGHER alpha diversity. Some publications may use an alternate version of the index which is read inversely.***
   
 ![](images/Diversity_Figure.png){width=50%}
 <p class=caption> **Species richness vs species evenness**: Although the number of species between the two samples is the same, sample 2 has a higher species evenness, where each species is represented more equally. Bacteria art from NIAID Visual & Medical Arts (42, 57, & 179). Figure by Sayumi York (March 27, 2025).</p>
@@ -363,12 +363,12 @@ We will do this using the plot_richness() function of phyloseq. We can customize
 
 We will use non-normalized data in counts (miso_counts) as recommended by [McMurdie & Holmes (2014)](https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1003531) for our alpha diversity and differential abundance analyses. 
 
-Use the code below to plot alpha diversity for each individual (x = "subject"), and color by timepointgroup. If you get a warning message, you may ignore it and continue.
+Use the code below to plot alpha diversity for each individual (x = "subject"), and color by diet. If you get a warning message, you may ignore it and continue.
 
 ```{r plot_richness_example, exercise=TRUE, echo=FALSE}
 plot_richness(miso_counts, x="subject", 
-              color="timepointgroup", 
-              shape="timepointgroup", 
+              color="diet", 
+              shape="diet", 
           	  title ="fill in the blank",
               measures="Simpson")
 
@@ -381,8 +381,8 @@ Use the code below to subset the data using subset_samples() and make a new alph
 subset <- subset_samples(miso_counts, gender == "F")
 
 plot_richness(subset, x="timepoint", 
-              color="phase", 
-              shape="timepointgroup", 
+              color="subject", 
+              shape="diet", 
           	  title ="fill in the blank",
               measures="Simpson")
 
@@ -392,7 +392,7 @@ plot_richness(subset, x="timepoint",
 
 ```{r alpha_diversity_quiz}
 quiz(caption = "Using plot_richness to plot alpha diversity",
-  question("For subject S02, which timepointgroup has the HIGHEST alpha diveristy? HINT: the answer can be found in the alpha diversity plot where x = subject and color is by timepointgroup",
+  question("For subject S02, which diet has the HIGHEST alpha diveristy? HINT: the answer can be found in the alpha diversity plot where x = subject and color is by diet",
     answer("BD", correct = TRUE),
     answer("HD"),
     answer("WO"),
@@ -442,7 +442,7 @@ We can tackle this challenge with a PCoA.
 
 - **Objective**: Comparing how similar samples are to one another
 - **Best for questions like**: How much variability is there within a given condition? What samples are most similar to each other?
-- **Example question**: Are male and female samples grouped together? Do samples group together by a given metabolite? How similar are samples within each timepointgroup?
+- **Example question**: Are male and female samples grouped together? Do samples group together by a given metabolite? How similar are samples within each diet?
 - **Data format**: We will use normalized counts (proportions) to be able to make comparisons between samples.
 
 A Principal coordinates analysis (PCoA) is a multidimensional analysis that shrinks down your dimensions into groups called principal coordinates. Each principle coordinate (PC) is a collection of variables and their relationships, and the components are ordered by the amount of variation within the data set they explain. A PCoA then plots the data along two axes, each representing a PC and thus takes a multidimensional analysis and makes it so the results are visible in a 2D space!
@@ -473,7 +473,7 @@ Notice how we can ask R to color or change the shape of the data points based on
 ```{r plot_PCoA, exercise=TRUE, echo=FALSE, exercise.setup = "ordinate_PCoA"}
 plot_ordination(miso, miso.pcoa, 
         color = "subject", 
-        shape = "phase", 
+        shape = "diet", 
         title="My PCoA")
 ```
 
@@ -501,7 +501,7 @@ miso.pcoa.subset <- ordinate(miso_subset, method="PCoA", distance="bray")
 #Plot the new subsetted ordination with the subsetted phyloseq object
 plot_ordination(miso_subset, miso.pcoa.subset, 
         color = "subject", 
-        shape = "phase", 
+        shape = "diet", 
         title="My subsetted (Firmicutes) PCoA")
 ```
 
@@ -561,11 +561,11 @@ The function phyloseq_to_deseq2 will take care of all the conversion of the data
 
 The design field is where we put our factor of interest.
 
-In this example, we are comparing samples between the groups of the variable timepointgroup (BD, HD, and WO). We will then call my_miso_DESeq2 to check that it is a DESeqDataSet object (it will say class: DESeqDataSet).
+In this example, we are comparing samples between the groups of the variable diet (BD, HD, and WO). We will then call my_miso_DESeq2 to check that it is a DESeqDataSet object (it will say class: DESeqDataSet).
 
 
 ```{r phyloseq_to_deseq2, exercise=TRUE}
-my_miso_DESeq2 <- phyloseq_to_deseq2(miso_counts, design = ~ timepointgroup)
+my_miso_DESeq2 <- phyloseq_to_deseq2(miso_counts, design = ~ diet)
 my_miso_DESeq2
 ```
 
@@ -573,17 +573,17 @@ my_miso_DESeq2
 
 ### Step 2: Tell DESeq2 which groups you want to compare
 
-DESeq2 will only give you the results for one comparision at a time. For example, in the variable timepointgroup, we have to make a total of three comparisions if we wanted to make every possible comparision.
+DESeq2 will only give you the results for one comparision at a time. For example, in the variable diet, we have to make a total of three comparisions if we wanted to make every possible comparision.
 
 - BD vs HD
 - HD vs WO
 - WO vs BD
 
-We'll just choose the last one for now. my_comparision should be a list of strings identical to what we put in ("timepointgroup", "WO", "BD")
+We'll just choose the last one for now. my_comparison should be a list of strings identical to what we put in ("diet", "WO", "BD")
 
-```{r create_my_comparision, exercise=TRUE, eval=FALSE}
-my_comparision <-c("timepointgroup", "WO", "BD")
-my_comparision
+```{r create_my_comparison, exercise=TRUE, eval=FALSE}
+my_comparison <-c("diet", "WO", "BD")
+my_comparison
 ```
 
 ---
@@ -595,13 +595,13 @@ We have created the function Differential_Abundance() for you to help skip some 
 We store the results in a new object called Significant_DEseq2_ASVs. To make sure it's working we call Significant_DEseq2_ASVs to see a table of significantly differential abundance ASVs based on our chosen p-value.
 
 ```{r prepare-forDESeq2}
-my_comparision <-c("timepointgroup", "WO", "BD")
-my_miso_DESeq2 <- phyloseq_to_deseq2(miso_counts, design = ~ timepointgroup)
+my_comparison <-c("diet", "WO", "BD")
+my_miso_DESeq2 <- phyloseq_to_deseq2(miso_counts, design = ~ diet)
 
 ```
 
 ```{r run_differential_abundance, exercise=TRUE, eval=FALSE, exercise.setup= "prepare-forDESeq2"}
-Significant_DEseq2_ASVs<-Differential_Abundance(miso_counts, my_miso_DESeq2, my_comparision, 0.05)
+Significant_DEseq2_ASVs<-Differential_Abundance(miso_counts, my_miso_DESeq2, my_comparison, 0.05)
 Significant_DEseq2_ASVs
 ```
 
@@ -612,9 +612,9 @@ Significant_DEseq2_ASVs
 We include calling Significant_DEseq2_ASVs as step 4. While we won't check the output of steps 1 and 2 every time we run the code, we definitely want the table each time we run the analysis.
 
 ```{r prepare-forDESeq2-2}
-my_comparision <-c("timepointgroup", "WO", "BD")
-my_miso_DESeq2 <- phyloseq_to_deseq2(miso_counts, design = ~ timepointgroup)
-Significant_DEseq2_ASVs<-Differential_Abundance(miso_counts, my_miso_DESeq2, my_comparision, 0.05)
+my_comparison <-c("diet", "WO", "BD")
+my_miso_DESeq2 <- phyloseq_to_deseq2(miso_counts, design = ~ diet)
+Significant_DEseq2_ASVs<-Differential_Abundance(miso_counts, my_miso_DESeq2, my_comparison, 0.05)
 ```
 
 ```{r significant_DEseq2_genes, exercise=TRUE, eval=FALSE, exercise.setup="prepare-forDESeq2-2"}
@@ -643,13 +643,13 @@ Let's put it all together. Try run the analysis below.
 
 ```{r DESeq2_example, exercise=TRUE, echo=TRUE}
 # STEP 1: Convert the phyloseq object to a DESeq2 object and tell R the experimental design 
-my_miso_DESeq2 <- phyloseq_to_deseq2(miso_counts, design = ~ timepointgroup)
+my_miso_DESeq2 <- phyloseq_to_deseq2(miso_counts, design = ~ diet)
 
 # STEP 2: Select the groups to compare
-my_comparision <-c("timepointgroup", "WO", "BD")
+my_comparison <-c("diet", "WO", "BD")
 
 # STEP 3: Run the differential abundance analysis at the chosen p-value
-Significant_DEseq2_ASVs<-Differential_Abundance(miso_counts, my_miso_DESeq2, my_comparision, 0.05)
+Significant_DEseq2_ASVs<-Differential_Abundance(miso_counts, my_miso_DESeq2, my_comparison, 0.05)
 
 # STEP 4: Retrieve the list of ASVs with a significant difference in abundance between the chosen groups
 Significant_DEseq2_ASVs
@@ -663,7 +663,7 @@ ggplot(Significant_DEseq2_ASVs, aes(x = Phylum, y=log2FoldChange, color= Class))
 
 How do we interpret the results?
 
-- **log2FoldChange**:  The latter of the two conditions in our chosen variable is what DESeq2 considers the baseline. For example, the code: *my_comparision <-c("timepointgroup", "WO", "BD")*, sets the baseline as BD. Thus, any positive number represents a greater abundance in the former ("WO") condition compared to the latter - baseline ("BD"). The larger the magnitude of the number, the greater the difference in abundance.
+- **log2FoldChange**:  The latter of the two conditions in our chosen variable is what DESeq2 considers the baseline. For example, the code: *my_comparison <-c("diet", "WO", "BD")*, sets the baseline as BD. Thus, any positive number represents a greater abundance in the former ("WO") condition compared to the latter - baseline ("BD"). The larger the magnitude of the number, the greater the difference in abundance.
 - **p-value**: The base p-value, without corrections for multiple comparisons. 
 - **p-adj**: The p-value after correcting for multiple comparisions. You should use p-adj when reporting your results.
 
@@ -716,17 +716,17 @@ quiz(caption = "",
 
 How can we change the comparision? 
 
-To change the comparison, we need to change the code in Step 2!. In the axample above, we compared timepointgroup WO with BD. If we now want to compare HD to BD, we can change the my_comparison() portion of the code and swap out "WO" for "HD" so that we can compare the "HD" to the "BD" (baseline) group.
+To change the comparison, we need to change the code in Step 2!. In the axample above, we compared diet WO with BD. If we now want to compare HD to BD, we can change the my_comparison() portion of the code and swap out "WO" for "HD" so that we can compare the "HD" to the "BD" (baseline) group.
 
 ```{r DESeq2_example_comparison, exercise=TRUE, echo=TRUE}
 # STEP 1: Convert the phyloseq object to a DESeq2 object and tell R the experimental design 
-my_miso_DESeq2 <- phyloseq_to_deseq2(miso_counts, design = ~ timepointgroup)
+my_miso_DESeq2 <- phyloseq_to_deseq2(miso_counts, design = ~ diet)
 
 # STEP 2: Select the groups to compare
-my_comparision <-c("timepointgroup", "WO", "BD")
+my_comparison <-c("diet", "WO", "BD")
 
 # STEP 3: Run the differential abundance analysis at the chosen p-value
-Significant_DEseq2_ASVs<-Differential_Abundance(miso_counts, my_miso_DESeq2, my_comparision, 0.05)
+Significant_DEseq2_ASVs<-Differential_Abundance(miso_counts, my_miso_DESeq2, my_comparison, 0.05)
 
 # STEP 4: Retrieve the list of ASVs with a significant difference in abundance between the chosen groups
 Significant_DEseq2_ASVs
@@ -760,23 +760,23 @@ quiz(caption = "Using DESeq2 to examine differential abundance between HD vs BD"
 ```
 
 
-How can we change the factor we are examining for differential abundance. For example, instead of comparing different timepointgroups BD, HD, WO we did above, how can we instead perform differential abundance based on subjects?
+How can we change the factor we are examining for differential abundance. For example, instead of comparing different diets BD, HD, WO we did above, how can we instead perform differential abundance based on subjects?
 
-If we want to change the factor we are looking at (example: from timepointgroup to subject) we will have to change the design code in Step 1 as well. In step 1 change timepointgroup to subject.
+If we want to change the factor we are looking at (example: from diet to subject) we will have to change the design code in Step 1 as well. In step 1 change diet to subject.
 
-Then of course, step 2 needs to match. In step 2 change timepointgroup to subject.
+Then of course, step 2 needs to match. In step 2 change diet to subject.
 
 Finally, we need to choose two variables within the factor subject to compare. Let's choose S02 and subject S03. In step 2 replace "WO" with "S02". Then replace "BD" with "S03".
 
 ```{r DESeq2_example_design, exercise=TRUE, echo=TRUE}
 # STEP 1: Convert the phyloseq object to a DESeq2 object and tell R the experimental design 
-my_miso_DESeq2 <- phyloseq_to_deseq2(miso_counts, design = ~ timepointgroup)
+my_miso_DESeq2 <- phyloseq_to_deseq2(miso_counts, design = ~ diet)
 
 # STEP 2: Select the groups to compare
-my_comparision <-c("timepointgroup", "WO", "BD")
+my_comparison <-c("diet", "WO", "BD")
 
 # STEP 3: Run the differential abundance analysis at the chosen p-value
-Significant_DEseq2_ASVs<-Differential_Abundance(miso_counts, my_miso_DESeq2, my_comparision, 0.05)
+Significant_DEseq2_ASVs<-Differential_Abundance(miso_counts, my_miso_DESeq2, my_comparison, 0.05)
 
 # STEP 4: Retrieve the list of ASVs with a significant difference in abundance between the chosen groups
 Significant_DEseq2_ASVs
@@ -823,8 +823,8 @@ quiz(caption = "Using DESeq2 to examine differential abundance",
 my_subset <- subset_samples(miso_counts, gender == "F")
 
 plot_richness(my_subset, x="timepoint", 
-              color="phase", 
-              shape="timepointgroup",
+              color="subject", 
+              shape="diet",
           	  title ="fill in the blank", 
               measures= "Simpson")
 
@@ -848,7 +848,7 @@ miso.pcoa.subset <- ordinate(miso, method="PCoA", distance="bray")
 #Plot the new subsetted ordination with the subsetted phyloseq object
 plot_ordination(miso_subset, miso.pcoa.subset, 
         color = "subject", 
-        shape = "phase", 
+        shape = "diet", 
         title="My subsetted (Firmicutes) PCoA")
 ```
 
@@ -862,13 +862,13 @@ plot_ordination(miso_subset, miso.pcoa.subset,
 
 ```{r try_it_DESeq2_end, exercise=TRUE, echo=FALSE}
 # STEP 1: Convert the phyloseq object to a DESeq2 object and tell R the experimental design 
-my_miso_DESeq2 <- phyloseq_to_deseq2(miso_counts, design = ~ timepointgroup)
+my_miso_DESeq2 <- phyloseq_to_deseq2(miso_counts, design = ~ diet)
 
 # STEP 2: Select the groups to compare
-my_comparision <-c("timepointgroup", "WO", "HD")
+my_comparison <-c("diet", "WO", "HD")
 
 # STEP 3: Run the differential abundance analysis at the chosen p-value
-Significant_DEseq2_ASVs<-Differential_Abundance(miso_counts,my_miso_DESeq2, my_comparision, 0.05)
+Significant_DEseq2_ASVs<-Differential_Abundance(miso_counts,my_miso_DESeq2, my_comparison, 0.05)
 
 # STEP 4: Retrieve the list of ASVs with a significant difference in abundance between the chosen groups
 Significant_DEseq2_ASVs
@@ -971,7 +971,7 @@ Warning: Removed 3 rows containing missing values or values outside the scale ra
 
 <!-- # Tax glom heatmap -->
 <!-- miso_glom<-tax_glom(miso_counts, taxrank="Phylum", NArm=TRUE, bad_empty=c(NA, "", " ", "\t")) -->
-<!-- plot_bar(miso_glom, x="timepointgroup", fill = "Phylum", title = "choose a name for your graph") + -->
+<!-- plot_bar(miso_glom, x="diet", fill = "Phylum", title = "choose a name for your graph") + -->
 <!--   geom_bar(aes(color = Phylum, fill = Phylum), stat = "identity", position = "stack")  -->
   
 <!-- PERMANOVA CODE -->
