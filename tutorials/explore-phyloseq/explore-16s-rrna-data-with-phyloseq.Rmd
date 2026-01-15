@@ -181,11 +181,11 @@ Here we see that the phyloseq object consists of an otu_table, sample_data and t
 
 Our phyloseq object is composed of 3 core data tables (some have more).
 
-  - **The sample data table (sample_data)**: holds all the metadata relating to each sample. For example our metadata contains information on what timepoint in the experiment the sample is from (timepoint 1, 2, 3, 4 or 5), the gender of the subject, whether they were on the homogenized diet (HD) at the time, the subject's age, etc.
+  - **The sample data table (sample_data)**: Holds all the metadata relating to each sample. For example our metadata contains information on what timepoint in the experiment the sample is from (timepoint 1, 2, 3, 4 or 5), the gender of the subject, whether they were on the homogenized diet (HD) at the time, the subject's age, etc.
   
-  - **The OTU abundance table (otu_table)**: holds the data on how many of each ASV were found in each sample.
+  - **The OTU abundance table (otu_table)**: Holds the data on how many of each ASV were found in each sample.
   
-  -  **The taxonomic annotation table (tax_table)**: holds all the taxonomic data for each ASV (what phylum, class, order, etc. the ASV has belongs to). Note, that not every ASV has a taxonomic assignment at every level.
+  -  **The taxonomic annotation table (tax_table)**: Holds all the taxonomic data for each ASV (what phylum, class, order, etc. the ASV has belongs to). Note that not every ASV has a taxonomic assignment at every level.
 
 ---
 
@@ -210,10 +210,10 @@ quiz(caption = "What's in the phyloseq object?",
     random_answer_order = TRUE
   ),
   
-  question("How many variables are there in the experiment? (ex. age, phase, timepoint)",
+  question("How many variables are there in the experiment? (ex. age, gender, timepoint)",
     answer("1702"),
     answer("105"),
-    answer("32", correct = TRUE),
+    answer("28", correct = TRUE),
     answer("9"),
     allow_retry = TRUE,
     random_answer_order = TRUE
@@ -265,20 +265,20 @@ quiz(caption = "Exploring the sample_table",
     answer("age", correct=TRUE),
     answer("subject", correct=TRUE),
     answer("gender", correct=TRUE),
-    answer("timepointgroup", correct=TRUE),
-    answer("id", correct=TRUE),
+    answer("diet", correct=TRUE),
+    answer("timepoint", correct=TRUE),
     allow_retry = TRUE
   )
 )
 ```
 
-Let's try looking at different metadata variables (e.g. subject and timepointgroup) represented by the columns of the metadata table. 
+Let's try looking at different metadata variables (e.g. subject and diet) represented by the columns of the metadata table. 
 
-Use code block below to identify unique subjects and timepointgroups present in miso data. Try substituting the column name in between the double quotes with another metadata variable (e.g. age). 
+Use code block below to identify unique subjects and diets present in miso data. Try substituting the column name in between the double quotes with another metadata variable (e.g. age). 
 
 ```{r unique_metadata, exercise=TRUE, echo=FALSE}
 unique(data.frame(sample_data(miso)[, "subject"]))
-unique(data.frame(sample_data(miso)[, "timepointgroup"]))
+unique(data.frame(sample_data(miso)[, "diet"]))
 
 ```
 
@@ -296,7 +296,7 @@ quiz(caption="Exploring metadata in sample_table",
     allow_retry = TRUE
   ),
   
-  question("What are the timepointgroups in the dataset?",
+  question("What are the diets in the dataset?",
     answer("1-5"),
     answer("BD, HD, WO", correct=TRUE),
     answer("miso and non-miso"),
@@ -477,7 +477,7 @@ plot_bar(miso, x= "subject", fill = "Phylum", title = "choose a name for your gr
   geom_bar(aes(color = Phylum, fill = Phylum), stat = "identity", position = "stack")
 ```
 
-Try plotting a different taxonomy based on another variable such as timepointgroup, phase, age and gender, by substituting "subject".
+Try plotting a different taxonomy based on another variable such as diet, age, and gender, by substituting "subject".
 
 ```{r plot_bar_subject_Phylum, exercise=TRUE, exercise.eval=FALSE}
 plot_bar(miso, x= "subject", fill = "Phylum", title = "choose a name for your graph") +
