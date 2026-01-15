@@ -234,7 +234,7 @@ Differential_Abundance_AltGeo <- function(w, x, y, z) {
   # Accept the input and give it a human friendly name
   my_counts <- w
   my_DESeq2_object <- x
-  my_comparision_list <- y
+  my_comparison_list <- y
   my_pvalue <- z
   
   
@@ -251,7 +251,7 @@ Differential_Abundance_AltGeo <- function(w, x, y, z) {
   my_DESeq2_object <- nbinomWaldTest(my_DESeq2_object)
   
   #Change the contrast section to compare different variables and groups.
-  res = results(my_DESeq2_object, cooksCutoff = FALSE, contrast= my_comparision_list)
+  res = results(my_DESeq2_object, cooksCutoff = FALSE, contrast= my_comparison_list)
   
   #Select only abundances with a p-value of z or below
   alpha = my_pvalue
@@ -464,8 +464,7 @@ We have a number of variables we can use in our analysis. Notice that the variab
 |Variable|What is it?|Factors|
 |:----|--------------|----:|
 |timepoint|The 5 samplings that occur on days 0, 13, 17, 21, and 28 coded as timepoints 1 through 5|1, 2, 3, 4, 5| 
-|timepoint group|The diet the subject was on during the sampling|BD, HD, WO|
-|phase|Whether the subject was on their usual diet or the homogenized diet during sampling|non-miso, miso| 
+|diet|The diet the subject was on during the sampling|BD, HD, WO|
 
 ### MISO subject variables
 
@@ -866,8 +865,8 @@ plot_bar(my_subset, x= "subject", fill = "Class", title = "My title") +
 my_subset <- subset_samples(miso_counts, gender == "F")
 
 plot_richness(my_subset, x="timepoint", 
-              color="phase", 
-              shape="timepointgroup",
+              color="subject", 
+              shape="diet",
           	  title ="fill in the blank", 
               measures= "Simpson")
 
@@ -900,7 +899,7 @@ plot_richness(my_subset, x="timepoint",
 
 - **Objective**: Comparing how similar samples are to one another
 - **Best for questions like**: How much variability is there within a given condition? What samples are most similar to each other?
-- **Example question**: Are male and female samples grouped together? Do samples group together by a given metabolite? How similar are samples within each timepointgroup?
+- **Example question**: Are male and female samples grouped together? Do samples group together by a given metabolite? How similar are samples within each diet?
 - **Data format**: We will use normalized counts (proportions) to be able to make comparisons between samples.
 
 ### How to interpret
@@ -919,7 +918,7 @@ miso.pcoa.subset <- ordinate(miso, method="PCoA", distance="bray")
 #Plot the new subsetted ordination with the subsetted phyloseq object
 plot_ordination(miso_subset, miso.pcoa.subset, 
         color = "subject", 
-        shape = "phase", 
+        shape = "diet", 
         title="My subsetted (Firmicutes) PCoA")
 ```
 
@@ -955,7 +954,7 @@ plot_ordination(miso_subset, miso.pcoa.subset,
 
 ### How do we interpret the results?
 
-- **log2FoldChange**:  The latter of the two conditions in our chosen variable is what DESeq2 considers the baseline. For example, the code: *my_comparision <-c("timepointgroup", "WO", "BD")*, sets the baseline as BD. Thus, any positive number represents a greater abundance in the former ("WO") condition compared to the latter - baseline ("BD"). The larger the magnitude of the number, the greater the difference in abundance.
+- **log2FoldChange**:  The latter of the two conditions in our chosen variable is what DESeq2 considers the baseline. For example, the code: *my_comparison <-c("diet", "WO", "BD")*, sets the baseline as BD. Thus, any positive number represents a greater abundance in the former ("WO") condition compared to the latter - baseline ("BD"). The larger the magnitude of the number, the greater the difference in abundance.
 - **p-value**: The base p-value, without corrections for multiple comparisons. 
 - **p-adj**: The p-value after correcting for multiple comparisions. You should use p-adj when reporting your results.
 
@@ -984,11 +983,12 @@ Please refer to the code chunks below with examples for those specific functions
 ### Differential abundance code template
 
 ```{r DESeq2_example, exercise=TRUE, echo=TRUE}
+
 # STEP 1: Convert the phyloseq object to a DESeq2 object and tell R the experimental design 
-my_miso_DESeq2 <- phyloseq_to_deseq2(miso_counts, design = ~ timepointgroup)
+my_miso_DESeq2 <- phyloseq_to_deseq2(miso_counts, design = ~ diet)
 
 # STEP 2: Select the groups to compare
-my_comparison <-c("timepointgroup", "WO", "BD")
+my_comparison <-c("diet", "WO", "BD")
 
 # STEP 3: Run the differential abundance analysis at the chosen p-value
 Significant_DEseq2_ASVs<-Differential_Abundance(miso_counts, my_miso_DESeq2, my_comparison, 0.05)
