@@ -392,19 +392,21 @@ plot_richness(subset, x="timepoint",
 
 ```{r alpha_diversity_quiz}
 quiz(caption = "Using plot_richness to plot alpha diversity",
-  question("For subject S02, which diet has the HIGHEST alpha diveristy? HINT: the answer can be found in the alpha diversity plot where x = subject and color is by diet",
+  question("For subject S02, which diet has the HIGHEST alpha diveristy?",
     answer("BD", correct = TRUE),
     answer("HD"),
     answer("WO"),
+    try_again = "HINT: The answer can be found in the alpha diversity plot where x = subject and color is by diet",
     allow_retry = TRUE
   ),
 
-  question("What male subject has the data point for the LOWEST alpha diversity? HINT: Use subset_samples() to subset males, and specify individuals (subject) on x-axis of the alpha diversity plot.",
+  question("What male subject has the data point for the LOWEST alpha diversity?",
     answer("S06"),
     answer("S10", correct=TRUE),
     answer("S09"),
     answer("S19"),
     answer("S31"),
+    try_again = "HINT: Use subset_samples() to subset males (M instead of F), and specify individuals (subject) on x-axis of the alpha diversity plot.",
     allow_retry = TRUE,
     random_answer_order = TRUE
   )
@@ -529,12 +531,13 @@ quiz(caption = "Creating and interpreting a PCoA plot",
       random_answer_order = TRUE
     ),
      
-    question("In a PCoA with only data from ASVs with the class Bacteroidia, what is the percent of variance in the dataset explained by principal coordinate 1? HINT: You will need to change the code subsetting phylum and Firmicutes",
+    question("In a PCoA with only data from ASVs with the class Bacteroidia, what is the percent of variance in the dataset explained by principal coordinate 1?",
       answer("22.5%", correct = TRUE),
       answer("12.8%"),
       answer("13.1%"),
       answer("6.2%"),
       answer("11.7%"),
+      try_again = "HINT: You will need to change the code subsetting Phylum and Firmicutes to Class and Bacteroidia.",
       allow_retry = TRUE,
       random_answer_order = TRUE
     )
@@ -680,38 +683,37 @@ quiz(caption = "Using DESeq2 to examine differential abundance - WO vs BD",
     answer("32"),
     answer("11"),
     answer("9"),
+    try_again = "HINT: This is equal to the number of rows in your results table.",
     allow_retry = TRUE
   ),
     
   question("Does ASV 2114 have a greater abundance in WO or BD?",
     answer("BD", correct = TRUE),
     answer("WO"),
+    try_again = "HINT: Our baseline condition is BD, so a negative log2foldchange means the other condition has a lower abundance than BD.",
     allow_retry = TRUE
   ),
   
 
-  question("Of all the ASVs found to be differentially abundant between WO and BD, which has the MOST differential abundance between the WO and BD conditions? HINT: Look at the highest absolute value for Log2FoldChange",
+  question("Of all the ASVs found to be differentially abundant between WO and BD, which has the MOST differential abundance between the WO and BD conditions?",
     answer("ASV245", correct = TRUE),
     answer("ASV1248"),
     answer("ASV1693"),
     answer("ASV2074"),
     answer("ASV2114"),
+    try_again = "HINT: What ASV has the highest *absolute value* for Log2FoldChange?",
+    allow_retry = TRUE
+  ),
+  
+    question("How many phylum have differentially abundant ASVs between WO and BD?",
+    answer("1"),
+    answer("2"),
+    answer("3"),
+    answer("4", correct=TRUE),
+    try_again = "HINT: Find this by manually looking through the DESeq2 results table or looking at the x-axis of the differential abundance plot",
     allow_retry = TRUE
   )
 ) 
-``` 
-
-``` {r differential_abundance_quiz_part2}
-quiz(caption = "",
-  question("How many phylum have differentially abundant ASVs between WO and BD?",
-    answer("3"),
-    answer("1"),
-    answer("0"),
-    answer("4", correct=TRUE), #for some reason, this breaks when it is a part of the above code block
-    allow_retry = TRUE,
-    random_answer_order = TRUE
-  )
-)
 ``` 
 
 How can we change the comparision? 
@@ -748,12 +750,14 @@ quiz(caption = "Using DESeq2 to examine differential abundance between HD vs BD"
     answer("10"),
     answer("2", correct=TRUE),
     allow_retry = TRUE,
+    try_again = "HINT: Change WO to HD in step 2 of the above code",
     random_answer_order = TRUE
   ),
      
     question("Does ASV807 a higher abundance in HD or BD?",
     answer("HD", correct = TRUE),
     answer("BD"),
+    try_again = "HINT: Our baseline condition here is BD, so an ASV with a postive log2foldChange is higher in the other condition",
     allow_retry = TRUE
   )
 ) 
@@ -795,6 +799,7 @@ quiz(caption = "Using DESeq2 to examine differential abundance",
     answer("S03", correct=TRUE),
     answer("S02"),
     allow_retry = TRUE,
+    try_again = "HINT: The baseline condition is listed *second* in step 2.",
     random_answer_order = TRUE
   ),
      
@@ -807,6 +812,7 @@ quiz(caption = "Using DESeq2 to examine differential abundance",
     answer("Verrucomicrobia", correct=TRUE),
     answer("Tenericutes", correct=TRUE),
     allow_retry = TRUE,
+    try_again = "HINT: Confirm that you've made the correct changes in the code as directed in the text in both steps 1 and 2. Then look at the x-axis of the differential abundance plot.",
     random_answer_order = TRUE
   )
 )
