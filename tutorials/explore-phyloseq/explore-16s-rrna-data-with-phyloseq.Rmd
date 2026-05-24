@@ -477,7 +477,7 @@ plot_bar(miso, x= "subject", fill = "Phylum", title = "choose a name for your gr
   geom_bar(aes(color = Phylum, fill = Phylum), stat = "identity", position = "stack")
 ```
 
-Try plotting a different taxonomy based on another variable such as diet, age, and gender, by substituting "subject".
+Try plotting different taxonomy based on another variable such as diet, age, and gender, by substituting "subject".
 
 ```{r plot_bar_subject_Phylum, exercise=TRUE, exercise.eval=FALSE}
 plot_bar(miso, x= "subject", fill = "Phylum", title = "choose a name for your graph") +
