@@ -202,8 +202,7 @@ quiz(caption="Knowledge check: MISO metadata",
     answer("21", correct=TRUE),
     answer("32"),
     answer("105"),
-    allow_retry = TRUE,
-    random_answer_order = TRUE
+    allow_retry = TRUE
   ),
   
     question("How many unique ages are there in the dataset?",
@@ -212,8 +211,7 @@ quiz(caption="Knowledge check: MISO metadata",
     answer("21"),
     answer("32"),
     answer("105"),
-    allow_retry = TRUE,
-    random_answer_order = TRUE
+    allow_retry = TRUE
   ),
   
   question("Why are there fewer unique ages than there are unique subjects?",
