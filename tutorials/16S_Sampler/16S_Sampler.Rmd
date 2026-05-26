@@ -122,13 +122,15 @@ tv <- rmarkdown::metadata$output$`learnr::tutorial`$version
 
 ## Introduction
 
-Welcome to the 16S miniCURE sampler! This module showcases key parts of our 16S Human Gut Microbiome miniCURE and highlights the features of learnr tutorials. 
+Welcome to the 16S miniCURE sampler! This module showcases key parts of our 16S Human Gut Microbiome miniCURE and highlights the features of learnr tutorials. For a quick summary of the steps, benefits, and applications of 16S metabarcoding, see the video below.
 
-<!-- Insert video here -->
+<!-- Original RNA-seq video -->
+<!-- ![](https://www.youtube.com/watch?v=CZp6530gjIg){width=75%} -->
 
-![](https://www.youtube.com/watch?v=CZp6530gjIg){width=75%}
+![](https://www.youtube.com/watch?v=1uZtCMY-yEw){width=75%}
 
-
+<!-- Alternative 16S videos -->
+<!-- ![](https://www.youtube.com/watch?v=ksHnD__K27I){width=75%} -->
 
 ## Meet MISO
 
@@ -155,6 +157,9 @@ The study lasts a total of 28 days. Samples from the blood, stool, and urine, ou
 
 Ultimately, the MISO study asked: *How does diet impact the gut microbiome?* by standardizing peoples' diets. They also investigated other variables such as age that are suspected to play a role in the human gut microbiome.
 
+
+## Exercise 1: Exploring metadata
+
 ### MISO study variables
 
 We have a number of variables we can use in our analysis, not all of which are included below. Notice that the variables for the study and subjects are in lowercase. R is case sensitive so we must access the variables using the same pattern of capitalization they use. 
@@ -177,8 +182,6 @@ quiz(caption = "Knowledge check: MISO study variables",
   )
 )
 ```
-
-## Exercise 1: Exploring metadata
 
 To get a better understanding of the data and get some experience running some code, let's try and explore MISO study's metadata. The code below lists all the unique subjects (study participants) in the dataset. To look at other variables, replace "subject" with another variable's name.
 
