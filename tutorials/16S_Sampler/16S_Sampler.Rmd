@@ -34,11 +34,6 @@ tutorial_options(exercise.completion=TRUE) #Uncomment to enable
 #Load libraries
 library("tidyverse")
 library("phyloseq")
-library("ragg")
-
-#Use ragg instead of Cairo, Also use ragg for PNG output
-options( grDevice = "ragg", devices = "ragg_png")
-
 #Uncomment exercise timelimit when deployed
 tutorial_options(exercise.timelimit = 360)
 
