@@ -34,6 +34,10 @@ tutorial_options(exercise.completion=TRUE) #Uncomment to enable
 #Load libraries
 library("tidyverse")
 library("phyloseq")
+library("ragg")
+
+#Use ragg instead of Cairo, Also use ragg for PNG output
+options( grDevice = "ragg", devices = "ragg_png")
 
 #Uncomment exercise timelimit when deployed
 tutorial_options(exercise.timelimit = 360)
@@ -172,7 +176,7 @@ We have a number of variables we can use in our analysis, not all of which are i
 |age|The age in years of the subject|A continuous variable from 23 to 75 years old| 
 
 ```{r 16S_Sampler_Introduction}
-quiz(caption = "Knowledge check: MISO study variables",
+quiz(caption = "Knowledge check: About variables in R",
 
   question("R is case sensitive, so we need to make sure our capitalization matches when we swap out code.",
     answer("True", correct=TRUE),
@@ -212,14 +216,6 @@ quiz(caption="Knowledge check: MISO metadata",
     answer("32"),
     answer("105"),
     allow_retry = TRUE
-  ),
-  
-  question("Why are there fewer unique ages than there are unique subjects?",
-    answer("Some people in the study are the same age", correct=TRUE),
-    answer("Children and seniors are not allowed to partipate in the study"),
-    answer("Age is measured in dog years"),
-    allow_retry = TRUE,
-    random_answer_order = TRUE
   )
 )
 ```
