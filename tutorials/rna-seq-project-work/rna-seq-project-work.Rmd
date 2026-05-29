@@ -62,8 +62,8 @@ if (file.exists(file_path)) {
   a1_vs_p1_clusters <- readRDS("~/workspace/c_moor_data/instructors/preprocessed_data/marianes/a1_vs_p1_clusters.rds")
 
 
-  brain<-readRDS("/home/idies/workspace/c_moor_data/sharon-brain/brain.RDS")
-  brain_metadata<-read.csv("/home/idies/workspace/c_moor_data/sharon-brain/brain_metadata.csv", row.names = 1)
+  gutbrain<-readRDS("/home/idies/workspace/c_moor_data/sharon-brain/gutbrain.RDS")
+  gutbrain_metadata<-read.csv("/home/idies/workspace/c_moor_data/sharon-brain/gutbrain_metadata.csv", row.names = 1)
 
 
 } else {
@@ -370,22 +370,10 @@ plotAcrossRegions("FBgn#######")
 ```
 
 
-## Meet the brain dataset
+## Meet the gut-brain dataset
 
-:::{.attention_box_pause}
-:::{.attention_header_box_pause}
-:::{.attention_title}
-#### **The brain dataset is still in development**
-:::
-:::
-::: {.attention_content}
-This dataset is currently undergoing pilot testing at Clovis Community College (Fall 2025). We do not have as extensive materials to support some resources such as the Mouse Genome Informatics (MGI) database yet. Regardless, interested students are welcome to test these data. We look forward to your research posters!
-:::
-:::
 
-<br>
- 
-These data are from the 2019 study by Sharon et al. titled **Human Gut Microbiota from Autism Spectrum Disorder Promote Behavioral Symptoms in Mice**. We will refer to these data as the brain dataset. To best make use of this data we recommend you complete the following modules: 
+These data are from the 2019 study by Sharon et al. titled **Human Gut Microbiota from Autism Spectrum Disorder Promote Behavioral Symptoms in Mice**. We will refer to these data as the gut-brain dataset, since the study focused on the gut-brain axis. To best make use of this data we recommend you complete the following modules: 
 
 - Introduction to RNA-seq data
 - Differential expression with DESeq2
@@ -399,7 +387,7 @@ Although drastically different in overall shape and size, the human and mouse br
 
 Over the last couple of decades, considerable research effort has been invested into exploring the **gut-brain axis**. It is now widely accepted that the gastrointestinal tract has a bidirectional relationship with the central nervous system, wherein each provides molecular feedback to each other. Consequently, many scientists are interested how the gut microbiome (the microbes that live in your GI tract) could impact human health, including chronic health conditions and neurodiverse development.
 
-### The mouse brain study design
+### The mouse gut-brain study design
 
 
 ![](images/sharon-study-design.png){width=100%}
@@ -411,7 +399,7 @@ Brain tissue samples included two areas of the brain responsible for social beha
 
 ### Working with mouse functions and resources
 
-Our standard RNA-seq miniCURE focuses on the midgut dataset and uses *Drosophila* based resources, such as FlyBase. Since the brain dataset is based on mouse samples we have databases and functions specifically for mice that you should use instead:
+Our standard RNA-seq miniCURE focuses on the midgut dataset and uses *Drosophila* based resources, such as FlyBase. Since the gut-brain dataset is based on mouse samples we have databases and functions specifically for mice that you should use instead:
 
 
 ![](images/mgi_format.png){width=100%}
@@ -419,11 +407,11 @@ Our standard RNA-seq miniCURE focuses on the midgut dataset and uses *Drosophila
 
 - [**Mouse Genome Informatics (MGI)**](https://www.informatics.jax.org/) is the database you should use instead of FlyBase. MGI uses the Ensembl Gene Model ID format, where mouse genes take the format ENSMUSG###########. Of course, since they're in different formats, you will get no results if you search for a fly gene in MGI or a mouse gene in FlyBase. 
 
-- **Use the specialized functions for the mouse dataset**: This includes getClusterProfilerGenesMouse, plotAcrossTissue, plotAcrossHostDonor, and plotAcrossMice. These functions should work seamlessly with the mouse brain data with no changes in how the code looks to you. 
+- **Use the specialized functions for the mouse dataset**: This includes getClusterProfilerGenesMouse, plotAcrossTissue, plotAcrossHostDonor, and plotAcrossMice. These functions should work seamlessly with the mouse gut-brain data with no changes in how the code looks to you. 
 
 ### Some research ideas to get you started
 
-You will need to identify genes of interest, formulate a research question around them, and check that they are in the brain dataset.
+You will need to identify genes of interest, formulate a research question around them, and check that they are in the gut-brain dataset.
 
 - Phineas Gage was involved in an accident that damaged his frontal lobe, which contains the PFC. Following this incident, his personality underwent a dramatic change, suggesting that the frontal lobe regulates one's personality, executive decision making, and interactions with others. By looking at genes that are highly and/or differentially expressed in the PFC we can find genes of interest that might be involved in these functions.
 - Many conditions such as autism spectrum disorder, schizophrenia, and dementia present as a change in personality or how one interprets and presents socially. What genes are hypothesized to be involved in these conditions and are they found in our dataset?
@@ -431,12 +419,12 @@ You will need to identify genes of interest, formulate a research question aroun
 - The STR is well known for its connection to reward pathways. Understanding these pathways better could help us understand addiction and ADHD. What genes are differentially expressed in the STR and how might they impact a functioning reward system?
 
 
-### Differential expression template (Mouse brain dataset)
+### Differential expression template (Mouse gut-brain dataset)
 
 Since there are only two conditions, the prefrontal cortex (PFC) and striatum (STR), we have filled in the first line of the code for you in the DESeq2 and clusterProfiler analyses.
 
 ```{r deseq2-tablemouse-one-pager, exercise=TRUE, echo=FALSE}
-temp <- results(brain, contrast = c("tissue", "PFC", "STR") )
+temp <- results(gutbrain, contrast = c("tissue", "PFC", "STR") )
 R1_vs_R2 <- formatDESeq2Results(temp)
 sig_genes <- filter(R1_vs_R2, padj <= 0.05)
 dim(sig_genes)
@@ -453,10 +441,10 @@ sig_genes
 
 ```
 
-### Get differential expression results for a single gene in the mouse brain dataset
+### Get differential expression results for a single gene in the mouse gut-brain dataset
 
 ```{r filter-by-name-mouse, exercise=TRUE, echo=FALSE}
-temp <- results(brain, contrast = c("tissue", "PFC", "STR") )
+temp <- results(gutbrain, contrast = c("tissue", "PFC", "STR") )
 R1_vs_R2 <- formatDESeq2Results(temp)
 my_gene <- filter(R1_vs_R2, GeneID=="ENSMUSG###########")
 my_gene
@@ -473,12 +461,12 @@ my_gene
 ```
 
 
-### clusterProfiler for the mouse brain dataset
+### clusterProfiler for the mouse gut-brain dataset
 
 
 ```{r clusterprofiler_mouse-one-pager, exercise=TRUE, echo=FALSE}
 # Run differential expression analysis
-temp <- results(brain, contrast = c("tissue", "PFC", "STR") )
+temp <- results(gutbrain, contrast = c("tissue", "PFC", "STR") )
 R1_vs_R2 <- formatDESeq2Results(temp)
 sig_genes <- filter(R1_vs_R2, padj <= 0.05)
 
@@ -504,7 +492,7 @@ getClusterProfilerGenesMouse(R1_vs_R2_clusters, "YOUR CATEGORY HERE")
 ```
 
 
-### plotAcrossRegions for the mouse brain dataset
+### plotAcrossRegions for the mouse gut-brain dataset
 
 - Multiple functions are available to compare the variation of a gene's expression at different levels.
 - MGI IDs take the format ENSMUSG########### 
@@ -619,10 +607,10 @@ my_gene
 ```
 
 
-### Differential expression template (Mouse brain dataset)
+### Differential expression template (Mouse gut-brain dataset)
 
 ```{r deseq2-tablemouse, exercise=TRUE, echo=FALSE}
-temp <- results(brain, contrast = c("tissue", "PFC", "STR") )
+temp <- results(gutbrain, contrast = c("tissue", "PFC", "STR") )
 R1_vs_R2 <- formatDESeq2Results(temp)
 sig_genes <- filter(R1_vs_R2, padj <= 0.05)
 dim(sig_genes)
@@ -639,10 +627,10 @@ sig_genes
 
 ```
 
-### Get differential expression results for a single gene in the mouse brain dataset
+### Get differential expression results for a single gene in the mouse gut-brain dataset
 
 ```{r filter-by-name-mousebrain-deseq2, exercise=TRUE,echo=FALSE}
-temp <- results(brain, contrast = c("tissue", "PFC", "STR") )
+temp <- results(gutbrain, contrast = c("tissue", "PFC", "STR") )
 R1_vs_R2 <- formatDESeq2Results(temp)
 my_gene <- filter(R1_vs_R2, GeneID=="ENSMUSG###########")
 my_gene
@@ -707,11 +695,11 @@ getClusterProfilerGenes(R1_vs_R2_clusters, "YOUR CATEGORY HERE")
 ```
 
 
-### clusterProfiler for the mouse brain dataset
+### clusterProfiler for the mouse gut-brain dataset
 
 ```{r clusterprofiler_mouse, exercise=TRUE, echo=FALSE}
 # Run differential expression analysis
-temp <- results(brain, contrast = c("tissue", "PFC", "STR") )
+temp <- results(gutbrain, contrast = c("tissue", "PFC", "STR") )
 R1_vs_R2 <- formatDESeq2Results(temp)
 sig_genes <- filter(R1_vs_R2, padj <= 0.01)
 
@@ -762,7 +750,7 @@ plotAcrossRegions("FBgn#######")
 ```
 
 
-### plotAcrossRegions the for mouse brain dataset
+### plotAcrossRegions the for mouse gut-brain dataset
 
 - Multiple functions are available to compare the variation of a gene's expression at different levels.
 - MGI IDs take the format ENSMUSG########### 
