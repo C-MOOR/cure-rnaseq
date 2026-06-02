@@ -6,7 +6,7 @@ output:
     progressive: false #set to true to force stop until exercises are completed with 100% score
     version: 1.0
 subtitle: |
-  ![](images/cmoor_logo_notext.png){width=60%}
+  ![](images/cmoor_logo_notext.png){width=50%}
   [Get Help](https://help.c-moor.org/){target="_blank"}
 runtime: shiny_prerendered
 
@@ -75,7 +75,7 @@ Section 1. Content 1 has example quizes and exercises
 
 <div class="splashpage-container">
   <figure class="splashpage-image">
-  `r rmarkdown::metadata$image`{width=100%}
+  `r rmarkdown::metadata$image`
   <figcaption class="caption">`r rmarkdown::metadata$image_caption`</figcaption>
   </figure>
 
@@ -169,6 +169,7 @@ We have a number of variables we can use in our analysis, not all of which are i
 |timepoint|The 5 samplings that occur on days 0, 13, 17, 21, and 28 coded as timepoints 1 through 5|1, 2, 3, 4, 5| 
 |diet|The diet the subject was on during the sampling|BD, HD, WO|
 |age|The age in years of the subject|A continuous variable from 23 to 75 years old| 
+|gender|The gender of the subject|M, F. All subjects were cisgender| 
 
 ```{r 16S_Sampler_Introduction}
 quiz(caption = "Knowledge check: About variables in R",
@@ -310,7 +311,60 @@ quiz(caption="Knowledge check: alpha diversity",
   )
 )
 ```
+## Group exercise: Project ideas
 
+Let's think about how students would use these tools to build an independent research project!
+
+As a reminder, we have the following metadata variables available to us:
+
+|Variable|What is it?|Factors|
+|:----|--------------|----:|
+|subject|A unique ID given to each subject (participant)|S##| 
+|timepoint|The 5 samplings that occur on days 0, 13, 17, 21, and 28 coded as timepoints 1 through 5|1, 2, 3, 4, 5| 
+|diet|The diet the subject was on during the sampling|BD, HD, WO|
+|age|The age in years of the subject|A continuous variable from 23 to 75 years old| 
+|gender|The gender of the subject|M, F. All subjects were cisgender| 
+
+### Your task
+
+We have yet to use the gender variable. Together with others nearby tackle one of the following or your choice:
+
+1. Come up with a research question that includes gender and create 1-2 plots that answer your question. 
+
+2. Compare at least two variables to determine which has a stronger effect on the gut microbiome. You will need to make at least 2 plots to answer this question.
+
+3. Choose a taxa of interest that you've seen in one of your plots. Look up some scientific articles to figure out how might this taxa relate to human health or your research question (ex. why might we see it more in one gender than another?)
+
+We've provided some template code blocks for you to work here:
+
+```{r alpha_diversity_sampler_group1, exercise=TRUE, echo=FALSE}
+
+plot_richness(miso_counts, x="timepoint", 
+              color="subject", 
+              shape="diet", 
+              measures= "Simpson")
+
+```
+
+```{r alpha_diversity_sampler_group2, exercise=TRUE, echo=FALSE}
+
+```
+
+```{r alpha_diversity_sampler_group3, exercise=TRUE, echo=FALSE}
+
+```
+
+```{r plot_bar_demo_group1, exercise=TRUE, echo=FALSE}
+plot_bar(miso, x="subject", fill = "Phylum",) +
+  geom_bar(aes(color = Phylum, fill = Phylum), stat = "identity", position = "stack")
+```
+
+
+```{r plot_bar_demo_group2, exercise=TRUE, echo=FALSE}
+```
+
+```{r plot_bar_demo_group3, exercise=TRUE, echo=FALSE}
+```
 
 ## Works cited
 
