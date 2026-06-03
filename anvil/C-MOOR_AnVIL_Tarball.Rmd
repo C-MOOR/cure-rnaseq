@@ -1,0 +1,38 @@
+---
+title: "C-MOOR_AnVIL_tarball"
+output: html_document
+date: "2026-06-03"
+---
+## What is the tarball
+
+The "tarball" is a compressed file that holds installed files from R packages. Rather than installing the packages fresh at startup, we instead use the tarball to quickly transfer pre-installed files from another location and then open it where R expects the installed files to be. 
+
+Please refer to: https://help.anvilproject.org/t/longer-than-normal-start-up-times/389 for a more detailed explanation. 
+
+The tarball must be deployed in a specific file path (where R expects the installed files to be). This path changes slightly based on what version of R we are using, so please double check that the correct file path is selected. Without any background knowledge, SY suggests recreating the tarball with each new version of Bioconductor released to make sure all packages are up to date. 
+
+## Why use tarball
+
+It makes starting up the RStudio Environment go faster :)
+
+## Creating the tarball
+
+To create the tarball we must launch an R environment with *only* the libraries installed. Do *not* copy the C-MOOR files and modules from GitHub. Doing this seems to mess up the process (although I am not sure why.) 
+
+1. On AnVIL, launch an RStudio environment with the C-MOOR_Startup_Script_Tarball_Create.sh script which is stored on the C-MOOR GitHub. This script just installs all the libraries we need (that do not come with the default BioConductor AnVIL RStudio image, like DESeq2 and tidyverse). 1. Go to the terminal and use the following code. In the original AnVIL help thread, you will notice they include these things in their startup script, but I prefer to do it manually and check the path myself.
+```{r tarball_code, eval=FALSE}
+cd /home/rstudio
+
+#Create tarball
+#Provide the correct path here. Ex. BioConductor 3.21 uses 4.5-3.20 directory name
+tar -czvf C-MOOR_Packages.tar.gz -C /home/rstudio/R/x86_64-pc-linux-gnu-library/4.5-3.20 .
+#Copy tarball to a google bucket. In this case, we are storing it in the RNA-seq bucket.
+#Common error is curly double quotes instead of straight double quotes.
+gcloud storage cp C-MOOR_Packages.tar.gz "gs://fc-4ab085c4-7fc5-45f2-aa38-b853e928c207/"
+```
+
+# Use the tarball
+
+The tarball is then kept stored in the Google bucket.
+The startup script will then copy the tarball and open it.
+To do so, just use the startup script from GitHub as before.
