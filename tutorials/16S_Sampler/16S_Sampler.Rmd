@@ -327,13 +327,13 @@ As a reminder, we have the following metadata variables available to us:
 
 ### Your task
 
-We have yet to use the gender variable. Together with others nearby tackle one of the following or your choice:
+We have yet to use the gender variable. Together with others nearby tackle one of the following of your choice:
 
-1. Come up with a research question that includes gender and create 1-2 plots that answer your question. 
+1. Come up with a **research question** that includes gender and create 1-2 plots that answer your question. 
 
-2. Compare at least two variables to determine which has a stronger effect on the gut microbiome. You will need to make at least 2 plots to answer this question.
+2. **Compare at least two variables** to determine which has a stronger effect on the gut microbiome. You will need to make at least 2 plots to answer this question.
 
-3. Choose a taxa of interest that you've seen in one of your plots. Look up some scientific articles to figure out how might this taxa relate to human health or your research question (ex. why might we see it more in one gender than another?)
+3. **Choose a taxa** of interest that you've seen in one of your plots. Look up some *scientific articles* to figure out how might this taxa relate to human health or your research question (ex. why might we see it more in one gender than another?)
 
 We've provided some template code blocks for you to work here:
 

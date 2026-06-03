@@ -5,7 +5,7 @@ account: sayumiyork
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 17434374
-bundleId: 12074302
+bundleId: 12079363
 url: https://sayumiyork.shinyapps.io/16S_Sampler/
 version: 1
 asMultiple: FALSE
