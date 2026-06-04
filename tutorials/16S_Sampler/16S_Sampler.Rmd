@@ -337,6 +337,18 @@ We have yet to use the gender variable. Together with others nearby tackle one o
 
 We've provided some template code blocks for you to work here:
 
+```{r plot_bar_demo_group1, exercise=TRUE, echo=FALSE}
+plot_bar(miso, x="subject", fill = "Phylum",) +
+  geom_bar(aes(color = Phylum, fill = Phylum), stat = "identity", position = "stack")
+```
+
+
+```{r plot_bar_demo_group2, exercise=TRUE, echo=FALSE}
+```
+
+```{r plot_bar_demo_group3, exercise=TRUE, echo=FALSE}
+```
+
 ```{r alpha_diversity_sampler_group1, exercise=TRUE, echo=FALSE}
 
 plot_richness(miso_counts, x="timepoint", 
@@ -352,18 +364,6 @@ plot_richness(miso_counts, x="timepoint",
 
 ```{r alpha_diversity_sampler_group3, exercise=TRUE, echo=FALSE}
 
-```
-
-```{r plot_bar_demo_group1, exercise=TRUE, echo=FALSE}
-plot_bar(miso, x="subject", fill = "Phylum",) +
-  geom_bar(aes(color = Phylum, fill = Phylum), stat = "identity", position = "stack")
-```
-
-
-```{r plot_bar_demo_group2, exercise=TRUE, echo=FALSE}
-```
-
-```{r plot_bar_demo_group3, exercise=TRUE, echo=FALSE}
 ```
 
 ## Works cited
