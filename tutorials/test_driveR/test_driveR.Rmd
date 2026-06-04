@@ -43,6 +43,8 @@ if (file.exists(file_path)) {
   #If not, assume we are on AnVIL and load in the data through the package testdriveRData and load the object testdriveRData (which has the same content as test-driveR.tsv) to the object df. We only load testdriveRData on AnVIL because the AnVIL enivronment has the package testdriveRData installed through the startup script
   library("testdriveRData")
   df <- testdriveRData
+  #enable ragg
+  knitr::opts_chunk$set(dev = "ragg_png")
 }
 
 df_long <- pivot_longer( df, 3:9, names_to="region", values_to="count" )
