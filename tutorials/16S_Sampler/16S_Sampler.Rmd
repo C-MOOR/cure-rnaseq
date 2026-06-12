@@ -268,7 +268,7 @@ We have three places in this code we can swap out to ask questions:
 
 1. What is plotted on the x-axis
 1. What variable is represented by the color of data points
-1. What variabe is represnted by the shape of the data points
+1. What variable is represented by the shape of the data points
 
 Try running the code below and answering the questions.
 
