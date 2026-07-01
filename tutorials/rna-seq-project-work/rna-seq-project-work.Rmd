@@ -57,19 +57,29 @@ library("org.Mm.eg.db")
 file_path <- "/home/idies/workspace/c_moor_data/marianes-regions/htseq/"
 if (file.exists(file_path)) {
 
+#MarianesMidgutData
   midgut_tsv <- read.table("/home/idies/workspace/c_moor_data/marianes-regions/htseq/midgut.tsv", header=TRUE)
   midgut <- readRDS("~/workspace/c_moor_data/instructors/preprocessed_data/marianes/marianes_htseq_DESeq.rds")
   a1_vs_p1_clusters <- readRDS("~/workspace/c_moor_data/instructors/preprocessed_data/marianes/a1_vs_p1_clusters.rds")
 
-
+# SharonGutbrainData
   gutbrain<-readRDS("/home/idies/workspace/c_moor_data/sharon-brain/gutbrain.RDS")
   gutbrain_metadata<-read.csv("/home/idies/workspace/c_moor_data/sharon-brain/gutbrain_metadata.csv", row.names = 1)
 
-
+# SchaumOrganData
+  heart<-readRDS("/home/idies/workspace/c_moor_data/schaum-organs/Schaum_Heart.RDS")
+  kidney<-readRDS("/home/idies/workspace/c_moor_data/schaum-organs/Schaum_Kidney.RDS")
+  brain<-readRDS("/home/idies/workspace/c_moor_data/schaum-organs/Schaum_Brain.RDS")
+  
+  heart_metadata<-read.delim("/home/idies/workspace/c_moor_data/schaum-organs/Schaum_Metadata_Heart.tsv", row.names=1)
+  kidney_metadata<-read.delim("/home/idies/workspace/c_moor_data/schaum-organs/Schaum_Metadata_Kidney.tsv", row.names=1)
+  brain_metadata<-read.delim("/home/idies/workspace/c_moor_data/schaum-organs/Schaum_Metadata_Brain.tsv", row.names=1)
+  
 } else {
   #If not, assume we are on AnVIL and load in the data through packages
   library("MarianesMidgutData")
   library("SharonBrainData")
+  library("SchaumOrganData")
 }
 
 
@@ -243,7 +253,7 @@ This approach is similar to approach 2.
 
 ## Meet the midgut dataset
 
-The data presented here are from the 2013 study by Marianes and Spradling, **Physiological and stem cell compartmentalization within the Drosophila midgut**. We refer to this study as the midgut study. To best make use of this data we recommend you complete the following modules, some of which use these data as an example for related analyses:
+The data presented here are from the [2013 study by Marianes and Spradling, **Physiological and stem cell compartmentalization within the Drosophila midgut**](https://pmc.ncbi.nlm.nih.gov/articles/PMC3755342/). We refer to this study as the midgut study. To best make use of this data we recommend you complete the following modules, some of which use these data as an example for related analyses:
 
 - Model Organisms: *Drosophila melanogaster*
 - Biological Databases: FlyBase
@@ -369,11 +379,256 @@ plotAcrossRegions("FBgn#######")
 
 ```
 
+## Meet the organ dataset
+
+To best make use of this data we recommend you complete the following modules if you have yet to do so:
+
+- Introduction to RNA-seq data
+- Differential expression with DESeq2
+
+These data come from [**Aging hallmarks exhibit organ-specific temporal signatures** by Schaum et al. 2020](https://pmc.ncbi.nlm.nih.gov/articles/PMC7757734/). In this study, the research team sampled bulk RNA-seq data of different organ systems in mice every 3 months, ranging from 1 month to 27 months in age. Each time point from month 1 to 21 contained 4 male mice and 2 female mice; only the male mice were sampled at 24 and 27 months.
+
+![](images/Schaum_Study_Design.png){width=100%}
+
+Through this data, we can learn more about how gene expression changes with age. As you can imagine, RNA-seq data from 17 different organ systems is quite large. We have presented you with just 3 to focus on:
+
+- The brain
+- The heart
+- The kidney
+
+**The differential expression analysis available here and resulting DESeq2 object are identical to those from the original study which used age as a categorical value and sex as covariates (~age_categorical + sex) to look at differtial gene expression across different ages.**
+
+In addition to our analyses here, at the time of writing this module, the original authors have provided a [shiny app](https://twc-stanford.shinyapps.io/maca/) that allows you to explore a single gene across all 17 sampled organ systems. We hope that you can use these tools in tandem with what we have provided here to create a great research project!
+
+### Working with mouse functions and resources
+
+Our standard RNA-seq miniCURE modules use the *Drosophila* dataset and have accompanying resources such as FlyBase. When working with mouse data, we will have to use mouse databses and functions.
+
+![](images/mgi_format.png){width=100%}
+<p class=caption> **The Mouse Genome Informatics homepage**: Analagous to FlyBase for Drosophila, MGI allows you to search up genes found in mice and learn more about their function. </p>
+
+- [**Mouse Genome Informatics (MGI)**](https://www.informatics.jax.org/) is the database you should use instead of FlyBase. MGI uses the Ensembl Gene Model ID format, where mouse genes take the format ENSMUSG###########. Of course, since they're in different formats, you will get no results if you search for a fly gene in MGI or a mouse gene in FlyBase.
+
+- **Use the specialized functions for the organ dataset**: For our DESeq2 analysis, please remember to look carefully at what organ you are working with at one time. We have a separate function for each organ available for plotting gene expression across mice of different ages and sex. These functions include: plotAcrossBrain, plotAcrossHeart, and plotAcrossKidney. These functions work the same way as the Drosophila functions, except they take an MGI ID instead of a FlyBase ID.
+
+
+### Some research ideas to get you started
+
+- Consider some disease states that are linked with aging, such as dementia, heart disease, and kidney disease. What genes have other people found are linked to these diseases, and is there any correlation of these genes across multiple organs? For example, does increased gene expression in one organ correlate with increased gene expression in another or vice versa?
+- Early development has mammals growing at a much faster rate before tapering off and eventually stopping. This growth period includes an increase in body size, the development and maturation of reproductive systems, and maturation of physical and mental systems. What genes are involved in these changes and do they taper off or are they sustained over time?
+- While aging is a natural process, cellular systems are continuously repairing DNA damage, replenishing cells (in certain organ systems), and mitigating the effects of aging on the body. What are the differences in these processes across organs, and does gene expression of these repair processes change over time?
+
+
+### Differential expression template (Mouse organ dataset)
+
+
+:::{.attention_box_pause}
+:::{.attention_header_box_pause}
+:::{.attention_title}
+#### **Pay attention to which organ you're working with!**
+:::
+:::
+::: {.attention_content}
+There are minor differences in the template code boxes in the following sections which correspond to analyses of the brain, the heart, and the kidney. It can be easy to mix up pieces of code as you work, so make sure you're working with the right code template!
+:::
+:::
+
+```{r deseq2-brain-one-pager, exercise=TRUE, echo=FALSE}
+#FOR THE BRAIN
+temp <- results(brain, contrast = c("age", "1", "27") )
+R1_vs_R2 <- formatDESeq2Results(temp)
+sig_genes <- filter(R1_vs_R2, padj <= 0.05)
+dim(sig_genes)
+sig_genes
+```
+
+```{r deseq2-heart-one-pager, exercise=TRUE, echo=FALSE}
+#FOR THE HEART
+temp <- results(heart, contrast = c("age", "1", "27") )
+R1_vs_R2 <- formatDESeq2Results(temp)
+sig_genes <- filter(R1_vs_R2, padj <= 0.05)
+dim(sig_genes)
+sig_genes
+```
+
+```{r deseq2-kidney-one-pager, exercise=TRUE, echo=FALSE}
+#FOR THE KIDNEY
+temp <- results(kidney, contrast = c("age", "1", "27") )
+R1_vs_R2 <- formatDESeq2Results(temp)
+sig_genes <- filter(R1_vs_R2, padj <= 0.05)
+dim(sig_genes)
+sig_genes
+```
+
+```{r deseq2-organs_tryit1, exercise=TRUE, echo=FALSE}
+#WHAT ORGAN ARE YOU WORKING ON?
+```
+```{r deseq2-organs_tryit2, exercise=TRUE, echo=FALSE}
+#WHAT ORGAN ARE YOU WORKING ON?
+```
+```{r deseq2-organs_tryit3, exercise=TRUE, echo=FALSE}
+#WHAT ORGAN ARE YOU WORKING ON?
+```
+
+### Get differential expression results for a single gene in the mouse brain dataset
+
+```{r filter-by-name-BRAIN, exercise=TRUE, echo=FALSE}
+#FOR THE BRAIN
+temp <- results(brain, contrast = c("age", "1", "27") )
+R1_vs_R2 <- formatDESeq2Results(temp)
+my_gene <- filter(R1_vs_R2, GeneID=="ENSMUSG###########")
+my_gene
+```
+
+```{r filter-by-name-HEART, exercise=TRUE, echo=FALSE}
+#FOR THE HEART
+temp <- results(heart, contrast = c("age", "1", "27") )
+R1_vs_R2 <- formatDESeq2Results(temp)
+my_gene <- filter(R1_vs_R2, GeneID=="ENSMUSG###########")
+my_gene
+```
+
+```{r filter-by-name-KIDNEY, exercise=TRUE, echo=FALSE}
+#FOR THE KIDNEY
+temp <- results(kidney, contrast = c("age", "1", "27") )
+R1_vs_R2 <- formatDESeq2Results(temp)
+my_gene <- filter(R1_vs_R2, GeneID=="ENSMUSG###########")
+my_gene
+```
+```{r filter-by-name-ORGAN_tryit-1, exercise=TRUE, echo=FALSE}
+#WHAT ORGAN ARE YOU WORKING ON?
+
+```
+```{r filter-by-name-ORGAN_tryit-2, exercise=TRUE, echo=FALSE}
+#WHAT ORGAN ARE YOU WORKING ON?
+
+```
+```{r filter-by-name-ORGAN_tryit-3, exercise=TRUE, echo=FALSE}
+#WHAT ORGAN ARE YOU WORKING ON?
+
+```
+
+
+### clusterProfiler for the organ datasets
+
+```{r clusterprofiler_organ_brain, exercise=TRUE, echo=FALSE}
+#BRAIN
+# Run differential expression analysis
+temp <- results(brain, contrast = c("age", "1", "27") )
+R1_vs_R2 <- formatDESeq2Results(temp)
+sig_genes <- filter(R1_vs_R2, padj <= 0.05)
+
+# Run clusterProfiler analysis
+R1_vs_R2_clusters <- runClusterProfilerMouse(sig_genes)
+
+# Look at the dotplot to see the groups of genes
+dim(R1_vs_R2_clusters)
+dotplot(R1_vs_R2_clusters, showCategory=34, title="YOUR TITLE HERE", font.size=10, label_format = 50)
+
+# Get the gene symbols for a group of genes
+getClusterProfilerGenesMouse(R1_vs_R2_clusters, "YOUR CATEGORY HERE")
+```
+```{r clusterprofiler_organ_heart, exercise=TRUE, echo=FALSE}
+#HEART
+# Run differential expression analysis
+temp <- results(heart, contrast = c("age", "1", "27") )
+R1_vs_R2 <- formatDESeq2Results(temp)
+sig_genes <- filter(R1_vs_R2, padj <= 0.05)
+
+# Run clusterProfiler analysis
+R1_vs_R2_clusters <- runClusterProfilerMouse(sig_genes)
+
+# Look at the dotplot to see the groups of genes
+dim(R1_vs_R2_clusters)
+dotplot(R1_vs_R2_clusters, showCategory=34, title="YOUR TITLE HERE", font.size=10, label_format = 50)
+
+# Get the gene symbols for a group of genes
+getClusterProfilerGenesMouse(R1_vs_R2_clusters, "YOUR CATEGORY HERE")
+```
+
+```{r clusterprofiler_organ_kidney, exercise=TRUE, echo=FALSE}
+#KIDNEY
+# Run differential expression analysis
+temp <- results(kidney, contrast = c("age", "1", "27") )
+R1_vs_R2 <- formatDESeq2Results(temp)
+sig_genes <- filter(R1_vs_R2, padj <= 0.05)
+
+# Run clusterProfiler analysis
+R1_vs_R2_clusters <- runClusterProfilerMouse(sig_genes)
+
+# Look at the dotplot to see the groups of genes
+dim(R1_vs_R2_clusters)
+dotplot(R1_vs_R2_clusters, showCategory=34, title="YOUR TITLE HERE", font.size=10, label_format = 50)
+
+# Get the gene symbols for a group of genes
+getClusterProfilerGenesMouse(R1_vs_R2_clusters, "YOUR CATEGORY HERE")
+```
+
+```{r clusterprofiler_organ_tryit-1, exercise=TRUE, echo=FALSE}
+#WHAT ORGAN ARE YOU WORKING ON?
+```
+```{r clusterprofiler_organ_tryit-2, exercise=TRUE, echo=FALSE}
+#WHAT ORGAN ARE YOU WORKING ON?
+```
+
+```{r clusterprofiler_organ_tryit-3, exercise=TRUE, echo=FALSE}
+#WHAT ORGAN ARE YOU WORKING ON?
+```
+
+### plotAcrossRegions for the mouse organ dataset
+
+- Multiple functions are available to compare the variation of a gene's expression across different organs
+- MGI IDs take the format ENSMUSG###########
+
+#### plotAcrossBrain
+
+- Compares gene expression of the brain across mice of different sex and ages
+
+```{r plotAcrossBrain_1, exercise=TRUE, echo=FALSE}
+plotAcrossBrain("ENSMUSG###########")
+```
+```{r plotAcrossBrain_2, exercise=TRUE, echo=FALSE}
+plotAcrossBrain("ENSMUSG###########")
+```
+```{r plotAcrossBrain_3, exercise=TRUE, echo=FALSE}
+plotAcrossBrain("ENSMUSG###########")
+```
+
+
+#### plotAcrossHeart
+
+- Compares gene expression of the heart across mice of different sex and ages
+
+```{r plotAcrossHeart_1, exercise=TRUE, echo=FALSE}
+plotAcrossHeart("ENSMUSG###########")
+```
+```{r plotAcrossHeart_2, exercise=TRUE, echo=FALSE}
+plotAcrossHeart("ENSMUSG###########")
+```
+```{r plotAcrossHeart_3, exercise=TRUE, echo=FALSE}
+plotAcrossHeart("ENSMUSG###########")
+```
+
+
+#### plotAcrossKidney
+
+- Compares gene expression of the kidney across mice of different sex and ages
+
+```{r plotAcrossKidney_1, exercise=TRUE, echo=FALSE}
+plotAcrossKidney("ENSMUSG###########")
+```
+```{r plotAcrossKidney_2, exercise=TRUE, echo=FALSE}
+plotAcrossKidney("ENSMUSG###########")
+```
+```{r plotAcrossKidney_3, exercise=TRUE, echo=FALSE}
+plotAcrossKidney("ENSMUSG###########")
+```
+
 
 ## Meet the gut-brain dataset
 
 
-These data are from the 2019 study by Sharon et al. titled **Human Gut Microbiota from Autism Spectrum Disorder Promote Behavioral Symptoms in Mice**. We will refer to these data as the gut-brain dataset, since the study focused on the gut-brain axis. To best make use of this data we recommend you complete the following modules: 
+These data are from the [2019 study by Sharon et al. titled **Human Gut Microbiota from Autism Spectrum Disorder Promote Behavioral Symptoms in Mice**](https://pmc.ncbi.nlm.nih.gov/articles/PMC6993574/). We will refer to these data as the gut-brain dataset, since the study focused on the gut-brain axis. To best make use of this data we recommend you complete the following modules: 
 
 - Introduction to RNA-seq data
 - Differential expression with DESeq2
@@ -809,6 +1064,14 @@ plotAcrossMice("ENSMUSG###########")
 - Love, Michael I., Wolfgang Huber, and Simon Anders. "Moderated estimation of fold change and dispersion for RNA-seq data with DESeq2." Genome biology 15 (2014): 1-21.
 
 - Marianes, Alexis, and Allan C. Spradling. "Physiological and stem cell compartmentalization within the Drosophila midgut." elife 2 (2013): e00886.
+
+- NIAID Visual & Medical Arts. (10/7/2024). Lab Mouse. NIAID NIH BIOART Source. bioart.niaid.nih.gov/bioart/283
+
+- NIAID Visual & Medical Arts. (10/7/2024). Mouse Brain. NIAID NIH BIOART Source. bioart.niaid.nih.gov/bioart/369
+
+- NIAID Visual & Medical Arts. (10/7/2024). Human Heart. NIAID NIH BIOART Source. bioart.niaid.nih.gov/bioart/228
+
+- NIAID Visual & Medical Arts. (10/7/2024). Human Kidney. NIAID NIH BIOART Source. bioart.niaid.nih.gov/bioart/229
 
 - Pontén, Fredrik, Karin Jirström, and Matthias Uhlen. "The Human Protein Atlas—a tool for pathology." The Journal of Pathology: A Journal of the Pathological Society of Great Britain and Ireland 216.4 (2008): 387-393.
 
