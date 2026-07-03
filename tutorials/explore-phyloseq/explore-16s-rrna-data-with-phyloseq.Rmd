@@ -487,7 +487,8 @@ plot_bar(miso, x= "subject", fill = "Phylum", title = "choose a name for your gr
 # Change all instances of Phylum to Class.
 # Remember to use the same capitalization style.
 ```
-Try plotting a different taxonomy based on another variable such as diet, age, and gender, by substituting "subject".
+
+Try plotting different taxonomy based on another variable such as diet, age, and gender, by substituting "subject".
 
 ```{r plot_bar_subject_Phylum, exercise=TRUE, exercise.eval=FALSE}
 plot_bar(miso, x= "subject", fill = "Phylum", title = "choose a name for your graph") +
