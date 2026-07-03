@@ -49,7 +49,7 @@ file_path <- "/home/idies/workspace/c_moor_data/marianes-regions/htseq/"
 if (file.exists(file_path)) {
   midgut_tsv <- read.table("/home/idies/workspace/c_moor_data/marianes-regions/htseq/midgut.tsv", header=TRUE)
   midgut <- readRDS("~/workspace/c_moor_data/instructors/preprocessed_data/marianes/marianes_htseq_DESeq.rds")
-  a1_vs_p1_clusters <- readRDS("~/workspace/c_moor_data/instructors/preprocessed_data/marianes/a1_vs_p1_clusters.rds")
+  R1_vs_R2_clusters <- readRDS("~/workspace/c_moor_data/instructors/preprocessed_data/marianes/a1_vs_p1_clusters.rds")
 
 } else {
   #If not, assume we are on AnVIL and load in the data through the package MarianesMidgutData
@@ -326,16 +326,16 @@ Your job is to explore the results from DESeq2 and try to figure out what they m
 We have stored the results from DESeq2 in an object named `midgut`.  This is a special object made by DESeq2, with lots of dataframes inside it.  You can access the dataframe of results for a particular comparison using the `results()` command.  This process takes two steps:
 
 1. First, use the `results()` command to get the relevant data.  The `results()` command needs to know which regions you want to compare.  Make sure to store this output in a variable.
-  + In the example below, we have named this variable `temp` (short for temporary) because it's not in the right format yet.
-2. Reformat the results to make them more useful.  We've made a special command that takes care of reformatting DESeq2 results, named `formatDESeq2Results()`.  Run this command on your temporary variable to convert in into a nicely formatted dataframe.  Store the dataframe in a new variable, and give it a descriptive name so you can remember what it is.
-  + In the example below, we have named our dataframe `a1_vs_p1`, since it contains the data comparing region a1 to region p1.
+  + In the example below, we have named this variable `raw_results` because it's not in the right format yet.
+2. Reformat the results to make them more useful.  We've made a special command that takes care of reformatting DESeq2 results, named `formatDESeq2Results()`.  Run this command on your raw_results variable to convert in into a nicely formatted dataframe.  Store the dataframe in a new variable, and give it a descriptive name so you can remember what it is.
+  + In the example below, we have named our dataframe `R1_vs_R2`, since it contains the data comparing two regions, region 1 (a1) to region 2 (p1).
 
 Here's an example of this two step process for getting the data comparing samples from region "a1" to region "p1".  As the last command, we type out the name of our new dataframe so that it will print to the screen and we can see what it looks like.
 
 ```{r, echo=TRUE}
-temp <- results(midgut, contrast = c("condition", "a1", "p1") )
-a1_vs_p1 <- formatDESeq2Results(temp)
-a1_vs_p1
+raw_results <- results(midgut, contrast = c("condition", "a1", "p1") )
+R1_vs_R1 <- formatDESeq2Results(raw_results)
+R1_vs_R1
 ```
 
 Each row in this dataframe is a gene, and the columns contain a bunch of information about the statistics that DESeq2 calculated.  This data frame has a lot of numbers in it, but there are three columns that we're interested in:
@@ -393,11 +393,25 @@ For some genes you will see a value of "NA" instead of a number.  NA stands for 
 
 ### Try it yourself: look at a different pair of samples
 
-Use the `results()` and `formatDESeq2Results()` commands in the box below to look at a **comparison between region "a1" and region "Cu"**. HINT: replace "REGION1" and "REGION2" with the regions you want to compare.
+Use the `results()` and `formatDESeq2Results()` commands in the box below to look at a **comparison between region "a1" and region "Cu"**.
 
 ```{r deseq-results, exercise=TRUE}
-temp <- results(midgut, contrast = c("condition", "REGION1", "REGION2") )
-R1_vs_R2 <- formatDESeq2Results(temp)
+raw_results <- results(midgut, contrast = c("condition", "REGION1", "REGION2") )
+R1_vs_R2 <- formatDESeq2Results(raw_results)
+R1_vs_R2
+```
+```{r deseq-results-hint-1, exercise.eval=FALSE}
+Replace "REGION1" and "REGION2" with the regions you want to compare. 
+```
+```{r deseq-results-hint-2, exercise.eval=FALSE}
+Replace "REGION1" with "a1" and "REGION2" with "Cu".
+```
+```{r deseq-results-hint-3, exercise.eval=FALSE}
+Check that "a1" and "Cu" have the correct capitalization and are in double quotes.
+```
+```{r deseq-results-solution, exercise.eval=FALSE}
+raw_results <- results(midgut, contrast = c("condition", "a1", "Cu") )
+R1_vs_R2 <- formatDESeq2Results(raw_results)
 R1_vs_R2
 ```
 
@@ -464,51 +478,68 @@ quiz(caption = "Examine another comparison between regions",
 
 The `results()` command gives information about *all* genes.  That's a lot of data!  We can use some R commands to focus on smaller sets of those genes that we think are interesting.
 
-To look up a particular gene that you're interested in, you can select it by name using the `filter()` command.  It's important that the name you use *exactly matches* the name of the gene in the results dataframe.  R isn't like Google, it can't guess what you meant if you spell it wrong or even capitalize it differently.  The following code finds the gene "FBgn0000251" in the results for a1 vs. p1.  The first two commands are just getting the results, like we practiced earlier.  The filter command is looking through the column GeneID for any thing that exactly matches "FBgn0000251".  Note that we stored the result in a new variable, named `gene251`, so we can easily get this gene back whenever we want it.
+To look up a particular gene that you're interested in, you can select it by name using the `filter()` command.  It's important that the name you use *exactly matches* the name of the gene in the results dataframe.  R isn't like Google, it can't guess what you meant if you spell it wrong or even capitalize it differently.  The following code finds the gene "FBgn0000251" in the results for a1 vs. p1. The first two commands are just getting the results, like we practiced earlier.  The filter command is looking through the column GeneID for any thing that exactly matches "FBgn0000251".  Note that we stored the result in a new variable, named `my_gene`, so we can easily get this gene back whenever we want it.
 
 ```{r filter-by-name-example, echo=TRUE}
-temp <- results(midgut, contrast = c("condition", "a1", "p1") )
-a1_vs_p1 <- formatDESeq2Results(temp)
+raw_results <- results(midgut, contrast = c("condition", "a1", "p1") )
+R1_vs_R2 <- formatDESeq2Results(raw_results)
 
-gene251 <- filter(a1_vs_p1, GeneID=="FBgn0000251")
-gene251
+my_gene <- filter(R1_vs_R2, GeneID=="FBgn0000251")
+my_gene
 ```
 
 ```{r filter-by-name-quiz}
 quiz(caption = "Looking at a specific gene",
    question("Is this gene expressed more highly in region a1 or p1?",
-   answer("higher in a1"),
-   answer("higher in p1", correct=TRUE),
+   answer("Higher in a1"),
+   answer("Higher in p1", correct=TRUE),
    allow_retry=TRUE
    ),
   question("Is this difference significant at a padj value of 0.05?  In other words, is this difference 'real' or is it probably a fluke?",
-   answer("real", correct=TRUE),
-   answer("probably a fluke"),
+   answer("Real", correct=TRUE),
+   answer("Probably a fluke"),
    allow_retry=TRUE
    )
 )
 ```
 
-Use the box below to look at FBgn0000251 and compare its expression between the **a1 and Cu** regions. HINT: Replace "REGION1" and "REGION2" with the regions you want to compare.
+Use the box below to look at FBgn0000251 and compare its expression between the **a1 and Cu** regions.
 
 ```{r filter-by-name-practice, exercise=TRUE}
-temp <- results(midgut, contrast = c("condition", "REGION1", "REGION2") )
-R1_vs_R2 <- formatDESeq2Results(temp)
+raw_results <- results(midgut, contrast = c("condition", "REGION1", "REGION2") )
+R1_vs_R2 <- formatDESeq2Results(raw_results)
 
-gene251 <- filter(R1_vs_R2, GeneID=="FBgn0000251")
-gene251
+my_gene <- filter(R1_vs_R2, GeneID=="FBgn0000251")
+my_gene
+```
+```{r filter-by-name-practice-hint-1, exercise.eval=FALSE}
+Replace "REGION1" and "REGION2" with the regions you want to compare. 
+```
+```{r filter-by-name-practice-hint-2, exercise.eval=FALSE}
+Replace "REGION1" with "a1" and "REGION2" with "Cu".
+```
+```{r filter-by-name-practice-hint-3, exercise.eval=FALSE}
+Check that "a1" and "Cu" have the correct capitalization and are in double quotes.
+```
+```{r filter-by-name-practice-solution, exercise.eval=FALSE}
+raw_results <- results(midgut, contrast = c("condition", "a1", "Cu") )
+R1_vs_R2 <- formatDESeq2Results(raw_results)
+R1_vs_R2
+
+my_gene <- filter(R1_vs_R2, GeneID=="FBgn0000251")
+my_gene
 ```
 
 ```{r filter-by-name-quiz-2}
 quiz(caption = "Looking at a specific gene",
    question("Is this gene expressed more highly in region a1 or Cu?",
-   answer("higher in a1", correct=TRUE),
-   answer("higher in Cu"),
+   answer("Higher in a1", correct=TRUE),
+   answer("Higher in Cu"),
    allow_retry=TRUE
    ),
   question("Is this difference significant at a padj value of 0.05?  In other words, is this difference 'real' or is it probably a fluke?",
-   answer("real"),
-   answer("probably a fluke", correct=TRUE),
+   answer("Real"),
+   answer("Probably a fluke", correct=TRUE),
    allow_retry=TRUE
    )
 )
@@ -525,10 +556,10 @@ The first thing we need to do is to pick out all the genes that the computer thi
 A cutoff of 0.05 or 0.10 is often a good place to start.  We can get a list of these genes using the `filter()` command, similar to the way we pulled out single genes by name.  The following code finds only the genes that have a padj score of less than or equal to 0.05, stores the results in a new dataframe named sig_genes.  (This is an abbreviation for "significantly different genes", you could name it whatever you like).  
 
 ```{r filter-by-padj-example, echo=TRUE}
-temp <- results(midgut, contrast = c("condition", "a1", "p1") )
-a1_vs_p1 <- formatDESeq2Results(temp)
+raw_results <- results(midgut, contrast = c("condition", "a1", "p1") )
+R1_vs_R2 <- formatDESeq2Results(raw_results)
 
-sig_genes <- filter(a1_vs_p1, padj <= 0.05)
+sig_genes <- filter(R1_vs_R2, padj <= 0.05)
 sig_genes
 ```
 
@@ -562,27 +593,46 @@ In this case, for a1 vs p1 we actually have quite good data with many significan
 
 If we try a padj cutoff of 0.01:
 ```{r, echo=TRUE}
-sig_01_genes <- filter(a1_vs_p1, padj <= 0.01)
+sig_01_genes <- filter(R1_vs_R2, padj <= 0.01)
 dim(sig_01_genes)
 ```
-In this case, we get 1799 genes, and we expect 0.01 X 1799 = 18 of them to be false positives.  That's a pretty strong list of genes.  We got rid of 125-18 = 107 false genes (yay!).  On the other hand, we also threw out about 600 real genes (boo!)
+In this case, we get 1798 genes, and we expect 0.01 X 1799 = 18 of them to be false positives.  That's a pretty strong list of genes.  We got rid of 125-18 = 107 false genes (yay!).  On the other hand, we also threw out about 600 real genes (boo!)
 
 If we try a stricter cutoff of 0.001:
 ```{r, echo=TRUE}
-sig_001_genes <- filter(a1_vs_p1, padj <= 0.001)
+sig_001_genes <- filter(R1_vs_R2, padj <= 0.001)
 dim(sig_001_genes)
 ```
-Now we get 1278 genes and we expect 0.001 X 1278 ~ 1 to be a false positive.  So we've basically gotten rid of all false genes, but we've also thrown out ~half of the real genes as compared to using the 0.05 cutoff.
+Now we get 1277 genes and we expect 0.001 X 1278 ~ 1 to be a false positive.  So we've basically gotten rid of all false genes, but we've also thrown out ~half of the real genes as compared to using the 0.05 cutoff.
 
 With this particular dataset, I'd probably pick a cutoff of either 0.05 or 0.01 for further computational analyis.  I think 0.001 throws away too many real genes.
 
-Use the box below to find genes that are significantly different between the **a1 and Cu** regions. HINT: replace "REGION1" and "REGION2" with the regions you want to compare.
+Use the box below to find genes that are significantly different between the **a1 and Cu** regions. 
 
 ```{r filter-by-padj-practice, exercise=TRUE}
-temp <- results(midgut, contrast = c("condition", "REGION1", "REGION2") )
-R1_vs_R2 <- formatDESeq2Results(temp)
+raw_results <- results(midgut, contrast = c("condition", "REGION1", "REGION2") )
+R1_vs_R2 <- formatDESeq2Results(raw_results)
 
 sig_001_genes <- filter(R1_vs_R2, padj <= 0.001)
+dim(sig_001_genes)
+```
+```{r filter-by-padj-practice-hint-1, exercise.eval=FALSE}
+Replace "REGION1" and "REGION2" with the regions you want to compare. 
+```
+```{r filter-by-padj-practice-hint-2, exercise.eval=FALSE}
+Replace "REGION1" with "a1" and "REGION2" with "Cu".
+```
+```{r filter-by-padj-practice-hint-3, exercise.eval=FALSE}
+Check that "a1" and "Cu" have the correct capitalization and are in double quotes.
+```
+```{r filter-by-padj-practice-hint-4, exercise.eval=FALSE}
+Change the p-value to be 0.05 or 0.01
+```
+```{r filter-by-padj-practice-solution, exercise.eval=FALSE}
+raw_results <- results(midgut, contrast = c("condition", "a1", "Cu") )
+R1_vs_R2 <- formatDESeq2Results(raw_results)
+# Change p-value as needed
+sig_001_genes <- filter(R1_vs_R2, padj <= 0.05)
 dim(sig_001_genes)
 ```
 
@@ -627,18 +677,18 @@ Now that we have a list of interesting genes, we can use `clusterProfiler` progr
 For this analysis, we're using a padj cutoff of 0.01.
 
 ```{r, echo=TRUE, eval=FALSE}
-temp <- results(midgut, contrast = c("condition", "a1", "p1") )
-a1_vs_p1 <- formatDESeq2Results(temp)
-sig_genes <- filter(a1_vs_p1, padj <= 0.01)
+raw_results <- results(midgut, contrast = c("condition", "a1", "p1") )
+R1_vs_R2 <- formatDESeq2Results(raw_results)
+sig_genes <- filter(R1_vs_R2, padj <= 0.01)
 
-a1_vs_p1_clusters <- runClusterProfiler(sig_genes)
-dim(a1_vs_p1_clusters)
-dotplot(a1_vs_p1_clusters, showCategory=34, title="a1 vs p1", font.size=10, label_format = 50)
+R1_vs_R2_clusters <- runClusterProfiler(sig_genes)
+dim(R1_vs_R2_clusters)
+dotplot(R1_vs_R2_clusters, showCategory=34, title="a1 vs p1", font.size=10, label_format = 50)
 ```
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.height=6}
-dim(a1_vs_p1_clusters)
-dotplot(a1_vs_p1_clusters, showCategory=34, title="a1 vs p1", font.size=10, label_format = 50)
+dim(R1_vs_R2_clusters)
+dotplot(R1_vs_R2_clusters, showCategory=34, title="a1 vs p1", font.size=10, label_format = 50)
 ```
 
 ```{r clusterProfiler-quiz}
@@ -665,14 +715,34 @@ quiz(caption = "Categories of genes with differential expression",
 In the box below, use the `runClusterProfiler` command to find what groups of genes are significantly different between the a1 and Cu regions.
 
 * You will first need to make a list of significantly different genes.
-* Look at the code above and adjust it to **examine the a1 and Cu regions** instead of a1 and p1.
+* Look at the code below and adjust it to **examine the a1 and Cu regions**.
 * Use the `dim` command to find out how many groups of genes there are, and change `showCategory` in `dotplot` to match
 * You may see an error message telling you that it "returned 1:many mapping between keys and columns" or some small percentage of your genes couldn't be found in the databases ("fail to map").  That's fine, it shouldn't affect results too much as long as it's a small percentage, and we always lose some genes when we compare across different databases since databases don't all have exactly the same genes.
 
 ```{r clusterProfiler-practice, exercise=TRUE, fig.height=7,  exercise.timelimit=120}
 #Perform differential expression analysis
-temp <- results(midgut, contrast = c("condition", "REGION1", "REGION2") )
-R1_vs_R2 <- formatDESeq2Results(temp)
+raw_results <- results(midgut, contrast = c("condition", "REGION1", "REGION2") )
+R1_vs_R2 <- formatDESeq2Results(raw_results)
+sig_genes <- filter(R1_vs_R2, padj <= 0.01)
+R1_vs_R2_clusters <- runClusterProfiler(sig_genes)
+
+# Look at the dotplot to see the groups of genes
+dim(R1_vs_R2_clusters)
+dotplot(R1_vs_R2_clusters, showCategory=34, title="YOUR TITLE HERE", font.size=10, label_format = 50)
+```
+```{r clusterProfiler-practice-hint-1, exercise.eval=FALSE}
+Replace "REGION1" and "REGION2" with the regions you want to compare. 
+```
+```{r clusterProfiler-practice-hint-2, exercise.eval=FALSE}
+Replace "REGION1" with "a1" and "REGION2" with "Cu".
+```
+```{r clusterProfiler-practice-hint-3, exercise.eval=FALSE}
+Check that "a1" and "Cu" have the correct capitalization and are in double quotes.
+```
+```{r clusterProfiler-practice-solution, exercise.eval=FALSE}
+#Perform differential expression analysis
+raw_results <- results(midgut, contrast = c("condition", "a1", "Cu") )
+R1_vs_R2 <- formatDESeq2Results(raw_results)
 sig_genes <- filter(R1_vs_R2, padj <= 0.01)
 R1_vs_R2_clusters <- runClusterProfiler(sig_genes)
 
@@ -693,36 +763,36 @@ For example, if we wanted to get a list of the genes in the "Fatty acid degradat
 
 ```{r, echo=TRUE, eval=FALSE}
 # Run clusterProfiler
-temp <- results(midgut, contrast = c("condition", "a1", "p1") )
-a1_vs_p1 <- formatDESeq2Results(temp)
-sig_genes <- filter(a1_vs_p1, padj <= 0.01)
-a1_vs_p1_clusters <- runClusterProfiler(sig_genes)
+raw_results <- results(midgut, contrast = c("condition", "a1", "p1") )
+R1_vs_R2 <- formatDESeq2Results(raw_results)
+sig_genes <- filter(R1_vs_R2, padj <= 0.01)
+R1_vs_R2_clusters <- runClusterProfiler(sig_genes)
 
 # Look at the dotplot to see the groups of genes
-dim(a1_vs_p1_clusters)
-dotplot(a1_vs_p1_clusters, showCategory=34, title="a1 vs p1", font.size=10, label_format = 50)
+dim(R1_vs_R2_clusters)
+dotplot(R1_vs_R2_clusters, showCategory=34, title="a1 vs p1", font.size=10, label_format = 50)
 
 # Get the gene symbols for a group of genes
-getClusterProfilerGenes(a1_vs_p1_clusters, "Fatty acid degradation")
+getClusterProfilerGenes(R1_vs_R2_clusters, "Fatty acid degradation")
 ```
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.height=6}
 # Look at the dotplot to see the groups of genes
-dim(a1_vs_p1_clusters)
-dotplot(a1_vs_p1_clusters, showCategory=34, title="a1 vs p1", font.size=10, label_format = 50)
+dim(R1_vs_R2_clusters)
+dotplot(R1_vs_R2_clusters, showCategory=34, title="a1 vs p1", font.size=10, label_format = 50)
 
 # Get the gene symbols for a group of genes
-getClusterProfilerGenes(a1_vs_p1_clusters, "Fatty acid degradation")
+getClusterProfilerGenes(R1_vs_R2_clusters, "Fatty acid degradation")
 ```
 
 This gives us a list of gene symbols.  We can then look these genes up on FlyBase to find out more about them.
 
-Use the box below to find groups of genes that are significantly different **between the a1 and Cu regions** with the `runClusterProfiler` command.  Then use the `getClusterProfilerGenes` command to find out what genes are in those groups. HINT: Replace "REGION1" and "REGION2" with the regions you want to compare. Until you replace YOUR CATEGORY HERE with a category of interest, no genes will show. Your category should be based on your dotplot.
+Use the box below to find groups of genes that are significantly different **between the a1 and Cu regions** with the `runClusterProfiler` command.  Then use the `getClusterProfilerGenes` command to find out what genes are in those groups. Until you replace YOUR CATEGORY HERE with a category of interest, no genes will show. Your category should be based on your dotplot.
 
 ```{r getClusterProfilerGenes-practice, exercise=TRUE, fig.height=7, exercise.timelimit=120}
 # Run differential expression analysis
-temp <- results(midgut, contrast = c("condition", "REGION1", "REGION2") )
-R1_vs_R2 <- formatDESeq2Results(temp)
+raw_results <- results(midgut, contrast = c("condition", "REGION1", "REGION2") )
+R1_vs_R2 <- formatDESeq2Results(raw_results)
 sig_genes <- filter(R1_vs_R2, padj <= 0.01)
 
 # Run ClusterProfiler analysis
@@ -735,10 +805,41 @@ dotplot(R1_vs_R2_clusters, showCategory=34, title="YOUR TITLE HERE", font.size=1
 # Get the gene symbols for a group of genes
 getClusterProfilerGenes(R1_vs_R2_clusters, "YOUR CATEGORY HERE")
 ```
+```{r getClusterProfilerGenes-practice-hint-1, exercise.eval=FALSE}
+Replace "REGION1" and "REGION2" with the regions you want to compare. 
+```
+```{r getClusterProfilerGenes-practice-hint-2, exercise.eval=FALSE}
+Replace "REGION1" with "a1" and "REGION2" with "Cu".
+```
+```{r getClusterProfilerGenes-practice-hint-3, exercise.eval=FALSE}
+Check that "a1" and "Cu" have the correct capitalization and are in double quotes.
+```
+```{r getClusterProfilerGenes-practice-hint-4, exercise.eval=FALSE}
+Replace "YOUR CATEGORY HERE" with a category of interest that you see in your dotplot. This means you will need to run the code twice. The first time you will run the code to get the dot plot and get the categories. The second time you will change the code and add the category of interest to get the list of genes in that category that are differentially expressed between the two regions you chose.
+```
+```{r getClusterProfilerGenes-practice-hint-5, exercise.eval=FALSE}
+Check that the category name is capitalized correctly. The category name is case sensitive and must be the exact same as in the dot plot!
+```
+```{r getClusterProfilerGenes-practice-solution, exercise.eval=FALSE}
+# Run differential expression analysis
+raw_results <- results(midgut, contrast = c("condition", "a1", "Cu") )
+R1_vs_R2 <- formatDESeq2Results(raw_results)
+sig_genes <- filter(R1_vs_R2, padj <= 0.01)
+
+# Run ClusterProfiler analysis
+R1_vs_R2_clusters <- runClusterProfiler(sig_genes)
+
+# Look at the dotplot to see the groups of genes
+dim(R1_vs_R2_clusters)
+dotplot(R1_vs_R2_clusters, showCategory=34, title="YOUR TITLE HERE", font.size=10, label_format = 50)
+
+# Get the gene symbols for a group of genes
+getClusterProfilerGenes(R1_vs_R2_clusters, "Carbon Metabolism")
+```
 
 ```{r clusterProfilerGenes-quiz}
 quiz(caption = "Genes in clusterProfiler groups",
-  question("Which of the following genes are involved in Carbon metabolism?  HINT: There are two - you must select both to get the correct answer.",
+  question("Which of the following genes are involved in Carbon metabolism? HINT: There are two - you must select both to get the correct answer.",
     answer("Hex-A", correct=TRUE),
     answer("Pgk", correct=TRUE),
     answer("lab"),
@@ -769,10 +870,10 @@ How do you decide what gene to look at?
 2. Sort the genes by p-value (to get the most significantly different genes) or log2FoldChange (to get the genes with the biggest differences in expression).  This uses DESeq results data, so you will have to pick a particular pair of regions to compare.  The first few steps should look familiar by now.  The last command, `arrange`, sorts the genes by a particular column.  This command sorts smallest to largest; if you want to see the biggest values, you can use `tail()` to see the last few rows.  Then use the FlyBase ID to plot the data for the top ranked genes across all regions.
 
 ```{r, echo=TRUE}
-temp <- results(midgut, contrast = c("condition", "a1", "p1") )
-a1_vs_p1 <- formatDESeq2Results(temp)
-a1_vs_p1_sorted <- arrange(a1_vs_p1, padj)
-head(a1_vs_p1_sorted)
+raw_results <- results(midgut, contrast = c("condition", "a1", "p1") )
+R1_vs_R2 <- formatDESeq2Results(raw_results)
+R1_vs_R2_sorted <- arrange(R1_vs_R2, padj)
+head(R1_vs_R2_sorted)
 ```
 
 In this case, FBgn0035665 has the lowest padj score when comparing regions a1 and p1. Let's plot it across all regions:
@@ -796,10 +897,12 @@ Use the codeblocks below to explore the differential expression data.  There are
 Remember to replace REGION1 and REGION2 with your midgut regions of choice.
 
 ```{r freeplayd-exercise, exercise=TRUE, exercise.eval=FALSE, fig.height=7, exercise.timelimit=120}
-# Run clusterProfiler
-temp <- results(midgut, contrast = c("condition", "REGION1", "REGION2") )
-R1_vs_R2 <- formatDESeq2Results(temp)
+# Run differential expression analysis
+raw_results <- results(midgut, contrast = c("condition", "REGION1", "REGION2") )
+R1_vs_R2 <- formatDESeq2Results(raw_results)
 sig_genes <- filter(R1_vs_R2, padj <= 0.01)
+
+# Run ClusterProfiler analysis
 R1_vs_R2_clusters <- runClusterProfiler(sig_genes)
 
 # Look at the dotplot to see the groups of genes
@@ -807,7 +910,6 @@ dim(R1_vs_R2_clusters)
 dotplot(R1_vs_R2_clusters, showCategory=34, title="YOUR TITLE HERE", font.size=10, label_format = 50)
 
 # Get the gene symbols for a group of genes
-#Replace YOUR CATEGORY HERE with a category from your dotplot
 getClusterProfilerGenes(R1_vs_R2_clusters, "YOUR CATEGORY HERE")
 ```
 
