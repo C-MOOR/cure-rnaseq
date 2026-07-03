@@ -1,26 +1,23 @@
 #!/usr/bin/env bash
+
+    cd /home/rstudio
+    gcloud storage cp "gs://fc-4ab085c4-7fc5-45f2-aa38-b853e928c207/C-MOOR_Packages.tar.gz" /home/rstudio
+    #Note that Bioconductor 3.21 loads with the linux libraries as 4.5-3.20
+    tar -zxvf C-MOOR_Packages.tar.gz -C /home/rstudio/R/x86_64-pc-linux-gnu-library/4.5-3.20 --overwrite
+    rm C-MOOR_Packages.tar.gz
+
+    git clone https://github.com/c-moor/cure-rnaseq/ /home/rstudio/cure-rnaseq
+    chown -R 1000 /home/rstudio/cure-rnaseq
+    mv cure-rnaseq cmoor-files
+    
     cd /home/rstudio
     chown -R 1000 /home/rstudio
     mkdir rnaseq
     mkdir 16s
+    mkdir samplers
     chown -R 1000 /home/rstudio/16s
     chown -R 1000 /home/rstudio/rnaseq
-
-    R -e "install.packages('learnr')"
-    R -e "BiocManager::install('clusterProfiler')"
-    R -e "BiocManager::install('org.Dm.eg.db')"
-    R -e "BiocManager::install('org.Mm.eg.db')"
-    R -e "BiocManager::install('phyloseq')"
-    R -e "BiocManager::install('DOSE')" 
-    R -e "remotes::install_github('C-MOOR/testdriveRData')"
-    R -e "remotes::install_github('C-MOOR/MarianesMidgutData')"
-    R -e "remotes::install_github('C-MOOR/GuthrieMisoData')"
-    R -e "remotes::install_github('C-MOOR/SharonBrainData')"
-    R -e "remotes::install_github('C-MOOR/HumanGutMicrobiomeData')"
-    
-    git clone https://github.com/c-moor/cure-rnaseq/ /home/rstudio/cure-rnaseq
-    chown -R 1000 /home/rstudio/cure-rnaseq
-    mv cure-rnaseq cmoor-files
+    chown -R 1000 /home/rstudio/samplers
 
     cd /home/rstudio/rnaseq
 
@@ -41,6 +38,7 @@
     ln -s /home/rstudio/cmoor-files/tutorials/analyze-phyloseq/ /home/rstudio/16s/2-analyze-ps
     ln -s /home/rstudio/cmoor-files/tutorials/16S-amplicon-project-work/ /home/rstudio/16s/3-16s-project
 
-
-
-
+    cd /home/rstudio/samplers
+    ln -s /home/rstudio/cmoor-files/tutorials/16S_Sampler/ /home/rstudio/samplers/16S_Sampler
+    ln -s /home/rstudio/cmoor-files/tutorials/test_driveR/ /home/rstudio/samplers/RNA-seq_Sampler
+    

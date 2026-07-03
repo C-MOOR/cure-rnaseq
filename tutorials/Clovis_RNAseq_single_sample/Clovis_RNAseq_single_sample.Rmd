@@ -80,7 +80,8 @@ if (file.exists(file_path)) {
     
   #If not, assume we are on AnVIL and load in the data through the package MarianesMidgutData
   library(MarianesMidgutData)
-    
+  #enable ragg
+  knitr::opts_chunk$set(dev = "ragg_png")
     
 }
     

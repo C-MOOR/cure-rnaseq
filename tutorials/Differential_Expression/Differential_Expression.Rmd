@@ -54,7 +54,8 @@ if (file.exists(file_path)) {
 } else {
   #If not, assume we are on AnVIL and load in the data through the package MarianesMidgutData
   library("MarianesMidgutData")
-  R1_vs_R2_clusters <- MarianesMidgutData::a1_vs_p1_clusters
+  #enable ragg
+  knitr::opts_chunk$set(dev = "ragg_png")
   
 }
 

@@ -198,6 +198,7 @@ quiz(caption = "What's in the phyloseq object?",
     answer("32"),
     answer("9"),
     allow_retry = TRUE,
+    try_again = "HINT: ASVs represent taxa. How many taxa are in the phyloseq object?",
     random_answer_order = TRUE
   ),
   
@@ -216,6 +217,7 @@ quiz(caption = "What's in the phyloseq object?",
     answer("28", correct = TRUE),
     answer("9"),
     allow_retry = TRUE,
+    try_again = "HINT: The variables are called sample_variables in the phyloseq object.",
     random_answer_order = TRUE
   )
 )
@@ -267,6 +269,7 @@ quiz(caption = "Exploring the sample_table",
     answer("gender", correct=TRUE),
     answer("diet", correct=TRUE),
     answer("timepoint", correct=TRUE),
+    try_again = "HINT: Find this by exploring the table created by the head() and data.frame() commands using the arrows in the header row. Alternatively, we can look all the sample variables in the sample_data table using the column names from the code: (colnames(sample_data(miso)))",
     allow_retry = TRUE
   )
 )
@@ -287,12 +290,13 @@ unique(data.frame(sample_data(miso)[, "diet"]))
 ```{r metadata_sample_table_quiz}
 quiz(caption="Exploring metadata in sample_table",
 
-  question("How many subjects are in the dataset? HINT: Use the arrow on the top right side of the data frame table to access more columns",
+  question("How many subjects are in the dataset?",
     answer("5"),
     answer("21", correct=TRUE),
     answer("35"),
     answer("105"),
     answer("32"),
+    try_again = "HINT: This is equal to the number of rows in the results table from using the unique data.frame code on the subject variable.",
     allow_retry = TRUE
   ),
   
@@ -368,6 +372,7 @@ quiz(caption = "What's in the otu_table?",
     answer("1",),
     answer("3", ),
     answer("All of them", correct=TRUE),
+    try_again = "HINT: Modify the above code to look at a range of the first 5 samples for ASV1000.",
     allow_retry = TRUE
   ),
   
@@ -376,6 +381,7 @@ quiz(caption = "What's in the otu_table?",
     answer("0.05988178", ),
     answer("0.005442962", ),
     answer("0.0009637625", correct=TRUE),
+    try_again = "HINT: We can either ask specifically for sample 10 or plot the first 10 samples for ASV115.",
     allow_retry = TRUE
   )
 )
@@ -429,6 +435,7 @@ quiz(caption = "Let's find a taxnomic assignment by ASV",
     answer("Lachnospiraceae", correct=TRUE),
     answer("Clostridiales"),
     answer("NA"),
+    try_again = "HINT: Modify the above code to look at ASV2005 rather than ASV1.",
     allow_retry = TRUE
   )
 )
@@ -452,7 +459,7 @@ Notice that the y-axis currently has "Abundance" on a scale of 1-5. Why is this 
 ```{r plot_bar_phylum_quiz}
 quiz(caption = "Plotting phylum by subject",
   question("How many different known Phyla are in the data?",
-    answer("14"),
+    answer("14", message = "HINT: We asked for KNOWN phyla, so don't include NA"),
     answer("13", correct=TRUE),
     answer("5"),
     allow_retry = TRUE
@@ -476,22 +483,31 @@ Hint: To plot class using the template code below, you will need to substitute 3
 plot_bar(miso, x= "subject", fill = "Phylum", title = "choose a name for your graph") +
   geom_bar(aes(color = Phylum, fill = Phylum), stat = "identity", position = "stack")
 ```
+```{r plot_bar_subject_Class-hint-1}
+# Change all instances of Phylum to Class.
+# Remember to use the same capitalization style.
+```
 
-Try plotting a different taxonomy based on another variable such as diet, age, and gender, by substituting "subject".
+Try plotting different taxonomy based on another variable such as diet, age, and gender, by substituting "subject".
 
 ```{r plot_bar_subject_Phylum, exercise=TRUE, exercise.eval=FALSE}
 plot_bar(miso, x= "subject", fill = "Phylum", title = "choose a name for your graph") +
   geom_bar(aes(color = Phylum, fill = Phylum), stat = "identity", position = "stack")
 ```
+```{r plot_bar_subject_Phylum-hint-1}
+# To change what variable we compare samples between, we change what is on the x-axis in plot_bar. Try to change x = "subject" to x = "diet".
+```
 ---
 
 ```{r plot_bar_tax_quiz}
-quiz(caption = "Changing the phyloseq graph by taxonomic level",
-  question("What are the 2 most common bacterial classes in the dataset?",
+quiz(caption = "Changing the phyloseq graph by taxonomy",
+  
+    question("What are the 2 most common bacterial classes in the dataset?",
     answer("Clostridia", correct = TRUE),
     answer("Bacteroidia", correct = TRUE),
     answer("Mollicutes"),
     answer("Synergistia"),
+    try_again = "HINT: Did you remember to change all instances of Phylum to Class? Did you use the correct capitalization?",
     allow_retry = TRUE,
     random_answer_order = TRUE
   ),
@@ -502,6 +518,7 @@ quiz(caption = "Changing the phyloseq graph by taxonomic level",
     answer("3"),
     answer("4"),
     answer("5", correct=TRUE),
+    incorrect = "HINT: Verrucomicrobia is a phylum. We must plot phylum against the *timepoint* variable on the x-axis.",
     allow_retry = TRUE,
     random_answer_order = FALSE
   )
@@ -541,14 +558,33 @@ unique(tax_table(miso)[ , "Phylum"])
 ```
 
 Modify the code below to subset class Bacteroidia (instead of Firmicutes) and plot the different orders of the class Bacteroidia for the 21 individuals (subjects). Be careful - there a few things to modify in the code below to get the right plot! And don't forget the title!
+
 Hint: To plot orders for the class Bacteroidia using the template code below, you will need to substitute 5 things in the code, plus a new title.
 
 ```{r subsetting_bacteroidia, exercise=TRUE, exercise.eval=FALSE}
 my_subset <- subset_taxa(miso, Phylum == "Firmicutes")
 
-plot_bar(my_subset, x="subject", fill = "Class", title = "My title") +
-  geom_bar(aes(color = Class, fill = Class), stat = "identity", position = "stack")
+plot_bar(my_subset, x="subject", fill = "Phylum", title = "My title") +
+  geom_bar(aes(color = Phylum, fill = Phylum), stat = "identity", position = "stack")
 
+```
+```{r subsetting_bacteroidia-hint-1}
+# Bacteroidia is a class, so in the my_subset line we'll want to swap Phylum for Class
+```
+```{r subsetting_bacteroidia-hint-2}
+# In the my_subset line, We want to swap out Firmicutes for Bacteroidia
+```
+```{r subsetting_bacteroidia-hint-3}
+# We want to subset by class but plot by Order
+```
+```{r subsetting_bacteroidia-hint-4}
+# Change all instances of Phylum in the plot_bar code to Order
+```
+```{r subsetting_bacteroidia-hint-5}
+# Check that all your capitalization is the same as the original code
+```
+```{r subsetting_bacteroidia-hint-6}
+# Change the title of the plot to your own
 ```
 
 ---
@@ -559,6 +595,7 @@ quiz(caption = "Changing the phyloseq graph",
     answer("13"),
     answer("14"),
     answer("21", correct=TRUE),
+    try_again = "HINT: We want to look at the entire dataset, so we won't be using any code to subset. Instead of plotting by Phylum, plot by Class (plot_bar)",
     allow_retry = TRUE
   ),
 
@@ -568,7 +605,8 @@ quiz(caption = "Changing the phyloseq graph",
     answer("Aeromonadales"),
     answer("Enterobacteriales", correct=TRUE),
     answer("Betaproteobacteriales", correct=TRUE),
-    allow_retry = TRUE
+    allow_retry = TRUE,
+    try_again = "HINT: We will need to subset by the class Gammaproteobacteria (subset_taxa step) and plot by order (plot_bar step)."
   )
 )
 ```
@@ -604,7 +642,7 @@ plot_bar(my_subset, x= "subject", fill = "Class", title = "My title") +
 ```
 
 
-## Related R ocmmands
+## Related R commands
 
 Also available at our [R Cheatsheet](https://docs.google.com/document/d/1R99uj_oliyvnNOPLOfI2bUBBa64Z2PAIJ0oicbHyVZU/edit?usp=sharing)!
 
