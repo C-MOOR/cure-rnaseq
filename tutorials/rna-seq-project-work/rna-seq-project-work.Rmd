@@ -75,12 +75,117 @@ if (file.exists(file_path)) {
   kidney_metadata<-read.delim("/home/idies/workspace/c_moor_data/schaum-organs/Schaum_Metadata_Kidney.tsv", row.names=1)
   brain_metadata<-read.delim("/home/idies/workspace/c_moor_data/schaum-organs/Schaum_Metadata_Brain.tsv", row.names=1)
   
+  #Mouse functions
+  plotAcrossBrain<- function( x ) {
+  df <- data.frame(counts(brain, normalized=TRUE)[x,], brain_metadata$age_sex, row.names = row.names(brain_metadata))
+  colnames(df) <- c("counts", "age_sex")
+  df$age_sex <- fct_relevel( factor( df$age_sex), "1_m","3_m","6_m","9_m","12_m", "15_m", "18_m", "21_m", "24_m", "27_m", "1_f","3_f","6_f","9_f","12_f", "15_f", "18_f", "21_f")
+  title_text <- paste(x,"(Brain)")
+  ggplot( df ) +
+    geom_bar( aes( age_sex, counts ), stat="identity" ) +
+    ggtitle(title_text)+
+    xlab("Mice (age in months, sex)") +
+    ylab("Normalized counts") +
+    theme_bw() +
+    theme( axis.text.x = element_text( angle=90, vjust=0.5 ) )
+  }
+  
+  plotAcrossHeart<- function( x ) {
+  df <- data.frame(counts(heart, normalized=TRUE)[x,], heart_metadata$age_sex, row.names = row.names(heart_metadata))
+  colnames(df) <- c("counts", "age_sex")
+  df$age_sex <- fct_relevel( factor( df$age_sex), "1_m","3_m","6_m","9_m","12_m", "15_m", "18_m", "21_m", "24_m", "27_m", "1_f","3_f","6_f","9_f","12_f", "15_f", "18_f", "21_f")
+  title_text <- paste(x,"(Heart)")
+  ggplot( df ) +
+    geom_bar( aes( age_sex, counts ), stat="identity" ) +
+    ggtitle(title_text)+
+    xlab("Mice (age in months, sex)") +
+    ylab("Normalized counts") +
+    theme_bw() +
+    theme( axis.text.x = element_text( angle=90, vjust=0.5 ) )
+  }
+  
+  
+  plotAcrossKidney<- function( x ) {
+    df <- data.frame(counts(kidney, normalized=TRUE)[x,], kidney_metadata$age_sex, row.names = row.names(kidney_metadata))
+    colnames(df) <- c("counts", "age_sex")
+    df$age_sex <- fct_relevel( factor( df$age_sex), "1_m","3_m","6_m","9_m","12_m", "15_m", "18_m", "21_m", "24_m", "27_m", "1_f","3_f","6_f","9_f","12_f", "15_f", "18_f", "21_f")
+    title_text <- paste(x,"(Kidney)")
+    ggplot( df ) +
+      geom_bar( aes( age_sex, counts ), stat="identity" ) +
+      ggtitle(title_text)+
+      xlab("Mice (age in months, sex)") +
+      ylab("Normalized counts") +
+      theme_bw() +
+      theme( axis.text.x = element_text( angle=90, vjust=0.5 ) )
+  } 
+
+
+
+  getClusterProfilerGenesMouse <- function (x, i) {
+    data.frame( x ) %>%
+      filter( str_detect( Description, i ) ) %>%
+      pull( geneID ) %>%
+      strsplit( "/" ) %>%
+      unlist() %>%
+      bitr( fromType="ENTREZID", toType="SYMBOL", OrgDb="org.Mm.eg.db") %>%
+      pull( SYMBOL )
+  }
+
+  
+  plotAcrossHostDonor<- function( x ) {
+    df <- data.frame(counts(gutbrain, normalized=TRUE)[x,], gutbrain_metadata$host_donor_tissue, row.names = row.names(gutbrain_metadata))
+    colnames(df) <- c("counts", "host_donor_tissue")
+    df$host_donor_tissue <- fct_relevel( factor( df$host_donor_tissue), "TD_1_STR","TD_2_STR","TD_3_STR","TD_1_PFC", "TD_2_PFC", "TD_3_PFC")
+    ggplot( df ) +
+      geom_bar( aes( host_donor_tissue, counts ), stat="identity" ) +
+      ggtitle(x)+
+      theme_bw() +
+      theme( axis.text.x = element_text( angle=90, vjust=0.5 ) )
+  }
+  
+  
+  plotAcrossMice <- function( x ) {
+    df <- data.frame(counts(gutbrain, normalized=TRUE)[x,], gutbrain_metadata$bio_sample, row.names = row.names(gutbrain_metadata))
+    colnames(df) <- c("counts", "bio_sample")
+    df$bio_sample <- fct_relevel( factor( df$bio_sample), "Striatum_TD_1_1","Striatum_TD_1_2","Striatum_TD_1_3","Striatum_TD_1_4",
+                                  "Striatum_TD_2_1","Striatum_TD_2_2","Striatum_TD_2_3","Striatum_TD_2_4",
+                                  "Striatum_TD_3_1","Striatum_TD_3_2","Striatum_TD_3_3","Striatum_TD_3_4","Striatum_TD_3_6","Striatum_TD_3_7",
+                                  "PFC_TD_1_1", "PFC_TD_1_2", "PFC_TD_1_3","PFC_TD_1_4",
+                                  "PFC_TD_2_1", "PFC_TD_2_2", "PFC_TD_2_3","PFC_TD_2_4",
+                                  "PFC_TD_3_1","PFC_TD_3_2","PFC_TD_3_3","PFC_TD_3_4","PFC_TD_3_5","PFC_TD_3_6","PFC_TD_3_7")
+    ggplot( df ) +
+      geom_bar( aes( bio_sample, counts ), stat="identity" ) +
+      ggtitle(x)+
+      theme_bw() +
+      theme( axis.text.x = element_text( angle=90, vjust=0.5 ) )
+  }
+  
+  
+  plotAcrossTissue <- function( x ) {
+    df <- data.frame(counts(gutbrain, normalized=TRUE)[x,], gutbrain_metadata$tissue, row.names = row.names(gutbrain_metadata))
+    colnames(df) <- c("counts", "tissue")
+    df$tissue<- fct_relevel( factor( df$tissue), "STR", "PFC")
+    ggplot( df ) +
+      geom_bar( aes( tissue, counts ), stat="identity" ) +
+      ggtitle(x)+
+      theme_bw() +
+      theme( axis.text.x = element_text( angle=90, vjust=0.5 ) )
+  }
+  
 } else {
   #If not, assume we are on AnVIL and load in the data through packages
   library("MarianesMidgutData")
   R1_vs_R2_clusters <- MarianesMidgutData::a1_vs_p1_clusters
   library("SharonBrainData")
   library("SchaumOrganData")
+}
+
+
+runClusterProfilerMouse <- function (x) {
+  ids <- bitr( x$GeneID, "ENSEMBL", "ENTREZID", "org.Mm.eg.db" )
+  kegg <- enrichKEGG(ids$ENTREZID, "mmu", keyType="ncbi-geneid")
+  kegg@result$Description <- sub( " - Mus musculus \\(house mouse\\)", "", kegg@result$Description )
+  return(kegg)
 }
 
 
