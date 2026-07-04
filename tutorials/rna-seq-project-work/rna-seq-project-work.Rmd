@@ -861,6 +861,82 @@ my_gene
 
 ```
 
+### Differential expression template (Organ datasets)
+
+```{r deseq2-brain-tryit, exercise=TRUE, echo=FALSE}
+#FOR THE BRAIN
+temp <- results(brain, contrast = c("age", "1", "27") )
+R1_vs_R2 <- formatDESeq2Results(temp)
+sig_genes <- filter(R1_vs_R2, padj <= 0.05)
+dim(sig_genes)
+sig_genes
+```
+
+```{r deseq2-heart-tryit, exercise=TRUE, echo=FALSE}
+#FOR THE HEART
+temp <- results(heart, contrast = c("age", "1", "27") )
+R1_vs_R2 <- formatDESeq2Results(temp)
+sig_genes <- filter(R1_vs_R2, padj <= 0.05)
+dim(sig_genes)
+sig_genes
+```
+
+```{r deseq2-kidney-tryit, exercise=TRUE, echo=FALSE}
+#FOR THE KIDNEY
+temp <- results(kidney, contrast = c("age", "1", "27") )
+R1_vs_R2 <- formatDESeq2Results(temp)
+sig_genes <- filter(R1_vs_R2, padj <= 0.05)
+dim(sig_genes)
+sig_genes
+```
+
+```{r deseq2-organs_tryit4, exercise=TRUE, echo=FALSE}
+#WHAT ORGAN ARE YOU WORKING ON?
+```
+```{r deseq2-organs_tryit5, exercise=TRUE, echo=FALSE}
+#WHAT ORGAN ARE YOU WORKING ON?
+```
+```{r deseq2-organs_tryit6, exercise=TRUE, echo=FALSE}
+#WHAT ORGAN ARE YOU WORKING ON?
+```
+
+
+### Get differential expression results for a single gene in a selected organ dataset
+
+```{r filter-by-name-brain-deseq2, exercise=TRUE, echo=FALSE}
+#BRAIN
+temp <- results(brain, contrast = c("age", "1", "27") )
+R1_vs_R2 <- formatDESeq2Results(temp)
+
+my_gene <- filter(R1_vs_R2, GeneID=="ENSMUSG###########")
+my_gene
+```
+```{r filter-by-name-heart-deseq2, exercise=TRUE, echo=FALSE}
+#HEART
+temp <- results(heart, contrast = c("age", "1", "27") )
+R1_vs_R2 <- formatDESeq2Results(temp)
+
+my_gene <- filter(R1_vs_R2, GeneID=="ENSMUSG###########")
+my_gene
+```
+```{r filter-by-name-kidney-deseq2, exercise=TRUE, echo=FALSE}
+#KIDNEY
+temp <- results(kidney, contrast = c("age", "1", "27") )
+R1_vs_R2 <- formatDESeq2Results(temp)
+
+my_gene <- filter(R1_vs_R2, GeneID=="ENSMUSG###########")
+my_gene
+```
+```{r deseq2-organs_tryit7, exercise=TRUE, echo=FALSE}
+#WHAT ORGAN ARE YOU WORKING ON?
+```
+```{r deseq2-organs_tryit8, exercise=TRUE, echo=FALSE}
+#WHAT ORGAN ARE YOU WORKING ON?
+```
+```{r deseq2-organs_tryit9, exercise=TRUE, echo=FALSE}
+#WHAT ORGAN ARE YOU WORKING ON?
+```
+
 
 ### Differential expression template (Mouse gut-brain dataset)
 
@@ -920,7 +996,7 @@ my_gene
 - **GeneRatio:** The proportion of genes in a given pathway that are differentially expressed, given as a decimal. Imagine a scenario where you have 5 differentially expressed genes in a pathway of 10 genes. A whopping 50% of the genes in the pathway are differentially expressed! This could signify a deep link between this biological pathway and your two conditions. If you instead have 5 differentially expressed genes in a pathway of 100, that means only 5% of genes within the pathway are different between the two conditions. While this does not discredit these individual genes, it implies that overall the pathway is not strongly affected between the two conditions.
 - **List of genes**: If a category from the y-axis is swapped out for YOUR CATEGORY HERE, a list of differentially expressed genes in the chosen category/pathway will be listed.
 
-### clusterProfiler the for Drosophila midgut dataset
+### clusterProfiler for the Drosophila midgut dataset
 
 ```{r clusterprofiler_drosophila, exercise=TRUE, echo=FALSE}
 # Run differential expression analysis
@@ -949,6 +1025,73 @@ getClusterProfilerGenes(R1_vs_R2_clusters, "YOUR CATEGORY HERE")
 
 ```
 
+
+### clusterProfiler for the organ datasets
+
+
+```{r clusterprofiler_organ_brain-try_it, exercise=TRUE, echo=FALSE}
+#BRAIN
+# Run differential expression analysis
+temp <- results(brain, contrast = c("age", "1", "27") )
+R1_vs_R2 <- formatDESeq2Results(temp)
+sig_genes <- filter(R1_vs_R2, padj <= 0.05)
+
+# Run clusterProfiler analysis
+R1_vs_R2_clusters <- runClusterProfilerMouse(sig_genes)
+
+# Look at the dotplot to see the groups of genes
+dim(R1_vs_R2_clusters)
+dotplot(R1_vs_R2_clusters, showCategory=34, title="YOUR TITLE HERE", font.size=10, label_format = 50)
+
+# Get the gene symbols for a group of genes
+getClusterProfilerGenesMouse(R1_vs_R2_clusters, "YOUR CATEGORY HERE")
+```
+```{r clusterprofiler_organ_heart-try_it, exercise=TRUE, echo=FALSE}
+#HEART
+# Run differential expression analysis
+temp <- results(heart, contrast = c("age", "1", "27") )
+R1_vs_R2 <- formatDESeq2Results(temp)
+sig_genes <- filter(R1_vs_R2, padj <= 0.05)
+
+# Run clusterProfiler analysis
+R1_vs_R2_clusters <- runClusterProfilerMouse(sig_genes)
+
+# Look at the dotplot to see the groups of genes
+dim(R1_vs_R2_clusters)
+dotplot(R1_vs_R2_clusters, showCategory=34, title="YOUR TITLE HERE", font.size=10, label_format = 50)
+
+# Get the gene symbols for a group of genes
+getClusterProfilerGenesMouse(R1_vs_R2_clusters, "YOUR CATEGORY HERE")
+```
+
+```{r clusterprofiler_organ_kidney-try_it, exercise=TRUE, echo=FALSE}
+#KIDNEY
+# Run differential expression analysis
+temp <- results(kidney, contrast = c("age", "1", "27") )
+R1_vs_R2 <- formatDESeq2Results(temp)
+sig_genes <- filter(R1_vs_R2, padj <= 0.05)
+
+# Run clusterProfiler analysis
+R1_vs_R2_clusters <- runClusterProfilerMouse(sig_genes)
+
+# Look at the dotplot to see the groups of genes
+dim(R1_vs_R2_clusters)
+dotplot(R1_vs_R2_clusters, showCategory=34, title="YOUR TITLE HERE", font.size=10, label_format = 50)
+
+# Get the gene symbols for a group of genes
+getClusterProfilerGenesMouse(R1_vs_R2_clusters, "YOUR CATEGORY HERE")
+```
+
+```{r clusterprofiler_organ_tryit-4, exercise=TRUE, echo=FALSE}
+#WHAT ORGAN ARE YOU WORKING ON?
+```
+```{r clusterprofiler_organ_tryit-5, exercise=TRUE, echo=FALSE}
+#WHAT ORGAN ARE YOU WORKING ON?
+```
+
+```{r clusterprofiler_organ_tryit-6, exercise=TRUE, echo=FALSE}
+#WHAT ORGAN ARE YOU WORKING ON?
+```
 
 ### clusterProfiler for the mouse gut-brain dataset
 
@@ -1003,6 +1146,63 @@ plotAcrossRegions("FBgn#######")
 ```{r plotAcrossRegions_drosophila-try-it-3, exercise=TRUE, echo=FALSE}
 
 ```
+
+
+### plotAcrossRegions the for organ dataset
+
+- Use the correct function for your organ of choice
+- MGI IDs take the format ENSMUSG########### 
+
+
+### plotAcrossRegions for the mouse organ dataset
+
+- Multiple functions are available to compare the variation of a gene's expression across different organs
+- MGI IDs take the format ENSMUSG###########
+
+#### plotAcrossBrain
+
+- Compares gene expression of the brain across mice of different sex and ages
+
+```{r plotAcrossBrain_4, exercise=TRUE, echo=FALSE}
+plotAcrossBrain("ENSMUSG###########")
+```
+```{r plotAcrossBrain_5, exercise=TRUE, echo=FALSE}
+plotAcrossBrain("ENSMUSG###########")
+```
+```{r plotAcrossBrain_6, exercise=TRUE, echo=FALSE}
+plotAcrossBrain("ENSMUSG###########")
+```
+
+
+#### plotAcrossHeart
+
+- Compares gene expression of the heart across mice of different sex and ages
+
+```{r plotAcrossHeart_4, exercise=TRUE, echo=FALSE}
+plotAcrossHeart("ENSMUSG###########")
+```
+```{r plotAcrossHeart_5, exercise=TRUE, echo=FALSE}
+plotAcrossHeart("ENSMUSG###########")
+```
+```{r plotAcrossHeart_6, exercise=TRUE, echo=FALSE}
+plotAcrossHeart("ENSMUSG###########")
+```
+
+
+#### plotAcrossKidney
+
+- Compares gene expression of the kidney across mice of different sex and ages
+
+```{r plotAcrossKidney_4, exercise=TRUE, echo=FALSE}
+plotAcrossKidney("ENSMUSG###########")
+```
+```{r plotAcrossKidney_5, exercise=TRUE, echo=FALSE}
+plotAcrossKidney("ENSMUSG###########")
+```
+```{r plotAcrossKidney_6, exercise=TRUE, echo=FALSE}
+plotAcrossKidney("ENSMUSG###########")
+```
+
 
 
 ### plotAcrossRegions the for mouse gut-brain dataset
