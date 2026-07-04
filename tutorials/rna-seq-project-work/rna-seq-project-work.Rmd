@@ -680,7 +680,7 @@ You will need to identify genes of interest, formulate a research question aroun
 Since there are only two conditions, the prefrontal cortex (PFC) and striatum (STR), we have filled in the first line of the code for you in the DESeq2 and clusterProfiler analyses.
 
 ```{r deseq2-tablemouse-one-pager, exercise=TRUE, echo=FALSE}
-raw_results <- results(brain, contrast = c("tissue", "PFC", "STR") )
+raw_results <- results(gutbrain, contrast = c("tissue", "PFC", "STR") )
 R1_vs_R2 <- formatDESeq2Results(raw_results)
 sig_genes <- filter(R1_vs_R2, padj <= 0.05)
 dim(sig_genes)
@@ -700,7 +700,7 @@ sig_genes
 ### Get differential expression results for a single gene in the mouse gut-brain dataset
 
 ```{r filter-by-name-mouse, exercise=TRUE, echo=FALSE}
-raw_results <- results(brain, contrast = c("tissue", "PFC", "STR") )
+raw_results <- results(gutbrain, contrast = c("tissue", "PFC", "STR") )
 R1_vs_R2 <- formatDESeq2Results(raw_results)
 my_gene <- filter(R1_vs_R2, GeneID=="ENSMUSG###########")
 my_gene
@@ -722,7 +722,7 @@ my_gene
 
 ```{r clusterprofiler_mouse-one-pager, exercise=TRUE, echo=FALSE}
 # Run differential expression analysis
-raw_results <- results(brain, contrast = c("tissue", "PFC", "STR") )
+raw_results <- results(gutbrain, contrast = c("tissue", "PFC", "STR") )
 R1_vs_R2 <- formatDESeq2Results(raw_results)
 sig_genes <- filter(R1_vs_R2, padj <= 0.05)
 
@@ -942,7 +942,7 @@ my_gene
 ### Differential expression template (Mouse gut-brain dataset)
 
 ```{r deseq2-tablemouse, exercise=TRUE, echo=FALSE}
-raw_results <- results(brain, contrast = c("tissue", "PFC", "STR") )
+raw_results <- results(gutbrain, contrast = c("tissue", "PFC", "STR") )
 R1_vs_R2 <- formatDESeq2Results(raw_results)
 sig_genes <- filter(R1_vs_R2, padj <= 0.05)
 dim(sig_genes)
@@ -962,7 +962,7 @@ sig_genes
 ### Get differential expression results for a single gene in the mouse gut-brain dataset
 
 ```{r filter-by-name-mousebrain-deseq2, exercise=TRUE,echo=FALSE}
-raw_results <- results(brain, contrast = c("tissue", "PFC", "STR") )
+raw_results <- results(gutbrain, contrast = c("tissue", "PFC", "STR") )
 R1_vs_R2 <- formatDESeq2Results(raw_results)
 my_gene <- filter(R1_vs_R2, GeneID=="ENSMUSG###########")
 my_gene
@@ -1098,7 +1098,7 @@ getClusterProfilerGenesMouse(R1_vs_R2_clusters, "YOUR CATEGORY HERE")
 
 ```{r clusterprofiler_mouse, exercise=TRUE, echo=FALSE}
 # Run differential expression analysis
-raw_results <- results(brain, contrast = c("tissue", "PFC", "STR") )
+raw_results <- results(gutbrain, contrast = c("tissue", "PFC", "STR") )
 R1_vs_R2 <- formatDESeq2Results(raw_results)
 sig_genes <- filter(R1_vs_R2, padj <= 0.01)
 
