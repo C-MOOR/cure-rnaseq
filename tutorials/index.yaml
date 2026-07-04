@@ -27,7 +27,6 @@ BIOL12:
 WIP:
   name: "Work in Progress"
   tutorial_dir:
-    - "rna-seq-project-work" 
     - "explore-phyloseq"
     - "analyze-phyloseq"
     - "16S-amplicon-project-work"
