@@ -405,7 +405,7 @@ Through this data, we can learn more about how gene expression changes with age.
 - The heart
 - The kidney
 
-**The differential expression analysis available here and resulting DESeq2 object are identical to those from the original study which used age as a categorical value and sex as covariates (~age_categorical + sex) to look at differtial gene expression across different ages.**
+**The differential expression analysis available here and resulting DESeq2 object are identical to those from the original study which used age as a categorical value and sex as covariates (~age_categorical + sex) to look at differential gene expression across different ages.**
 
 In addition to our analyses here, at the time of writing this module, the original authors have provided a [shiny app](https://twc-stanford.shinyapps.io/maca/) that allows you to explore a single gene across all 17 sampled organ systems. We hope that you can use these tools in tandem with what we have provided here to create a great research project!
 
@@ -655,9 +655,9 @@ Over the last couple of decades, considerable research effort has been invested 
 
 
 ![](images/sharon-study-design.png){width=100%}
-<p class=caption> **Study design from Sharon et al. (2020)**: Germ-free mice were transplated with gut microbiomes from human children and bred. Their offspring were then harvested for brain tissue for RNA-seq analysis. Note that this is a subset of a larger dataset. </p>
+<p class=caption> **Study design from Sharon et al. (2019)**: Germ-free mice were transplated with gut microbiomes from human children and bred. Their offspring were then harvested for brain tissue for RNA-seq analysis. Note that this is a subset of a larger dataset. </p>
 
-Sharon et al. took gut microbiome (fecal) samples from typically developing (TD) human children and implanted them into germ-free mice (mice without a microbiome). This parental generation of mice bred amongst themselves and produced offspring from which brain tissue samples were taken.
+These data are from [Sharon et al.'s 2019 study titled Human Gut Microbiota from Autism Spectrum Disorder Promote Behavioral Symptoms in Mice](https://pubmed.ncbi.nlm.nih.gov/31150625/). Researchers took gut microbiome (fecal) samples from typically developing (TD) human children and implanted them into germ-free mice (mice without a microbiome). This parental generation of mice bred amongst themselves and produced offspring from which brain tissue samples were taken.
 
 Brain tissue samples included two areas of the brain responsible for social behavior, the **Prefrontal cortex (PFC)** and the **Striatum (STR)**. These two brain sections are in close proximity to each other and are hypothesized to have similar functions, though each region's exact purpose and their relationship to each other are still being studied. 
 
@@ -679,7 +679,7 @@ You will need to identify genes of interest, formulate a research question aroun
 
 - Phineas Gage was involved in an accident that damaged his frontal lobe, which contains the PFC. Following this incident, his personality underwent a dramatic change, suggesting that the frontal lobe regulates one's personality, executive decision making, and interactions with others. By looking at genes that are highly and/or differentially expressed in the PFC we can find genes of interest that might be involved in these functions.
 - Many conditions such as autism spectrum disorder, schizophrenia, and dementia present as a change in personality or how one interprets and presents socially. What genes are hypothesized to be involved in these conditions and are they found in our dataset?
-- Personality differs widely by individual and is impacted by both genetics and the environment. Although we often treat mice in research as a uniform group of animals that act nearly identically, mice (as many pet owners would contest) have their own personalities and a complex social structure. Rather than comparing samples at the level of human microbiome donor (plotAcrossHostDonor) or overall tissue (plotAcrossTissue), consider profiling gene expression at the level of individual mouse (plotAcrossMice). How much variation do we see at different levels of comparisions?
+- Personality differs widely by individual and is impacted by both genetics and the environment. Although we often treat mice in research as a uniform group of animals that act nearly identically, mice (as many pet owners would contest) have their own personalities and a complex social structure. Rather than comparing samples at the level of human microbiome donor (plotAcrossHostDonor) or overall tissue (plotAcrossTissue), consider profiling gene expression at the level of individual mouse (plotAcrossMice). How much variation do we see at different levels of comparisons?
 - The STR is well known for its connection to reward pathways. Understanding these pathways better could help us understand addiction and ADHD. What genes are differentially expressed in the STR and how might they impact a functioning reward system?
 
 
@@ -1287,6 +1287,8 @@ plotAcrossMice("ENSMUSG###########")
 - R Core Team (2024). R: A Language and Environment for Statistical Computing. R Foundation for Statistical Computing, Vienna, Austria. <https://www.R-project.org/>.
   
 - Sadaqat, Zoha, Shivam Kaushik, and Pinky Kain. "Gut Feeding the Brain: Drosophila Gut an Animal Model for Medicine to Understand Mechanisms Mediating Food Preferences." Preclinical Animal Modeling in Medicine. IntechOpen, 2021.
+
+- Schaum, Nicholas, et al. "Ageing hallmarks exhibit organ-specific temporal signatures." Nature 583.7817 (2020): 596-602. 
 
 - Sharon, Gil, et al. "Human gut microbiota from autism spectrum disorder promote behavioral symptoms in mice." Cell 177.6 (2019): 1600-1618.
 
