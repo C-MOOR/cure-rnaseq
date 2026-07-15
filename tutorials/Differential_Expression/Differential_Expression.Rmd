@@ -604,7 +604,7 @@ If we try a stricter cutoff of 0.001:
 sig_001_genes <- filter(R1_vs_R2, padj <= 0.001)
 dim(sig_001_genes)
 ```
-Now we get 1277 genes and we expect 0.001 X 1278 ~ 1 to be a false positive.  So we've basically gotten rid of all false genes, but we've also thrown out ~half of the real genes as compared to using the 0.05 cutoff.
+Now we get 1277 genes and we expect 0.001 X 1277 ~ 1 to be a false positive.  So we've basically gotten rid of all false genes, but we've also thrown out ~half of the real genes as compared to using the 0.05 cutoff.
 
 With this particular dataset, I'd probably pick a cutoff of either 0.05 or 0.01 for further computational analyis.  I think 0.001 throws away too many real genes.
 
