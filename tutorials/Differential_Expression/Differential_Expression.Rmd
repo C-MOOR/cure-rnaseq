@@ -335,8 +335,8 @@ Here's an example of this two step process for getting the data comparing sample
 
 ```{r, echo=TRUE}
 raw_results <- results(midgut, contrast = c("condition", "a1", "p1") )
-R1_vs_R1 <- formatDESeq2Results(raw_results)
-R1_vs_R1
+R1_vs_R2 <- formatDESeq2Results(raw_results)
+R1_vs_R2
 ```
 
 Each row in this dataframe is a gene, and the columns contain a bunch of information about the statistics that DESeq2 calculated.  This data frame has a lot of numbers in it, but there are three columns that we're interested in:
