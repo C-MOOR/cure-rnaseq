@@ -898,38 +898,68 @@ Use the codeblocks below to explore the differential expression data.  There are
 Remember to replace REGION1 and REGION2 with your midgut regions of choice.
 
 ```{r freeplayd-exercise, exercise=TRUE, exercise.eval=FALSE, fig.height=7, exercise.timelimit=120}
-# Run differential expression analysis
-raw_results <- results(midgut, contrast = c("condition", "REGION1", "REGION2") )
+# Base differential expression code
+raw_results <- results(midgut, contrast = c("condition", "a1", "p1") )
+
 R1_vs_R2 <- formatDESeq2Results(raw_results)
-sig_genes <- filter(R1_vs_R2, padj <= 0.01)
 
-# Run ClusterProfiler analysis
-R1_vs_R2_clusters <- runClusterProfiler(sig_genes)
-
-# Look at the dotplot to see the groups of genes
-dim(R1_vs_R2_clusters)
-dotplot(R1_vs_R2_clusters, showCategory=34, title="YOUR TITLE HERE", font.size=10, label_format = 50)
-
-# Get the gene symbols for a group of genes
-getClusterProfilerGenes(R1_vs_R2_clusters, "YOUR CATEGORY HERE")
+R1_vs_R2
 ```
 
 ```{r freeplayd2-exercise, exercise=TRUE, exercise.eval=FALSE, fig.height=7, exercise.timelimit=120}
-plotAcrossRegions("YOUR FLYBASE ID HERE")
+# Base differential expression code + pull out a single gene
+raw_results <- results(midgut, contrast = c("condition", "a1", "p1") )
+
+R1_vs_R2 <- formatDESeq2Results(raw_results)
+
+my_gene <- filter(R1_vs_R2, GeneID=="FBgn0000251")
+
+my_gene
+
 ```
 
 ```{r freeplayd3-exercise, exercise=TRUE, exercise.eval=FALSE, fig.height=7, exercise.timelimit=120}
+# Base differential expression code + filter by padj
+raw_results <- results(midgut, contrast = c("condition", "a1", "p1") )
 
+R1_vs_R2 <- formatDESeq2Results(raw_results)
+
+sig_genes <- filter(R1_vs_R2, padj <= 0.05)
+
+sig_genes
 ```
 
 ```{r freeplayd4-exercise, exercise=TRUE, exercise.eval=FALSE, fig.height=7, exercise.timelimit=120}
+# Base differential expression code + ClusterProfiler dotplot
 
+raw_results <- results(midgut, contrast = c("condition", "a1", "p1") )
+
+R1_vs_R2 <- formatDESeq2Results(raw_results)
+
+sig_genes <- filter(R1_vs_R2, padj <= 0.05)
+
+R1_vs_R2_clusters <- runClusterProfiler(sig_genes)
+dim(R1_vs_R2_clusters)
+dotplot(R1_vs_R2_clusters, showCategory=34, title="a1 vs p1", font.size=10, label_format = 50)
 ```
 
 ```{r freeplayd5-exercise, exercise=TRUE, exercise.eval=FALSE, fig.height=7, exercise.timelimit=120}
+# Base differential expression code + ClusterProfiler dotplot + give me gene names from a category
+raw_results <- results(midgut, contrast = c("condition", "a1", "p1") )
+
+R1_vs_R2 <- formatDESeq2Results(raw_results)
+
+sig_genes <- filter(R1_vs_R2, padj <= 0.05)
+
+R1_vs_R2_clusters <- runClusterProfiler(sig_genes)
+dim(R1_vs_R2_clusters)
+dotplot(R1_vs_R2_clusters, showCategory=34, title="a1 vs p1", font.size=10, label_format = 50)
+
+getClusterProfilerGenes(R1_vs_R2_clusters, "Peroxisome")
 
 ```
 
 ```{r freeplayd6-exercise, exercise=TRUE, exercise.eval=FALSE, fig.height=7, exercise.timelimit=120}
-
+#Plot gene expression of a single gene across all regions
+plotAcrossRegions("FBgn0035665")
 ```
