@@ -448,7 +448,7 @@ Now that we have a good idea of what's in the phyloseq object, let's try plottin
 The code below plots the taxonomy profile of individuals (subjects) based on Phylum.
 
 ```{r plot_bar_demo, exercise=TRUE, echo=FALSE}
-  plot_bar(miso, "subject", fill = "Phylum") + 
+  plot_bar(miso, x="subject", fill = "Phylum") + 
   geom_bar(aes(color = Phylum, fill = Phylum), stat = "identity", position = "stack") 
 ```
 
@@ -472,7 +472,7 @@ The demo code above plotted the taxonomy profile of individuals based on phylum.
 The demo plot did not have a plot title. Use code block below to give your plot a title by substituting "Choose a name for your graph" with a title name appropriate for the plot (e.g. Phylum by individual).
 
 ```{r plot_bar_phylum_title, exercise=TRUE, echo=FALSE}
-plot_bar(miso, x="subject", fill = "Phylum", title = "Choose a name for your graph") +
+plot_bar(miso, x="subject", fill = "Phylum", title = "My title") +
   geom_bar(aes(color = Phylum, fill = Phylum), stat = "identity", position = "stack")
 ```
 
@@ -480,7 +480,7 @@ Try substituting phylum with another taxonomic rank of interest, like class, by 
 Hint: To plot class using the template code below, you will need to substitute 3 things in the code, plus a new title.
 
 ```{r plot_bar_subject_Class, exercise=TRUE, exercise.eval=FALSE}
-plot_bar(miso, x= "subject", fill = "Phylum", title = "choose a name for your graph") +
+plot_bar(miso, x= "subject", fill = "Phylum", title = "My title") +
   geom_bar(aes(color = Phylum, fill = Phylum), stat = "identity", position = "stack")
 ```
 ```{r plot_bar_subject_Class-hint-1}
@@ -491,7 +491,7 @@ plot_bar(miso, x= "subject", fill = "Phylum", title = "choose a name for your gr
 Try plotting different taxonomy based on another variable such as diet, age, and gender, by substituting "subject".
 
 ```{r plot_bar_subject_Phylum, exercise=TRUE, exercise.eval=FALSE}
-plot_bar(miso, x= "subject", fill = "Phylum", title = "choose a name for your graph") +
+plot_bar(miso, x= "subject", fill = "Phylum", title = "My title") +
   geom_bar(aes(color = Phylum, fill = Phylum), stat = "identity", position = "stack")
 ```
 ```{r plot_bar_subject_Phylum-hint-1}
@@ -530,7 +530,7 @@ quiz(caption = "Changing the phyloseq graph by taxonomy",
 What happens when we try to plot our data at the level of order? Try it out with the following code.
 
 ```{r plot_bar_metadata_change_order, exercise=TRUE, exercise.eval=FALSE}
-plot_bar(miso, x= "subject", fill = "Order", title = "choose a name for your graph") +
+plot_bar(miso, x= "subject", fill = "Order", title = "My title") +
   geom_bar(aes(color = Order, fill = Order), stat = "identity", position = "stack")
 ```
 
@@ -683,7 +683,7 @@ Also available at our [R Cheatsheet](https://docs.google.com/document/d/1R99uj_o
 - **facet_wrap** (Advanced): Ask ggplot to facet by a given field. This will break the graph down into smaller graphs focused on each subject.
 
 ```{r facet_example, exercise=TRUE, echo=FALSE}
-plot_bar(miso, x="timepoint", fill = "Phylum", title = "choose a name for your graph") +
+plot_bar(miso, x="timepoint", fill = "Phylum", title = "My title") +
   geom_bar(aes(color = Phylum, fill = Phylum), stat = "identity", position = "stack") +
   facet_wrap(~subject)
 ```
