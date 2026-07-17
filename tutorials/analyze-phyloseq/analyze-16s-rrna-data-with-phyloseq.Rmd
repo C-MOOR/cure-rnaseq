@@ -369,7 +369,7 @@ Use the code below to plot alpha diversity for each individual (x = "subject"), 
 plot_richness(miso_counts, x="subject", 
               color="diet", 
               shape="diet", 
-          	  title ="fill in the blank",
+          	  title ="My title",
               measures="Simpson")
 
 ```
@@ -383,7 +383,7 @@ subset <- subset_samples(miso_counts, gender == "F")
 plot_richness(subset, x="timepoint", 
               color="subject", 
               shape="diet", 
-          	  title ="fill in the blank",
+          	  title ="My title",
               measures="Simpson")
 
 
@@ -476,7 +476,7 @@ Notice how we can ask R to color or change the shape of the data points based on
 plot_ordination(miso, miso.pcoa, 
         color = "subject", 
         shape = "diet", 
-        title="My PCoA")
+        title="My title")
 ```
 
 The samples that are closer together are more similar in composition than samples far away from each other. For example, a closely associated group of datapoints in the upper left corner of the plot appears to be distinct from a closely associated group of datapoints in the lower left corner of the plot.
@@ -504,7 +504,7 @@ miso.pcoa.subset <- ordinate(miso_subset, method="PCoA", distance="bray")
 plot_ordination(miso_subset, miso.pcoa.subset, 
         color = "subject", 
         shape = "diet", 
-        title="My subsetted (Firmicutes) PCoA")
+        title="My title")
 ```
 
 
@@ -660,7 +660,7 @@ Significant_DEseq2_ASVs
 # STEP 5: Plot the results with your chosen x axis and legend
 ggplot(Significant_DEseq2_ASVs, aes(x = Phylum, y=log2FoldChange, color= Class)) + geom_point(size=3, position = "jitter") +
   theme(axis.text.x = element_text(angle = -90, hjust = 0, vjust=0.5))+
-  ggtitle("my title here")
+  ggtitle("My title")
 
 ```
 
@@ -736,7 +736,7 @@ Significant_DEseq2_ASVs
 # STEP 5: Plot the results with your chosen x axis and legend
 ggplot(Significant_DEseq2_ASVs, aes(x = Phylum, y=log2FoldChange, color= Class)) + geom_point(size=3, position = "jitter") +
   theme(axis.text.x = element_text(angle = -90, hjust = 0, vjust=0.5))+
-  ggtitle("my title here")
+  ggtitle("My title")
 
 ```
 
@@ -788,7 +788,7 @@ Significant_DEseq2_ASVs
 # STEP 5: Plot the results with your chosen x axis and legend
 ggplot(Significant_DEseq2_ASVs, aes(x = Phylum, y=log2FoldChange, color= Class)) + geom_point(size=3, position = "jitter") +
   theme(axis.text.x = element_text(angle = -90, hjust = 0, vjust=0.5))+
-  ggtitle("my title here")
+  ggtitle("My title")
 
 ```
 
@@ -855,7 +855,7 @@ miso.pcoa.subset <- ordinate(miso, method="PCoA", distance="bray")
 plot_ordination(miso_subset, miso.pcoa.subset, 
         color = "subject", 
         shape = "diet", 
-        title="My subsetted (Firmicutes) PCoA")
+        title="My title")
 ```
 
 ```{r Try_it_PCoA_blank, exercise=TRUE, echo=FALSE}
@@ -882,7 +882,7 @@ Significant_DEseq2_ASVs
 # STEP 5: Plot the results with your chosen x axis and legend
 ggplot(Significant_DEseq2_ASVs, aes(x = Phylum, y=log2FoldChange, color= Class)) + geom_point(size=3, position = "jitter") +
   theme(axis.text.x = element_text(angle = -90, hjust = 0, vjust=0.5))+
-  ggtitle("my title here")
+  ggtitle("My title")
 ```
 
 ```{r Try_it_differential_abundance_blank, exercise=TRUE, echo=FALSE}
