@@ -825,8 +825,28 @@ quiz(caption = "Using DESeq2 to examine differential abundance",
 ### Alpha Diversity
 
 ```{r try_it_plot_richness_end, exercise=TRUE, echo=FALSE}
+# Plot richness for the entire dataset
+plot_richness(miso_counts, x="subject", 
+              color="diet", 
+              shape="diet", 
+          	  title ="My title",
+              measures="Simpson")
+```
 
+```{r Try_it_plot_richness_subset, exercise=TRUE, echo=FALSE}
+# Plot richness for a subset (by metadata)
 my_subset <- subset_samples(miso_counts, gender == "F")
+
+plot_richness(my_subset, x="timepoint", 
+              color="subject", 
+              shape="diet",
+          	  title ="fill in the blank", 
+              measures= "Simpson")
+```
+
+```{r Try_it_plot_richness_blank1, exercise=TRUE, echo=FALSE}
+# Plot richness for a subset (by taxa)
+my_subset <- subset_taxa(miso_counts, Phylum == "Firmicutes")
 
 plot_richness(my_subset, x="timepoint", 
               color="subject", 
@@ -835,32 +855,68 @@ plot_richness(my_subset, x="timepoint",
               measures= "Simpson")
 
 ```
+```{r Try_it_plot_richness_blank2, exercise=TRUE, echo=FALSE}
 
-```{r Try_it_plot_richness_blank, exercise=TRUE, echo=FALSE}
+
+```
+```{r Try_it_plot_richness_blank3, exercise=TRUE, echo=FALSE}
+
 
 ```
 ---
 
 ### PCoA
 
-
 ```{r Try_it_PCoA_end, exercise=TRUE, echo=FALSE}
-#Subset a group of interest
-miso_subset <- subset_taxa(miso, Phylum == "Firmicutes")
+miso.pcoa <- ordinate(miso, method="PCoA", distance="bray")
+
+plot_ordination(miso, miso.pcoa, 
+        color = "subject", 
+        shape = "diet", 
+        title="title")
+```
+
+```{r Try_it_PCoA_subset_metadata, exercise=TRUE, echo=FALSE}
+#Subset by metadata
+miso_subset <- subset_samples(miso, gender == "F")
 
 #Ordinate based on your subset
-miso.pcoa.subset <- ordinate(miso, method="PCoA", distance="bray")
+miso.pcoa.subset <- ordinate(miso_subset, method="PCoA", distance="bray")
 
 #Plot the new subsetted ordination with the subsetted phyloseq object
 plot_ordination(miso_subset, miso.pcoa.subset, 
         color = "subject", 
         shape = "diet", 
-        title="My title")
+        title="My subsetted (Firmicutes) PCoA")
 ```
 
-```{r Try_it_PCoA_blank, exercise=TRUE, echo=FALSE}
+```{r Try_it_PCoA_blank1, exercise=TRUE, echo=FALSE}
+#Subset by taxa
+miso_subset <- subset_taxa(miso, Phylum == "Firmicutes")
+
+#Ordinate based on your subset
+miso.pcoa.subset <- ordinate(miso_subset, method="PCoA", distance="bray")
+
+#Plot the new subsetted ordination with the subsetted phyloseq object
+plot_ordination(miso_subset, miso.pcoa.subset, 
+        color = "subject", 
+        shape = "diet", 
+        title="My subsetted (Firmicutes) PCoA")
+```
+
+```{r Try_it_pcoa_blank1, exercise=TRUE, echo=FALSE}
+
 
 ```
+```{r Try_it_pcoa_blank2, exercise=TRUE, echo=FALSE}
+
+
+```
+```{r Try_it_pcoa_blank3, exercise=TRUE, echo=FALSE}
+
+
+```
+
 ---
 
 ### Differential abundance
@@ -885,10 +941,15 @@ ggplot(Significant_DEseq2_ASVs, aes(x = Phylum, y=log2FoldChange, color= Class))
   ggtitle("My title")
 ```
 
-```{r Try_it_differential_abundance_blank, exercise=TRUE, echo=FALSE}
+```{r Try_it_differential_abundance_blank1, exercise=TRUE, echo=FALSE}
 
 ```
+```{r Try_it_differential_abundance_blank2, exercise=TRUE, echo=FALSE}
 
+```
+```{r Try_it_differential_abundance_blank3, exercise=TRUE, echo=FALSE}
+
+```
 
 ## Related R commands
 
