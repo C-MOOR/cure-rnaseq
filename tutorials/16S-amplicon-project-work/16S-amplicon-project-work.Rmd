@@ -819,7 +819,14 @@ oc_agefirstOCuse_counts
 
 ### Bar plot code template
 
+
 ```{r barplot, exercise=TRUE, echo=FALSE}
+#Barplots for the whole dataset
+plot_bar(miso, x="subject", fill = "Phylum", title = "My title") +
+  geom_bar(aes(color = Phylum, fill = Phylum), stat = "identity", position = "stack")
+```
+
+```{r barplot_subset, exercise=TRUE, echo=FALSE}
 #Subsetting based on a group
 my_subset <- subset_taxa(miso, Phylum == "Firmicutes")
 
@@ -861,7 +868,17 @@ plot_bar(my_subset, x= "subject", fill = "Class", title = "My title") +
 ### Alpha diversity code template
 
 ```{r try_it_plot_richness_end, exercise=TRUE, echo=FALSE}
+# Plot richness for the entire dataset
+plot_richness(miso_counts, x="subject", 
+              color="diet", 
+              shape="diet", 
+          	  title ="My title",
+              measures="Simpson")
 
+```
+
+```{r Try_it_plot_richness_metadata_subset, exercise=TRUE, echo=FALSE}
+# Plot richness for a subset (by metadata)
 my_subset <- subset_samples(miso_counts, gender == "F")
 
 plot_richness(my_subset, x="timepoint", 
@@ -869,14 +886,17 @@ plot_richness(my_subset, x="timepoint",
               shape="diet",
           	  title ="fill in the blank", 
               measures= "Simpson")
-
 ```
 
-```{r Try_it_plot_richness_blank1, exercise=TRUE, echo=FALSE}
+```{r Try_it_plot_richness_taxa_subset, exercise=TRUE, echo=FALSE}
+# Plot richness for a subset (by taxa)
+my_subset <- subset_taxa(miso_counts, Phylum == "Firmicutes")
 
-```
-
-```{r Try_it_plot_richness_blank2, exercise=TRUE, echo=FALSE}
+plot_richness(my_subset, x="timepoint", 
+              color="subject", 
+              shape="diet",
+          	  title ="fill in the blank", 
+              measures= "Simpson")
 
 ```
 
@@ -906,14 +926,23 @@ plot_richness(my_subset, x="timepoint",
 
 Samples that cluster together have more in common than samples that are farther apart.
 
-### Multidimensional analysis code template
+### Multidimensional analysis (PCoA) code template
 
 ```{r Try_it_PCoA_end, exercise=TRUE, echo=FALSE}
-#Subset a group of interest
-miso_subset <- subset_taxa(miso, Phylum == "Firmicutes")
+miso.pcoa <- ordinate(miso, method="PCoA", distance="bray")
+
+plot_ordination(miso, miso.pcoa, 
+        color = "subject", 
+        shape = "diet", 
+        title="title")
+```
+
+```{r Try_it_PCoA_subset_metadata, exercise=TRUE, echo=FALSE}
+#Subset by metadata
+miso_subset <- subset_samples(miso, gender == "F")
 
 #Ordinate based on your subset
-miso.pcoa.subset <- ordinate(miso, method="PCoA", distance="bray")
+miso.pcoa.subset <- ordinate(miso_subset, method="PCoA", distance="bray")
 
 #Plot the new subsetted ordination with the subsetted phyloseq object
 plot_ordination(miso_subset, miso.pcoa.subset, 
@@ -923,8 +952,19 @@ plot_ordination(miso_subset, miso.pcoa.subset,
 ```
 
 ```{r Try_it_PCoA_blank1, exercise=TRUE, echo=FALSE}
+#Subset by taxa
+miso_subset <- subset_taxa(miso, Phylum == "Firmicutes")
 
+#Ordinate based on your subset
+miso.pcoa.subset <- ordinate(miso_subset, method="PCoA", distance="bray")
+
+#Plot the new subsetted ordination with the subsetted phyloseq object
+plot_ordination(miso_subset, miso.pcoa.subset, 
+        color = "subject", 
+        shape = "diet", 
+        title="My subsetted (Firmicutes) PCoA")
 ```
+
 
 ```{r Try_it_PCoA_blank2, exercise=TRUE, echo=FALSE}
 
