@@ -826,9 +826,18 @@ plot_bar(miso, x="subject", fill = "Phylum", title = "My title") +
   geom_bar(aes(color = Phylum, fill = Phylum), stat = "identity", position = "stack")
 ```
 
-```{r barplot_subset, exercise=TRUE, echo=FALSE}
-#Subsetting based on a group
+```{r barplot_subset_taxa, exercise=TRUE, echo=FALSE}
+#Subsetting based on a taxa
 my_subset <- subset_taxa(miso, Phylum == "Firmicutes")
+
+#Plotting using the new subset
+plot_bar(my_subset, x= "subject", fill = "Class", title = "My title") +
+  geom_bar(aes(color = Class, fill = Class), stat = "identity", position = "stack")
+```
+
+```{r barplot_subset_sample, exercise=TRUE, echo=FALSE}
+#Subsetting based on metadata
+my_subset <- subset_samples(miso, gender == "F")
 
 #Plotting using the new subset
 plot_bar(my_subset, x= "subject", fill = "Class", title = "My title") +
@@ -884,7 +893,7 @@ my_subset <- subset_samples(miso_counts, gender == "F")
 plot_richness(my_subset, x="timepoint", 
               color="subject", 
               shape="diet",
-          	  title ="fill in the blank", 
+          	  title ="My title", 
               measures= "Simpson")
 ```
 
@@ -895,7 +904,7 @@ my_subset <- subset_taxa(miso_counts, Phylum == "Firmicutes")
 plot_richness(my_subset, x="timepoint", 
               color="subject", 
               shape="diet",
-          	  title ="fill in the blank", 
+          	  title ="My title", 
               measures= "Simpson")
 
 ```
@@ -934,7 +943,7 @@ miso.pcoa <- ordinate(miso, method="PCoA", distance="bray")
 plot_ordination(miso, miso.pcoa, 
         color = "subject", 
         shape = "diet", 
-        title="title")
+        title="My Title")
 ```
 
 ```{r Try_it_PCoA_subset_metadata, exercise=TRUE, echo=FALSE}
@@ -948,7 +957,7 @@ miso.pcoa.subset <- ordinate(miso_subset, method="PCoA", distance="bray")
 plot_ordination(miso_subset, miso.pcoa.subset, 
         color = "subject", 
         shape = "diet", 
-        title="My subsetted (Firmicutes) PCoA")
+        title="My Title")
 ```
 
 ```{r Try_it_PCoA_blank1, exercise=TRUE, echo=FALSE}
@@ -962,7 +971,7 @@ miso.pcoa.subset <- ordinate(miso_subset, method="PCoA", distance="bray")
 plot_ordination(miso_subset, miso.pcoa.subset, 
         color = "subject", 
         shape = "diet", 
-        title="My subsetted (Firmicutes) PCoA")
+        title="My Title")
 ```
 
 
@@ -1091,7 +1100,8 @@ Significant_DEseq2_ASVs
 
 # STEP 5: Plot the results with your chosen x axis and legend
 ggplot(Significant_DEseq2_ASVs, aes(x = Phylum, y=log2FoldChange, color= Class, shape = Order)) + geom_point(size=6) +
-  theme(axis.text.x = element_text(angle = -90, hjust = 0, vjust=0.5))
+  theme(axis.text.x = element_text(angle = -90, hjust = 0, vjust=0.5))+
+  ggtitle("My title")
 
 ```
 
