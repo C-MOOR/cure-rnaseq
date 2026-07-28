@@ -15,7 +15,7 @@ runtime: shiny_prerendered
 # The image must be surrounded with quotes
 summary: |
   This module is meant to provide students with a working space for their 16S rRNA human gut microbiome projects. In addition to the MISO dataset from the other tutorials, we have a number of other datasets you can explore here as well as code chunks and starting off points to help get you started!
-image: ""
+image: "![](images/cmoor_logo_notext.png)"
 image_caption: ""
 author:
   - "Sayumi York, Notre Dame of Maryland University"
@@ -424,7 +424,7 @@ tv <- rmarkdown::metadata$output$`learnr::tutorial`$version
 #### Version: `r tv`
 
 ## Meet MISO
-These data are from *Impact of a 7-day homogeneous diet on interpersonal variation in human gut microbiomes and metabolomes* by Guthrie et al. (2022). 
+These data are from **Impact of a 7-day homogeneous diet on interpersonal variation in human gut microbiomes and metabolomes by Guthrie et al. (2022)**. 
 
 It's difficult to capture the mechanisms and effects of diet on the gut microbiome given the sheer number of variables involved. The microbiome individuality and stability over time (MISO) study aimed to explore the connection between diet, microbiome, and metabolites by looking at the effect of feeding a standardized diet to people over 7 days. 
 
@@ -436,11 +436,11 @@ It's difficult to capture the mechanisms and effects of diet on the gut microbio
 
 The figure above shows the study design for the MISO study. You do not need to memorize all these details; feel free to refer to this page throughout the project:
 
-- Participants eat their usual, **baseline diet (BD) for 14 days**
+- Participants are free to eat what they want, **baseline diet (BD) for 14 days**
 - Participants all eat the same diet, the **homogenized diet (HD), for 7 days**
-- Participants return to their usual diet during the **washout (WO) period for 7 days**
+- Participants return to eating what they want during the **washout (WO) period for 7 days**
 
-The study lasts a total of 28 days. Samples from the blood, stool, and urine, our metabolite and 16S rRNA data are taken at 5 different timepoints:
+Note that there is no guidance given to the participants on what they eat during the BD and WO diet phases. What they eat on any given day may not match what is happening during the other phases or even other days within the same phase. The study lasts a total of 28 days. Samples from the blood, stool, and urine, our metabolite and 16S rRNA data are taken at 5 different timepoints:
 
 - **Timepoint 1:** Day 0 (the start of the study)
 - **Timepoint 2:** Day 13
@@ -455,7 +455,7 @@ The study lasts a total of 28 days. Samples from the blood, stool, and urine, ou
 ![](images/miso_variables.png){width=100%}
 <p class=caption> **Metadata variables for the MISO study by Guthrie et al. (2022)**: Figure edited by Sayumi York (July 11, 2025).</p>
 
-We have a number of variables we can use in our analysis. Notice that the variables for the study and subjects are in lowercase. This is also how you will access these variables in R.
+We have a number of variables we can use in our analysis. Notice that the variables for the study and subjects are in lowercase. Remember that R is case sensitive.
 
 ### MISO study design variables
 
@@ -580,17 +580,6 @@ plot_richness(miso_counts, x="subject",
 
 ```
 
-```{r miso_Try_it_plot_richness_metadata_subset, exercise=TRUE, echo=FALSE}
-# Plot richness for a subset (by metadata)
-my_subset <- subset_samples(miso_counts, gender == "F")
-
-plot_richness(my_subset, x="timepoint", 
-              color="subject", 
-              shape="diet",
-          	  title ="My title", 
-              measures= "Simpson")
-```
-
 ```{r miso_Try_it_plot_richness_taxa_subset, exercise=TRUE, echo=FALSE}
 # Plot richness for a subset (by taxa)
 my_subset <- subset_taxa(miso_counts, Phylum == "Firmicutes")
@@ -602,6 +591,19 @@ plot_richness(my_subset, x="timepoint",
               measures= "Simpson")
 
 ```
+
+```{r miso_Try_it_plot_richness_metadata_subset, exercise=TRUE, echo=FALSE}
+# Plot richness for a subset (by metadata)
+my_subset <- subset_samples(miso_counts, gender == "F")
+
+plot_richness(my_subset, x="timepoint", 
+              color="subject", 
+              shape="diet",
+          	  title ="My title", 
+              measures= "Simpson")
+```
+
+
 
 ```{r miso_alpha_div_1, exercise=TRUE, echo=FALSE}
 
@@ -625,6 +627,20 @@ plot_ordination(miso, miso.pcoa,
         title="My Title")
 ```
 
+```{r miso_Try_it_PCoA_blank1, exercise=TRUE, echo=FALSE}
+#Subset by taxa
+miso_subset <- subset_taxa(miso, Phylum == "Firmicutes")
+
+#Ordinate based on your subset
+miso.pcoa.subset <- ordinate(miso_subset, method="PCoA", distance="bray")
+
+#Plot the new subsetted ordination with the subsetted phyloseq object
+plot_ordination(miso_subset, miso.pcoa.subset, 
+        color = "subject", 
+        shape = "diet", 
+        title="My Title")
+```
+
 ```{r miso_Try_it_PCoA_subset_metadata, exercise=TRUE, echo=FALSE}
 #Subset by metadata
 miso_subset <- subset_samples(miso, gender == "F")
@@ -639,19 +655,7 @@ plot_ordination(miso_subset, miso.pcoa.subset,
         title="My Title")
 ```
 
-```{r miso_Try_it_PCoA_blank1, exercise=TRUE, echo=FALSE}
-#Subset by taxa
-miso_subset <- subset_taxa(miso, Phylum == "Firmicutes")
 
-#Ordinate based on your subset
-miso.pcoa.subset <- ordinate(miso_subset, method="PCoA", distance="bray")
-
-#Plot the new subsetted ordination with the subsetted phyloseq object
-plot_ordination(miso_subset, miso.pcoa.subset, 
-        color = "subject", 
-        shape = "diet", 
-        title="My Title")
-```
 
 ```{r miso_pcoa_1, exercise=TRUE, echo=FALSE}
 
@@ -723,9 +727,9 @@ ggplot(Significant_DEseq2_ASVs, aes(x = Phylum, y=log2FoldChange, color= Class, 
 
 ## Meet FeFiFo
 
-These data are from **Gut-microbiota-targeted diets modulate human immune status** by Wastyk et al. (2021). We call this the FeFiFo study because the experimental design includes *fe*rmented and *fi*ber-rich *fo*od treatment groups!
+These data are from **Gut-microbiota-targeted diets modulate human immune status by Wastyk et al. (2021)**. We call this the FeFiFo study because the experimental design includes *fe*rmented and *fi*ber-rich *fo*od treatment groups!
 
-This study looked at the effect of either high fiber or fermented foods. Rather than controlling diet entirely through standardized portions, participants were allowed to select what foods they ate so long as these foods were high in fiber or were fermented. Additional metadata was collected from participants including ethnicity, relationship status, employment status, and education level.
+This study looked at the effect of either high fiber or fermented foods. Rather than controlling diet entirely through standardized portions, participants were allowed to select what foods they ate so long as these foods were high in fiber or were fermented. These less restrictive guidelines are meant to reflect life more realistically than the MISO study, as given the choice, most people will decide to have more variety in their diets. Additional metadata was collected from participants including ethnicity, relationship status, employment status, and education level.
 
 
 ### FeFiFo study diet and sampling schedule
@@ -748,7 +752,7 @@ The study lasts a total of 17 weeks. Samples from the gut microbiota (among othe
 ![](images/fefifo_variables.png){width=100%}
 <p class=caption> **Metadata variables for the FeFiFo study by Guthrie et al. (2022)**: Figure edited by Sayumi York (July 11, 2025)</p>
 
-We have a number of variables we can use in our analysis. Notice that the variables for the study and subjects are in lowercase. This is also how you will access these variables in R.
+We have a number of variables we can use in our analysis. Notice that the variables for the study and subjects are in lowercase. Recall that R is case sensitive.
 
 ### FeFiFo study design variables
 
@@ -872,17 +876,6 @@ plot_richness(fefifo_counts, x="subject",
 
 ```
 
-```{r fefifo_Try_it_plot_richness_metadata_subset, exercise=TRUE, echo=FALSE}
-# Plot richness for a subset (by metadata)
-my_subset <- subset_samples(fefifo_counts, gender == "Female")
-
-plot_richness(my_subset, x="timepoint", 
-              color="subject", 
-              shape="diet",
-          	  title ="My title", 
-              measures= "Simpson")
-```
-
 ```{r fefifo_Try_it_plot_richness_taxa_subset, exercise=TRUE, echo=FALSE}
 # Plot richness for a subset (by taxa)
 my_subset <- subset_taxa(fefifo_counts, Phylum == "Firmicutes")
@@ -894,6 +887,18 @@ plot_richness(my_subset, x="timepoint",
               measures= "Simpson")
 
 ```
+
+```{r fefifo_Try_it_plot_richness_metadata_subset, exercise=TRUE, echo=FALSE}
+# Plot richness for a subset (by metadata)
+my_subset <- subset_samples(fefifo_counts, gender == "Female")
+
+plot_richness(my_subset, x="timepoint", 
+              color="subject", 
+              shape="diet",
+          	  title ="My title", 
+              measures= "Simpson")
+```
+
 
 ```{r fefifo_alpha_div_1, exercise=TRUE, echo=FALSE}
 
@@ -917,6 +922,20 @@ plot_ordination(fefifo, fefifo.pcoa,
         title="My Title")
 ```
 
+```{r fefifo_Try_it_PCoA_blank1, exercise=TRUE, echo=FALSE}
+#Subset by taxa
+fefifo_subset <- subset_taxa(fefifo, Phylum == "Firmicutes")
+
+#Ordinate based on your subset
+fefifo.pcoa.subset <- ordinate(fefifo_subset, method="PCoA", distance="bray")
+
+#Plot the new subsetted ordination with the subsetted phyloseq object
+plot_ordination(fefifo_subset, fefifo.pcoa.subset, 
+        color = "subject", 
+        shape = "diet", 
+        title="My Title")
+```
+
 ```{r fefifo_Try_it_PCoA_subset_metadata, exercise=TRUE, echo=FALSE}
 #Subset by metadata
 fefifo_subset <- subset_samples(fefifo, gender == "Female")
@@ -931,19 +950,6 @@ plot_ordination(fefifo_subset, fefifo.pcoa.subset,
         title="My Title")
 ```
 
-```{r fefifo_Try_it_PCoA_blank1, exercise=TRUE, echo=FALSE}
-#Subset by taxa
-fefifo_subset <- subset_taxa(fefifo, Phylum == "Firmicutes")
-
-#Ordinate based on your subset
-fefifo.pcoa.subset <- ordinate(fefifo_subset, method="PCoA", distance="bray")
-
-#Plot the new subsetted ordination with the subsetted phyloseq object
-plot_ordination(fefifo_subset, fefifo.pcoa.subset, 
-        color = "subject", 
-        shape = "diet", 
-        title="My Title")
-```
 
 ```{r fefifo_pcoa_1, exercise=TRUE, echo=FALSE}
 
@@ -1026,9 +1032,9 @@ ggplot(Significant_DEseq2_ASVs, aes(x = Phylum, y=log2FoldChange, color= Class))
 
 ## Meet the Alzheimer's study
 
-These data are from **Gut microbiota is altered in patients with Alzheimer’s disease** by Zhuang et al. (2018). For convenience's sake we will refer to it as our AD study.
+These data are from **Gut microbiota is altered in patients with Alzheimer’s disease by Zhuang et al. (2018)**. For convenience's sake we will refer to it as the AD (Alzheimer's disease) study.
 
-This study compares the gut microbiomes of subjects with a clinical diagnosis of Alzheimer’s disease with healthy age and sex matched individuals. While we can't control for all health conditions, the study attempted to limit subjects to participants who match all the following:
+This study compares the gut microbiomes of subjects with a clinical diagnosis of Alzheimer’s disease with "healthy" age and sex matched individuals. While we can't control for all health conditions, the study attempted to limit the "healthy" subjects to participants who match all the following:
 
 1. Have no family history of dementia
 2. Have no other diagnosis of a neurodegenerative disease
@@ -1045,7 +1051,7 @@ The study design was very simple. Fecal samples were taken from subjects - no ti
 
 <p class=caption> **Metadata variables for the AD study by Zhuang et al. (2018)**: Figure edited by Sayumi York (July 11, 2025)</p>
 
-We have a number of variables we can use in our analysis. Notice that the variables for the study and subjects are in lowercase. This is also how you will access these variables in R.
+We have a number of variables we can use in our analysis. Notice that the variables for the study and subjects are in lowercase. Recall that R is case sensitive.
 
 |Variable|What is it?|Factors|
 |:----|--------------|----:|
@@ -1159,17 +1165,6 @@ plot_richness(ad_counts, x="group",
 
 ```
 
-```{r ad_Try_it_plot_richness_metadata_subset, exercise=TRUE, echo=FALSE}
-# Plot richness for a subset (by metadata)
-my_subset <- subset_samples(ad_counts, sex == "female")
-
-plot_richness(my_subset, x="group", 
-              color="age", 
-              shape="group",
-          	  title ="My title", 
-              measures= "Simpson")
-```
-
 ```{r ad_Try_it_plot_richness_taxa_subset, exercise=TRUE, echo=FALSE}
 # Plot richness for a subset (by taxa)
 my_subset <- subset_taxa(ad_counts, Phylum == "Pseudomonadota")
@@ -1181,6 +1176,19 @@ plot_richness(my_subset, x="group",
               measures= "Simpson")
 
 ```
+
+
+```{r ad_Try_it_plot_richness_metadata_subset, exercise=TRUE, echo=FALSE}
+# Plot richness for a subset (by metadata)
+my_subset <- subset_samples(ad_counts, sex == "female")
+
+plot_richness(my_subset, x="group", 
+              color="age", 
+              shape="group",
+          	  title ="My title", 
+              measures= "Simpson")
+```
+
 
 ```{r ad_alpha_div_1, exercise=TRUE, echo=FALSE}
 
@@ -1204,6 +1212,20 @@ plot_ordination(ad, ad.pcoa,
         title="My Title")
 ```
 
+```{r ad_Try_it_PCoA_blank1, exercise=TRUE, echo=FALSE}
+#Subset by taxa
+ad_subset <- subset_taxa(ad, Phylum == "Pseudomonadota")
+
+#Ordinate based on your subset
+ad.pcoa.subset <- ordinate(ad_subset, method="PCoA", distance="bray")
+
+#Plot the new subsetted ordination with the subsetted phyloseq object
+plot_ordination(ad_subset, ad.pcoa.subset, 
+        color = "age", 
+        shape = "group", 
+        title="My Title")
+```
+
 ```{r ad_Try_it_PCoA_subset_metadata, exercise=TRUE, echo=FALSE}
 #Subset by metadata
 ad_subset <- subset_samples(ad, group == "AD")
@@ -1218,19 +1240,7 @@ plot_ordination(ad_subset, ad.pcoa.subset,
         title="My Title")
 ```
 
-```{r ad_Try_it_PCoA_blank1, exercise=TRUE, echo=FALSE}
-#Subset by taxa
-ad_subset <- subset_taxa(ad, Phylum == "Pseudomonadota")
 
-#Ordinate based on your subset
-ad.pcoa.subset <- ordinate(ad_subset, method="PCoA", distance="bray")
-
-#Plot the new subsetted ordination with the subsetted phyloseq object
-plot_ordination(ad_subset, ad.pcoa.subset, 
-        color = "age", 
-        shape = "group", 
-        title="My Title")
-```
 
 ```{r ad_pcoa_1, exercise=TRUE, echo=FALSE}
 
@@ -1294,7 +1304,7 @@ If you see this:
 Error in dimnames(x) <- dn : length of 'dimnames' [1] not equal to array extent
 </span>
 
-It means 0 ASVs were found to be significantly differentially abundant! You can try to push that p-adj filter of 0.05 higher, but these ASVs will have an increased chance of being attributed to pure chance. Still, we've left this code here so you can see for yourself how changing that filter changes your results...how high do you have to push it until you start to see some differentially abundant ASVs?
+It means 0 ASVs were found to be significantly differentially abundant! You can try to push that p-adj filter of 0.05 higher, but these ASVs will have an increased chance of being attributed to pure chance. Still, we've left this code here so you can see for yourself how changing that filter changes your results...how high do you have to push it until you start to see some differentially abundant ASVs and what does that mean for your research question?
 :::
 :::
 
@@ -1343,7 +1353,7 @@ Note that here, ASVs take the format ASV_#, rather than the ASV# format that the
 :::
 :::
 
-These data are from **Influence of menstrual cycle and oral contraception on taxonomic composition and gas production in the gut microbiome** by Terrazas et al. (2025). For convenience's sake we will refer to it as our OC study.
+These data are from **Influence of menstrual cycle and oral contraception on taxonomic composition and gas production in the gut microbiome by Terrazas et al. (2025)**. For convenience's sake we will refer to it as our OC (oral contraceptives) study.
 
 This study compared the microbiomes of women who were on OC and those who were not (a history of at least 3 months without taking an OC). 
 
@@ -1491,20 +1501,21 @@ plot_richness(oc_counts, x="subject",
 
 ```
 
-```{r oc_Try_it_plot_richness_metocata_subset, exercise=TRUE, echo=FALSE}
-# Plot richness for a subset (by metocata)
-my_subset <- subset_samples(oc_counts, treatment == "Control")
+```{r oc_Try_it_plot_richness_taxa_subset, exercise=TRUE, echo=FALSE}
+# Plot richness for a subset (by taxa)
+my_subset <- subset_taxa(oc_counts, Phylum == "Firmicutes")
 
 plot_richness(my_subset, x="subject", 
               color="ethnicity", 
               shape="diet",
           	  title ="My title", 
               measures= "Simpson")
+
 ```
 
-```{r oc_Try_it_plot_richness_taxa_subset, exercise=TRUE, echo=FALSE}
-# Plot richness for a subset (by taxa)
-my_subset <- subset_taxa(oc_counts, Phylum == "Firmicutes")
+```{r oc_Try_it_plot_richness_metadata_subset, exercise=TRUE, echo=FALSE}
+# Plot richness for a subset (by metadata)
+my_subset <- subset_samples(oc_counts, treatment == "Control")
 
 plot_richness(my_subset, x="subject", 
               color="ethnicity", 
@@ -1536,9 +1547,9 @@ plot_ordination(oc, oc.pcoa,
         title="My Title")
 ```
 
-```{r oc_Try_it_PCoA_subset_metocata, exercise=TRUE, echo=FALSE}
-#Subset by metadata
-oc_subset <- subset_samples(oc, treatment == "Control")
+```{r oc_Try_it_PCoA_blank1, exercise=TRUE, echo=FALSE}
+#Subset by taxa
+oc_subset <- subset_taxa(oc, Phylum == "Firmicutes")
 
 #Ordinate based on your subset
 oc.pcoa.subset <- ordinate(oc_subset, method="PCoA", distance="bray")
@@ -1550,9 +1561,9 @@ plot_ordination(oc_subset, oc.pcoa.subset,
         title="My Title")
 ```
 
-```{r oc_Try_it_PCoA_blank1, exercise=TRUE, echo=FALSE}
-#Subset by taxa
-oc_subset <- subset_taxa(oc, Phylum == "Firmicutes")
+```{r oc_Try_it_PCoA_subset_metadata, exercise=TRUE, echo=FALSE}
+#Subset by metadata
+oc_subset <- subset_samples(oc, treatment == "Control")
 
 #Ordinate based on your subset
 oc.pcoa.subset <- ordinate(oc_subset, method="PCoA", distance="bray")
@@ -1769,7 +1780,6 @@ plot_bar(my_subset, x= "subject", fill = "Class", title = "My title") +
 - **Data format**: Because we want to include rare species in our analysis, we will use our raw data, which is in counts.
 
 
-
 ### MISO: Alpha diversity template code
 
 
@@ -1783,16 +1793,6 @@ plot_richness(miso_counts, x="subject",
 
 ```
 
-```{r alphatab_miso_Try_it_plot_richness_metadata_subset, exercise=TRUE, echo=FALSE}
-# Plot richness for a subset (by metadata)
-my_subset <- subset_samples(miso_counts, gender == "F")
-
-plot_richness(my_subset, x="timepoint", 
-              color="subject", 
-              shape="diet",
-              title ="My title", 
-              measures= "Simpson")
-```
 
 ```{r alphatab_miso_Try_it_plot_richness_taxa_subset, exercise=TRUE, echo=FALSE}
 # Plot richness for a subset (by taxa)
@@ -1804,6 +1804,17 @@ plot_richness(my_subset, x="timepoint",
               title ="My title", 
               measures= "Simpson")
 
+```
+
+```{r alphatab_miso_Try_it_plot_richness_metadata_subset, exercise=TRUE, echo=FALSE}
+# Plot richness for a subset (by metadata)
+my_subset <- subset_samples(miso_counts, gender == "F")
+
+plot_richness(my_subset, x="timepoint", 
+              color="subject", 
+              shape="diet",
+              title ="My title", 
+              measures= "Simpson")
 ```
 
 ```{r alphatab_miso_alpha_div_1, exercise=TRUE, echo=FALSE}
@@ -1824,17 +1835,6 @@ plot_richness(fefifo_counts, x="subject",
 
 ```
 
-```{r alphatab_fefifo_Try_it_plot_richness_metadata_subset, exercise=TRUE, echo=FALSE}
-# Plot richness for a subset (by metadata)
-my_subset <- subset_samples(fefifo_counts, gender == "Female")
-
-plot_richness(my_subset, x="timepoint", 
-              color="subject", 
-              shape="diet",
-              title ="My title", 
-              measures= "Simpson")
-```
-
 ```{r alphatab_fefifo_Try_it_plot_richness_taxa_subset, exercise=TRUE, echo=FALSE}
 # Plot richness for a subset (by taxa)
 my_subset <- subset_taxa(fefifo_counts, Phylum == "Firmicutes")
@@ -1847,6 +1847,16 @@ plot_richness(my_subset, x="timepoint",
 
 ```
 
+```{r alphatab_fefifo_Try_it_plot_richness_metadata_subset, exercise=TRUE, echo=FALSE}
+# Plot richness for a subset (by metadata)
+my_subset <- subset_samples(fefifo_counts, gender == "Female")
+
+plot_richness(my_subset, x="timepoint", 
+              color="subject", 
+              shape="diet",
+              title ="My title", 
+              measures= "Simpson")
+```
 ```{r alphatab_fefifo_alpha_div_1, exercise=TRUE, echo=FALSE}
 
 ```
@@ -1864,16 +1874,6 @@ plot_richness(ad_counts, x="group",
 
 ```
 
-```{r alphatab_ad_Try_it_plot_richness_metadata_subset, exercise=TRUE, echo=FALSE}
-# Plot richness for a subset (by metadata)
-my_subset <- subset_samples(ad_counts, sex == "female")
-
-plot_richness(my_subset, x="group", 
-              color="age", 
-              shape="group",
-              title ="My title", 
-              measures= "Simpson")
-```
 
 ```{r alphatab_ad_Try_it_plot_richness_taxa_subset, exercise=TRUE, echo=FALSE}
 # Plot richness for a subset (by taxa)
@@ -1885,6 +1885,18 @@ plot_richness(my_subset, x="group",
               title ="My title", 
               measures= "Simpson")
 
+```
+
+
+```{r alphatab_ad_Try_it_plot_richness_metadata_subset, exercise=TRUE, echo=FALSE}
+# Plot richness for a subset (by metadata)
+my_subset <- subset_samples(ad_counts, sex == "female")
+
+plot_richness(my_subset, x="group", 
+              color="age", 
+              shape="group",
+              title ="My title", 
+              measures= "Simpson")
 ```
 
 ```{r alphatab_ad_alpha_div_1, exercise=TRUE, echo=FALSE}
@@ -1905,17 +1917,6 @@ plot_richness(oc_counts, x="subject",
 
 ```
 
-```{r alphatab_oc_Try_it_plot_richness_metocata_subset, exercise=TRUE, echo=FALSE}
-# Plot richness for a subset (by metocata)
-my_subset <- subset_samples(oc_counts, treatment == "Control")
-
-plot_richness(my_subset, x="subject", 
-              color="ethnicity", 
-              shape="diet",
-              title ="My title", 
-              measures= "Simpson")
-```
-
 ```{r alphatab_oc_Try_it_plot_richness_taxa_subset, exercise=TRUE, echo=FALSE}
 # Plot richness for a subset (by taxa)
 my_subset <- subset_taxa(oc_counts, Phylum == "Firmicutes")
@@ -1927,6 +1928,19 @@ plot_richness(my_subset, x="subject",
               measures= "Simpson")
 
 ```
+
+
+```{r alphatab_oc_Try_it_plot_richness_metadata_subset, exercise=TRUE, echo=FALSE}
+# Plot richness for a subset (by metadata)
+my_subset <- subset_samples(oc_counts, treatment == "Control")
+
+plot_richness(my_subset, x="subject", 
+              color="ethnicity", 
+              shape="diet",
+              title ="My title", 
+              measures= "Simpson")
+```
+
 
 ```{r alphatab_oc_alpha_div_1, exercise=TRUE, echo=FALSE}
 
@@ -1943,7 +1957,8 @@ plot_richness(my_subset, x="subject",
 
 ### How to interpret
 
-Samples that cluster together have more in common than samples that are farther apart.
+* Samples that cluster together have more in common than samples that are farther apart. 
+* Each axis has a percent value that relates to what percent of variance in the dataset is explained by the relationships sored in those principal comonents.
 
 
 ### MISO: Multidimensional analysis template code
@@ -1958,9 +1973,10 @@ plot_ordination(miso, miso.pcoa,
                 title="My Title")
 ```
 
-```{r multidimtab_miso_Try_it_PCoA_subset_metadata, exercise=TRUE, echo=FALSE}
-#Subset by metadata
-miso_subset <- subset_samples(miso, gender == "F")
+
+```{r multidimtab_miso_Try_it_PCoA_blank1, exercise=TRUE, echo=FALSE}
+#Subset by taxa
+miso_subset <- subset_taxa(miso, Phylum == "Firmicutes")
 
 #Ordinate based on your subset
 miso.pcoa.subset <- ordinate(miso_subset, method="PCoA", distance="bray")
@@ -1972,9 +1988,10 @@ plot_ordination(miso_subset, miso.pcoa.subset,
                 title="My Title")
 ```
 
-```{r multidimtab_miso_Try_it_PCoA_blank1, exercise=TRUE, echo=FALSE}
-#Subset by taxa
-miso_subset <- subset_taxa(miso, Phylum == "Firmicutes")
+
+```{r multidimtab_miso_Try_it_PCoA_subset_metadata, exercise=TRUE, echo=FALSE}
+#Subset by metadata
+miso_subset <- subset_samples(miso, gender == "F")
 
 #Ordinate based on your subset
 miso.pcoa.subset <- ordinate(miso_subset, method="PCoA", distance="bray")
@@ -2003,19 +2020,6 @@ plot_ordination(fefifo, fefifo.pcoa,
                 title="My Title")
 ```
 
-```{r multidimtab_fefifo_Try_it_PCoA_subset_metadata, exercise=TRUE, echo=FALSE}
-#Subset by metadata
-fefifo_subset <- subset_samples(fefifo, gender == "Female")
-
-#Ordinate based on your subset
-fefifo.pcoa.subset <- ordinate(fefifo_subset, method="PCoA", distance="bray")
-
-#Plot the new subsetted ordination with the subsetted phyloseq object
-plot_ordination(fefifo_subset, fefifo.pcoa.subset, 
-                color = "subject", 
-                shape = "diet", 
-                title="My Title")
-```
 
 ```{r multidimtab_fefifo_Try_it_PCoA_blank1, exercise=TRUE, echo=FALSE}
 #Subset by taxa
@@ -2031,6 +2035,19 @@ plot_ordination(fefifo_subset, fefifo.pcoa.subset,
                 title="My Title")
 ```
 
+```{r multidimtab_fefifo_Try_it_PCoA_subset_metadata, exercise=TRUE, echo=FALSE}
+#Subset by metadata
+fefifo_subset <- subset_samples(fefifo, gender == "Female")
+
+#Ordinate based on your subset
+fefifo.pcoa.subset <- ordinate(fefifo_subset, method="PCoA", distance="bray")
+
+#Plot the new subsetted ordination with the subsetted phyloseq object
+plot_ordination(fefifo_subset, fefifo.pcoa.subset, 
+                color = "subject", 
+                shape = "diet", 
+                title="My Title")
+```
 ```{r multidimtab_fefifo_pcoa_1, exercise=TRUE, echo=FALSE}
 
 ```
@@ -2043,6 +2060,21 @@ ad.pcoa <- ordinate(ad, method="PCoA", distance="bray")
 
 plot_ordination(ad, ad.pcoa, 
                 color = "sex", 
+                shape = "group", 
+                title="My Title")
+```
+
+
+```{r multidimtab_ad_Try_it_PCoA_blank1, exercise=TRUE, echo=FALSE}
+#Subset by taxa
+ad_subset <- subset_taxa(ad, Phylum == "Pseudomonadota")
+
+#Ordinate based on your subset
+ad.pcoa.subset <- ordinate(ad_subset, method="PCoA", distance="bray")
+
+#Plot the new subsetted ordination with the subsetted phyloseq object
+plot_ordination(ad_subset, ad.pcoa.subset, 
+                color = "age", 
                 shape = "group", 
                 title="My Title")
 ```
@@ -2060,21 +2092,6 @@ plot_ordination(ad_subset, ad.pcoa.subset,
                 shape = "sex", 
                 title="My Title")
 ```
-
-```{r multidimtab_ad_Try_it_PCoA_blank1, exercise=TRUE, echo=FALSE}
-#Subset by taxa
-ad_subset <- subset_taxa(ad, Phylum == "Pseudomonadota")
-
-#Ordinate based on your subset
-ad.pcoa.subset <- ordinate(ad_subset, method="PCoA", distance="bray")
-
-#Plot the new subsetted ordination with the subsetted phyloseq object
-plot_ordination(ad_subset, ad.pcoa.subset, 
-                color = "age", 
-                shape = "group", 
-                title="My Title")
-```
-
 ```{r multidimtab_ad_pcoa_1, exercise=TRUE, echo=FALSE}
 
 ```
@@ -2090,19 +2107,6 @@ plot_ordination(oc, oc.pcoa,
                 title="My Title")
 ```
 
-```{r multidimtab_oc_Try_it_PCoA_subset_metocata, exercise=TRUE, echo=FALSE}
-#Subset by metadata
-oc_subset <- subset_samples(oc, treatment == "Control")
-
-#Ordinate based on your subset
-oc.pcoa.subset <- ordinate(oc_subset, method="PCoA", distance="bray")
-
-#Plot the new subsetted ordination with the subsetted phyloseq object
-plot_ordination(oc_subset, oc.pcoa.subset, 
-                color = "treatment", 
-                shape = "diet", 
-                title="My Title")
-```
 
 ```{r multidimtab_oc_Try_it_PCoA_blank1, exercise=TRUE, echo=FALSE}
 #Subset by taxa
@@ -2114,6 +2118,21 @@ oc.pcoa.subset <- ordinate(oc_subset, method="PCoA", distance="bray")
 #Plot the new subsetted ordination with the subsetted phyloseq object
 plot_ordination(oc_subset, oc.pcoa.subset, 
                 color = "treatment", 
+                shape = "diet", 
+                title="My Title")
+```
+
+
+```{r multidimtab_oc_Try_it_PCoA_subset_metadata, exercise=TRUE, echo=FALSE}
+#Subset by metadata
+oc_subset <- subset_samples(oc, treatment == "User")
+
+#Ordinate based on your subset
+oc.pcoa.subset <- ordinate(oc_subset, method="PCoA", distance="bray")
+
+#Plot the new subsetted ordination with the subsetted phyloseq object
+plot_ordination(oc_subset, oc.pcoa.subset, 
+                color = "ethnicity", 
                 shape = "diet", 
                 title="My Title")
 ```
