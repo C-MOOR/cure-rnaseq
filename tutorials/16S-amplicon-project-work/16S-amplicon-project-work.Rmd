@@ -15,7 +15,7 @@ runtime: shiny_prerendered
 # The image must be surrounded with quotes
 summary: |
   This module is meant to provide students with a working space for their 16S rRNA human gut microbiome projects. In addition to the MISO dataset from the other tutorials, we have a number of other datasets you can explore here as well as code chunks and starting off points to help get you started!
-image: ""
+image: "![](images/cmoor_logo_notext.png)"
 image_caption: ""
 author:
   - "Sayumi York, Notre Dame of Maryland University"
@@ -248,7 +248,7 @@ Differential_Abundance_AltGeo <- function(w, x, y, z) {
   geoMeans = apply(counts(my_DESeq2_object), 1, gm_mean)
   my_DESeq2_object = estimateSizeFactors(my_DESeq2_object, geoMeans = geoMeans)
   my_DESeq2_object = estimateDispersions(my_DESeq2_object, fitType = "parametric")
-  my_DESeq2_object <- nbinomWaldTest(my_DESeq2_object)
+  my_DESeq2_object <- nbinomWaldTest(my_DESeq2_object, maxit = 500)
   
   #Change the contrast section to compare different variables and groups.
   res = results(my_DESeq2_object, cooksCutoff = FALSE, contrast= my_comparison_list)
@@ -315,7 +315,7 @@ Differential_Abundance_ContinuousAltGeo <- function(w, x, y, z) {
   geoMeans = apply(counts(my_DESeq2_object), 1, gm_mean)
   my_DESeq2_object = estimateSizeFactors(my_DESeq2_object, geoMeans = geoMeans)
   my_DESeq2_object = estimateDispersions(my_DESeq2_object, fitType = "parametric")
-  my_DESeq2_object <- nbinomWaldTest(my_DESeq2_object)
+  my_DESeq2_object <- nbinomWaldTest(my_DESeq2_object, maxit=500)
   
   #Change the contrast section to compare different variables and groups.
   res = results(my_DESeq2_object, cooksCutoff = FALSE, name=my_name)
@@ -424,7 +424,7 @@ tv <- rmarkdown::metadata$output$`learnr::tutorial`$version
 #### Version: `r tv`
 
 ## Meet MISO
-These data are from *Impact of a 7-day homogeneous diet on interpersonal variation in human gut microbiomes and metabolomes* by Guthrie et al. (2022). 
+These data are from **Impact of a 7-day homogeneous diet on interpersonal variation in human gut microbiomes and metabolomes by Guthrie et al. (2022)**. 
 
 It's difficult to capture the mechanisms and effects of diet on the gut microbiome given the sheer number of variables involved. The microbiome individuality and stability over time (MISO) study aimed to explore the connection between diet, microbiome, and metabolites by looking at the effect of feeding a standardized diet to people over 7 days. 
 
@@ -436,11 +436,11 @@ It's difficult to capture the mechanisms and effects of diet on the gut microbio
 
 The figure above shows the study design for the MISO study. You do not need to memorize all these details; feel free to refer to this page throughout the project:
 
-- Participants eat their usual, **baseline diet (BD) for 14 days**
+- Participants are free to eat what they want, **baseline diet (BD) for 14 days**
 - Participants all eat the same diet, the **homogenized diet (HD), for 7 days**
-- Participants return to their usual diet during the **washout (WO) period for 7 days**
+- Participants return to eating what they want during the **washout (WO) period for 7 days**
 
-The study lasts a total of 28 days. Samples from the blood, stool, and urine, our metabolite and 16S rRNA data are taken at 5 different timepoints:
+Note that there is no guidance given to the participants on what they eat during the BD and WO diet phases. What they eat on any given day may not match what is happening during the other phases or even other days within the same phase. The study lasts a total of 28 days. Samples from the blood, stool, and urine, our metabolite and 16S rRNA data are taken at 5 different timepoints:
 
 - **Timepoint 1:** Day 0 (the start of the study)
 - **Timepoint 2:** Day 13
@@ -455,7 +455,7 @@ The study lasts a total of 28 days. Samples from the blood, stool, and urine, ou
 ![](images/miso_variables.png){width=100%}
 <p class=caption> **Metadata variables for the MISO study by Guthrie et al. (2022)**: Figure edited by Sayumi York (July 11, 2025).</p>
 
-We have a number of variables we can use in our analysis. Notice that the variables for the study and subjects are in lowercase. This is also how you will access these variables in R.
+We have a number of variables we can use in our analysis. Notice that the variables for the study and subjects are in lowercase. Remember that R is case sensitive.
 
 ### MISO study design variables
 
@@ -498,17 +498,19 @@ miso_counts
 ```
 
 ```{r miso_block1, exercise=TRUE, echo=FALSE}
-
+#Getting a list of unique metadata values for a given variable
+unique(data.frame(sample_data(miso)[, "subject"]))
 
 ```
 
 ```{r miso_block2, exercise=TRUE, echo=FALSE}
-
-
+#Get counts for ASV 1 in sample 1
+otu_table(miso_counts)[1,"ASV1"]
 ```
 
 ```{r miso_block3, exercise=TRUE, echo=FALSE}
-
+#Get counts for ASV50, for samples 1 through 5.
+otu_table(miso_counts)[1:5, "ASV50"]
 
 ```
 
@@ -527,11 +529,207 @@ miso_counts
 
 ```
 
+
+### MISO: Barplot template code
+
+```{r miso_barplot, exercise=TRUE, echo=FALSE}
+#Barplots for the whole dataset
+plot_bar(miso, x="subject", fill = "Phylum", title = "My title") +
+  geom_bar(aes(color = Phylum, fill = Phylum), stat = "identity", position = "stack")
+```
+
+```{r miso_barplot_subset_taxa, exercise=TRUE, echo=FALSE}
+#Subsetting based on a taxa
+my_subset <- subset_taxa(miso, Phylum == "Firmicutes")
+
+#Plotting using the new subset
+plot_bar(my_subset, x= "subject", fill = "Class", title = "My title") +
+  geom_bar(aes(color = Class, fill = Class), stat = "identity", position = "stack")
+```
+
+```{r miso_barplot_subset_sample, exercise=TRUE, echo=FALSE}
+#Subsetting based on metadata
+my_subset <- subset_samples(miso, gender == "F")
+
+#Plotting using the new subset
+plot_bar(my_subset, x= "subject", fill = "Class", title = "My title") +
+  geom_bar(aes(color = Class, fill = Class), stat = "identity", position = "stack")
+```
+
+```{r miso_barplot1, exercise=TRUE, echo=FALSE}
+
+```
+
+```{r miso_barplot2, exercise=TRUE, echo=FALSE}
+
+```
+
+```{r miso_barplot3, exercise=TRUE, echo=FALSE}
+```
+
+### MISO: Alpha diversity template code
+
+
+```{r miso_try_it_plot_richness_end, exercise=TRUE, echo=FALSE}
+# Plot richness for the entire dataset
+plot_richness(miso_counts, x="subject", 
+              color="diet", 
+              shape="diet", 
+          	  title ="My title",
+              measures="Simpson")
+
+```
+
+```{r miso_Try_it_plot_richness_taxa_subset, exercise=TRUE, echo=FALSE}
+# Plot richness for a subset (by taxa)
+my_subset <- subset_taxa(miso_counts, Phylum == "Firmicutes")
+
+plot_richness(my_subset, x="timepoint", 
+              color="subject", 
+              shape="diet",
+          	  title ="My title", 
+              measures= "Simpson")
+
+```
+
+```{r miso_Try_it_plot_richness_metadata_subset, exercise=TRUE, echo=FALSE}
+# Plot richness for a subset (by metadata)
+my_subset <- subset_samples(miso_counts, gender == "F")
+
+plot_richness(my_subset, x="timepoint", 
+              color="subject", 
+              shape="diet",
+          	  title ="My title", 
+              measures= "Simpson")
+```
+
+
+
+```{r miso_alpha_div_1, exercise=TRUE, echo=FALSE}
+
+```
+```{r miso_alpha_div_2, exercise=TRUE, echo=FALSE}
+
+```
+```{r miso_alpha_div_3, exercise=TRUE, echo=FALSE}
+
+```
+
+### MISO: Multidimensional analysis template code
+
+
+```{r miso_Try_it_PCoA_end, exercise=TRUE, echo=FALSE}
+miso.pcoa <- ordinate(miso, method="PCoA", distance="bray")
+
+plot_ordination(miso, miso.pcoa, 
+        color = "subject", 
+        shape = "diet", 
+        title="My Title")
+```
+
+```{r miso_Try_it_PCoA_blank1, exercise=TRUE, echo=FALSE}
+#Subset by taxa
+miso_subset <- subset_taxa(miso, Phylum == "Firmicutes")
+
+#Ordinate based on your subset
+miso.pcoa.subset <- ordinate(miso_subset, method="PCoA", distance="bray")
+
+#Plot the new subsetted ordination with the subsetted phyloseq object
+plot_ordination(miso_subset, miso.pcoa.subset, 
+        color = "subject", 
+        shape = "diet", 
+        title="My Title")
+```
+
+```{r miso_Try_it_PCoA_subset_metadata, exercise=TRUE, echo=FALSE}
+#Subset by metadata
+miso_subset <- subset_samples(miso, gender == "F")
+
+#Ordinate based on your subset
+miso.pcoa.subset <- ordinate(miso_subset, method="PCoA", distance="bray")
+
+#Plot the new subsetted ordination with the subsetted phyloseq object
+plot_ordination(miso_subset, miso.pcoa.subset, 
+        color = "subject", 
+        shape = "diet", 
+        title="My Title")
+```
+
+
+
+```{r miso_pcoa_1, exercise=TRUE, echo=FALSE}
+
+```
+```{r miso_pcoa_2, exercise=TRUE, echo=FALSE}
+
+```
+```{r miso_pcoa_3, exercise=TRUE, echo=FALSE}
+
+```
+
+### MISO: Differential abundance template code
+
+#### Differential abundance for a categorical variable in the MISO dataset
+
+```{r miso_DESeq2_example, exercise=TRUE, echo=TRUE}
+# Differential abundance for a categorical variable
+# STEP 1: Convert the phyloseq object to a DESeq2 object and tell R the experimental design 
+my_miso_DESeq2 <- phyloseq_to_deseq2(miso_counts, design = ~ diet)
+
+# STEP 2: Select the groups to compare
+my_comparison <-c("diet", "WO", "BD")
+
+# STEP 3: Run the differential abundance analysis at the chosen p-value
+Significant_DEseq2_ASVs<-Differential_Abundance(miso_counts, my_miso_DESeq2, my_comparison, 0.05)
+
+# STEP 4: Retrieve the list of ASVs with a significant difference in abundance between the chosen groups
+Significant_DEseq2_ASVs
+
+# STEP 5: Plot the results with your chosen x axis and legend
+ggplot(Significant_DEseq2_ASVs, aes(x = Phylum, y=log2FoldChange, color= Class, shape = Order)) + geom_point(size=3, position = "jitter") +
+  theme(axis.text.x = element_text(angle = -90, hjust = 0, vjust=0.5))+
+  ggtitle("my title here")
+
+```
+
+#### Differential abundance for a continuous variable in the MISO dataset
+
+```{r miso_Try_it_DA_continuous, exercise=TRUE, echo=FALSE}
+# Differential abundance for a continuous variable
+# STEP 1: Convert the phyloseq object to a DESeq2 object and tell R the experimental design
+my_miso_DESeq2 <- phyloseq_to_deseq2(miso_counts, design = ~ age)
+
+# STEP 2: Select the groups to compare
+name_for_comparison <-"age"
+
+# STEP 3: Run the differential abundance analysis at the chosen p-value
+Significant_DEseq2_ASVs<-Differential_Abundance_Continuous(miso_counts, my_miso_DESeq2, name_for_comparison, 0.05)
+
+# STEP 4: Retrieve the list of ASVs with a significant difference in abundance between the chosen groups
+Significant_DEseq2_ASVs
+
+# STEP 5: Plot the results with your chosen x axis and legend
+ggplot(Significant_DEseq2_ASVs, aes(x = Phylum, y=log2FoldChange, color= Class, shape = Order)) + geom_point(size=3, position = "jitter") +
+  theme(axis.text.x = element_text(angle = -90, hjust = 0, vjust=0.5))+
+  ggtitle("my title here")
+
+```
+
+```{r miso_da_1, exercise=TRUE, echo=FALSE}
+
+```
+```{r miso_da_2, exercise=TRUE, echo=FALSE}
+
+```
+```{r miso_da_3, exercise=TRUE, echo=FALSE}
+
+```
+
 ## Meet FeFiFo
 
-These data are from **Gut-microbiota-targeted diets modulate human immune status** by Wastyk et al. (2021). We call this the FeFiFo study because the experimental design includes *fe*rmented and *fi*ber-rich *fo*od treatment groups!
+These data are from **Gut-microbiota-targeted diets modulate human immune status by Wastyk et al. (2021)**. We call this the FeFiFo study because the experimental design includes *fe*rmented and *fi*ber-rich *fo*od treatment groups!
 
-This study looked at the effect of either high fiber or fermented foods. Rather than controlling diet entirely through standardized portions, participants were allowed to select what foods they ate so long as these foods were high in fiber or were fermented. Additional metadata was collected from participants including ethnicity, relationship status, employment status, and education level.
+This study looked at the effect of either high fiber or fermented foods. Rather than controlling diet entirely through standardized portions, participants were allowed to select what foods they ate so long as these foods were high in fiber or were fermented. These less restrictive guidelines are meant to reflect life more realistically than the MISO study, as given the choice, most people will decide to have more variety in their diets. Additional metadata was collected from participants including ethnicity, relationship status, employment status, and education level.
 
 
 ### FeFiFo study diet and sampling schedule
@@ -554,7 +752,7 @@ The study lasts a total of 17 weeks. Samples from the gut microbiota (among othe
 ![](images/fefifo_variables.png){width=100%}
 <p class=caption> **Metadata variables for the FeFiFo study by Guthrie et al. (2022)**: Figure edited by Sayumi York (July 11, 2025)</p>
 
-We have a number of variables we can use in our analysis. Notice that the variables for the study and subjects are in lowercase. This is also how you will access these variables in R.
+We have a number of variables we can use in our analysis. Notice that the variables for the study and subjects are in lowercase. Recall that R is case sensitive.
 
 ### FeFiFo study design variables
 
@@ -588,6 +786,10 @@ We have a number of variables we can use in our analysis. Notice that the variab
 
 ### FeFiFo phyloseq objects
 
+#### What's different here?
+
+The MISO dataset has each ASV identified with a unique ID (example: ASV1). The FeFiFo ASVs are identified by their unique nucleotide sequence. We retained this format from the original research article; adding new unique identifiers creates another layer of translation between studies. You can certainly give them new unique IDs if you'd like, but be careful not to mix IDs between studies. For example, "ASV1" already refers to an ASV from the MISO study so if you're including multiple datasets on your poster be careful to discriminate which ASV you're referring to.
+
 ```{r fefifo_objects, exercise=TRUE, echo=FALSE}
 #A phyloseq object containing the normalized (proportions) data
 fefifo
@@ -597,49 +799,242 @@ fefifo_counts
 
 ```
 
-
 ```{r fefifo_block1, exercise=TRUE, echo=FALSE}
-
+#Getting a list of unique metadata values for a given variable
+unique(data.frame(sample_data(fefifo)[, "subject"]))
 
 ```
 
 ```{r fefifo_block2, exercise=TRUE, echo=FALSE}
-
-
+#Get counts for a single ASV in sample 1
+otu_table(fefifo_counts)[1,"TACGTAGGGAGCGAGCGTTGTCCGGAATTACTGGGTGTAAAGGGAGCGTAGGCGGGAAAGCAAGTTGGAAGTGAAATGCATGGGCTTAACCCATGAGCTGCTTTCAAAACTGTTTTTCTTGAGTGAAGTAGAGGCAGGCGGAATTCCTAGTGTAGCGGTGAAATGCGTAGATATTAGGAGGAACACCAGTGGCGAAGGCGGCCTGCTGGGCTTTAACTGACGCTGAGGCTCGAAAGCGTG"]
 ```
 
 ```{r fefifo_block3, exercise=TRUE, echo=FALSE}
-
+#Get counts for an ASV, for samples 1 through 5.
+otu_table(fefifo_counts)[1:5, "TACGTAGGGAGCGAGCGTTGTCCGGAATTACTGGGTGTAAAGGGAGCGTAGGCGGGAAAGCAAGTTGGAAGTGAAATGCATGGGCTTAACCCATGAGCTGCTTTCAAAACTGTTTTTCTTGAGTGAAGTAGAGGCAGGCGGAATTCCTAGTGTAGCGGTGAAATGCGTAGATATTAGGAGGAACACCAGTGGCGAAGGCGGCCTGCTGGGCTTTAACTGACGCTGAGGCTCGAAAGCGTG"]
 
 ```
-
 
 ```{r fefifo_block4, exercise=TRUE, echo=FALSE}
-
-
 ```
-
-
 
 ```{r fefifo_block5, exercise=TRUE, echo=FALSE}
-
-
 ```
-
-
 
 ```{r fefifo_block6, exercise=TRUE, echo=FALSE}
+```
 
+
+### FeFiFo: Barplot template code
+
+```{r fefifo_barplot, exercise=TRUE, echo=FALSE}
+#Barplots for the whole dataset
+plot_bar(fefifo, x="subject", fill = "Phylum", title = "My title") +
+  geom_bar(aes(color = Phylum, fill = Phylum), stat = "identity", position = "stack")
+```
+
+```{r fefifo_barplot_subset_taxa, exercise=TRUE, echo=FALSE}
+#Subsetting based on a taxa
+my_subset <- subset_taxa(fefifo, Phylum == "Firmicutes")
+
+#Plotting using the new subset
+plot_bar(my_subset, x= "subject", fill = "Class", title = "My title") +
+  geom_bar(aes(color = Class, fill = Class), stat = "identity", position = "stack")
+```
+
+```{r fefifo_barplot_subset_sample, exercise=TRUE, echo=FALSE}
+#Subsetting based on metadata
+my_subset <- subset_samples(fefifo, gender == "Female")
+
+#Plotting using the new subset
+plot_bar(my_subset, x= "subject", fill = "Class", title = "My title") +
+  geom_bar(aes(color = Class, fill = Class), stat = "identity", position = "stack")
+```
+
+```{r fefifo_barplot1, exercise=TRUE, echo=FALSE}
 
 ```
+
+```{r fefifo_barplot2, exercise=TRUE, echo=FALSE}
+
+```
+
+```{r fefifo_barplot3, exercise=TRUE, echo=FALSE}
+```
+
+### FeFiFo: Alpha diversity template code
+
+
+```{r fefifo_try_it_plot_richness_end, exercise=TRUE, echo=FALSE}
+# Plot richness for the entire dataset
+plot_richness(fefifo_counts, x="subject", 
+              color="diet", 
+              shape="diet", 
+          	  title ="My title",
+              measures="Simpson")
+
+```
+
+```{r fefifo_Try_it_plot_richness_taxa_subset, exercise=TRUE, echo=FALSE}
+# Plot richness for a subset (by taxa)
+my_subset <- subset_taxa(fefifo_counts, Phylum == "Firmicutes")
+
+plot_richness(my_subset, x="timepoint", 
+              color="subject", 
+              shape="diet",
+          	  title ="My title", 
+              measures= "Simpson")
+
+```
+
+```{r fefifo_Try_it_plot_richness_metadata_subset, exercise=TRUE, echo=FALSE}
+# Plot richness for a subset (by metadata)
+my_subset <- subset_samples(fefifo_counts, gender == "Female")
+
+plot_richness(my_subset, x="timepoint", 
+              color="subject", 
+              shape="diet",
+          	  title ="My title", 
+              measures= "Simpson")
+```
+
+
+```{r fefifo_alpha_div_1, exercise=TRUE, echo=FALSE}
+
+```
+```{r fefifo_alpha_div_2, exercise=TRUE, echo=FALSE}
+
+```
+```{r fefifo_alpha_div_3, exercise=TRUE, echo=FALSE}
+
+```
+
+### FeFiFo: Multidimensional analysis template code
+
+
+```{r fefifo_Try_it_PCoA_end, exercise=TRUE, echo=FALSE}
+fefifo.pcoa <- ordinate(fefifo, method="PCoA", distance="bray")
+
+plot_ordination(fefifo, fefifo.pcoa, 
+        color = "subject", 
+        shape = "diet", 
+        title="My Title")
+```
+
+```{r fefifo_Try_it_PCoA_blank1, exercise=TRUE, echo=FALSE}
+#Subset by taxa
+fefifo_subset <- subset_taxa(fefifo, Phylum == "Firmicutes")
+
+#Ordinate based on your subset
+fefifo.pcoa.subset <- ordinate(fefifo_subset, method="PCoA", distance="bray")
+
+#Plot the new subsetted ordination with the subsetted phyloseq object
+plot_ordination(fefifo_subset, fefifo.pcoa.subset, 
+        color = "subject", 
+        shape = "diet", 
+        title="My Title")
+```
+
+```{r fefifo_Try_it_PCoA_subset_metadata, exercise=TRUE, echo=FALSE}
+#Subset by metadata
+fefifo_subset <- subset_samples(fefifo, gender == "Female")
+
+#Ordinate based on your subset
+fefifo.pcoa.subset <- ordinate(fefifo_subset, method="PCoA", distance="bray")
+
+#Plot the new subsetted ordination with the subsetted phyloseq object
+plot_ordination(fefifo_subset, fefifo.pcoa.subset, 
+        color = "subject", 
+        shape = "diet", 
+        title="My Title")
+```
+
+
+```{r fefifo_pcoa_1, exercise=TRUE, echo=FALSE}
+
+```
+```{r fefifo_pcoa_2, exercise=TRUE, echo=FALSE}
+
+```
+```{r fefifo_pcoa_3, exercise=TRUE, echo=FALSE}
+
+```
+
+### FeFiFo: Differential abundance template code
+
+#### What's different here?
+
+These code chunks have had some slight modifications as the FeFiFo dataset is zero-inflated. When more zeros are included in a dataset than normal, we have to handle the statistics differently. We have taken care of all the important changes for you here so you don't have to worry about them!
+
+#### Differential abundance for a categorical variable (zero-inflated)
+
+```{r fefifo_DESeq2_example, exercise=TRUE, echo=TRUE}
+# Differential expression for a categorical data in the 0-inflated FeFiFo dataset
+
+# STEP 1: Convert the phyloseq object to a DESeq2 object and tell R the experimental design 
+my_DESeq2 <- phyloseq_to_deseq2(fefifo_counts, design = ~diet)
+
+# STEP 2: Select the groups to compare
+my_comparison <- c("diet", "Fermented", "Fiber")
+
+# STEP 3: Run the differential abundance analysis at the chosen p-value
+Significant_DEseq2_ASVs <- Differential_Abundance_AltGeo(fefifo_counts, my_DESeq2, my_comparison, 0.05)
+
+# STEP 4: Retrieve the list of ASVs with a significant difference in abundance between the chosen groups
+Significant_DEseq2_ASVs
+
+# STEP 5: Plot the results with your chosen x axis and legend
+ggplot(Significant_DEseq2_ASVs, aes(x = Phylum, y=log2FoldChange, color= Class)) + geom_point(size=3, position = "jitter") +
+  theme(axis.text.x = element_text(angle = -90, hjust = 0, vjust=0.5))+
+  ggtitle("my title here")
+```
+
+```{r fefifo_da_1, exercise=TRUE, echo=FALSE}
+
+```
+```{r fefifo_da_2, exercise=TRUE, echo=FALSE}
+```
+
+#### Differential abundance for a continuous variable (zero-inflated)
+
+```{r fefifo_Try_it_DA_continuous, exercise=TRUE, echo=FALSE}
+# Differential expression for continuous data in the 0-inflated FeFiFo dataset
+
+# STEP 1: Convert the phyloseq object to a DESeq2 object and tell R the experimental design
+my_DESeq2 <- phyloseq_to_deseq2(fefifo_counts, design = ~ age)
+
+# STEP 2: Select the groups to compare
+name_for_comparison <-"age"
+
+# STEP 3: Run the differential abundance analysis at the chosen p-value
+Significant_DEseq2_ASVs<-Differential_Abundance_ContinuousAltGeo(fefifo_counts, my_DESeq2, name_for_comparison, 0.05)
+
+# STEP 4: Retrieve the list of ASVs with a significant difference in abundance between the chosen groups
+Significant_DEseq2_ASVs
+
+# STEP 5: Plot the results with your chosen x axis and legend
+ggplot(Significant_DEseq2_ASVs, aes(x = Phylum, y=log2FoldChange, color= Class)) + geom_point(size=3, position = "jitter") +
+  theme(axis.text.x = element_text(angle = -90, hjust = 0, vjust=0.5))+
+  ggtitle("my title here")
+
+```
+
+```{r fefifo_da_3, exercise=TRUE, echo=FALSE}
+
+```
+```{r fefifo_da_4, exercise=TRUE, echo=FALSE}
+
+```
+
 
 
 
 ## Meet the Alzheimer's study
 
-These data are from **Gut microbiota is altered in patients with Alzheimer’s disease** by Zhuang et al. (2018). For convenience's sake we will refer to it as our AD study.
+These data are from **Gut microbiota is altered in patients with Alzheimer’s disease by Zhuang et al. (2018)**. For convenience's sake we will refer to it as the AD (Alzheimer's disease) study.
 
-This study compares the gut microbiomes of subjects with a clinical diagnosis of Alzheimer’s disease with healthy age and sex matched individuals. While we can't control for all health conditions, the study attempted to limit subjects to participants who match all the following:
+This study compares the gut microbiomes of subjects with a clinical diagnosis of Alzheimer’s disease with "healthy" age and sex matched individuals. While we can't control for all health conditions, the study attempted to limit the "healthy" subjects to participants who match all the following:
 
 1. Have no family history of dementia
 2. Have no other diagnosis of a neurodegenerative disease
@@ -656,7 +1051,7 @@ The study design was very simple. Fecal samples were taken from subjects - no ti
 
 <p class=caption> **Metadata variables for the AD study by Zhuang et al. (2018)**: Figure edited by Sayumi York (July 11, 2025)</p>
 
-We have a number of variables we can use in our analysis. Notice that the variables for the study and subjects are in lowercase. This is also how you will access these variables in R.
+We have a number of variables we can use in our analysis. Notice that the variables for the study and subjects are in lowercase. Recall that R is case sensitive.
 
 |Variable|What is it?|Factors|
 |:----|--------------|----:|
@@ -674,6 +1069,13 @@ We have a number of variables we can use in our analysis. Notice that the variab
 
 ### AD objects 
 
+#### What's different here?
+
+The MISO dataset has each ASV identified with a unique ID (example: ASV1). The AD ASVs are identified by their unique nucleotide sequence. You can certainly give them new unique IDs if you'd like, but be careful not to mix IDs between studies. For example, "ASV1" already refers to an ASV from the MISO study so if you're using data from both, you need to discriminate between them.
+
+Although you have fewer variables to play around with here, the dataset is much larger, so be patient if it seems like the figures are taking a long time to load!
+
+
 ```{r ad_objects, exercise=TRUE, echo=FALSE}
 #A phyloseq object containing the normalized (proportions) data
 ad
@@ -684,19 +1086,22 @@ ad_counts
 ```
 
 ```{r ad_block1, exercise=TRUE, echo=FALSE}
-
+#Getting a list of unique metadata values for a given variable
+unique(data.frame(sample_data(ad)[, "sample_id"]))
 
 ```
 
 ```{r ad_block2, exercise=TRUE, echo=FALSE}
-
-
+#Get counts for an ASV in sample 1
+otu_table(ad_counts)[1,"GTACTTACTCCTACGGGAGGCAGCAGTGAGGAATATTGGTCAATGGACGAGAGTCTGAACCAGCCAAGTAGCGTGAAGGATGACTGCCCTATGGGTTGTAAACTTCTTTTATATGGGAATAAAGTGAGCCACGTGTGGCTTTTTGTATGTACCATACGAATAAGGATCGGCTAACTCCGTGCCAGCAGCCGCGGTAATACGGAGGATCCGAGCGTTATCCGGATTTATTGGGTTTAAAGGGAGCGTAGGCGGATTGTTAAGTCAGTTGTGAAAGTTTGCGGCTCAACCGTAAAATTGCAGTTGATACTGGCAGTCTTGAGTGCAGTAGAGGTGGGCGGAATTCGTGGTGTAGCGGTGAAATGCTTAGATATCACGAAGAACTCCGATTGCGAAGGCAGCTCACTGGAGTGTAACTGACGCTGATGCTCGAAAGTGTGGGTATCAAACAGGATTAGAAACCCCTGTAGTCCAGCTGG"]
 ```
 
 ```{r ad_block3, exercise=TRUE, echo=FALSE}
-
+#Get counts for an ASV, for samples 1 through 5.
+otu_table(ad_counts)[1:5, "GTACTTACTCCTACGGGAGGCAGCAGTGAGGAATATTGGTCAATGGACGAGAGTCTGAACCAGCCAAGTAGCGTGAAGGATGACTGCCCTATGGGTTGTAAACTTCTTTTATATGGGAATAAAGTGAGCCACGTGTGGCTTTTTGTATGTACCATACGAATAAGGATCGGCTAACTCCGTGCCAGCAGCCGCGGTAATACGGAGGATCCGAGCGTTATCCGGATTTATTGGGTTTAAAGGGAGCGTAGGCGGATTGTTAAGTCAGTTGTGAAAGTTTGCGGCTCAACCGTAAAATTGCAGTTGATACTGGCAGTCTTGAGTGCAGTAGAGGTGGGCGGAATTCGTGGTGTAGCGGTGAAATGCTTAGATATCACGAAGAACTCCGATTGCGAAGGCAGCTCACTGGAGTGTAACTGACGCTGATGCTCGAAAGTGTGGGTATCAAACAGGATTAGAAACCCCTGTAGTCCAGCTGG"]
 
 ```
+
 ```{r ad_block4, exercise=TRUE, echo=FALSE}
 
 
@@ -710,10 +1115,245 @@ ad_counts
 
 ```
 
+### AD: Barplot template code
+
+```{r ad_barplot, exercise=TRUE, echo=FALSE}
+#Barplots for the whole dataset
+plot_bar(ad, x="group", fill = "Phylum", title = "My title") +
+  geom_bar(aes(color = Phylum, fill = Phylum), stat = "identity", position = "stack")
+```
+
+```{r ad_barplot_subset_taxa, exercise=TRUE, echo=FALSE}
+#Subsetting based on a taxa
+my_subset <- subset_taxa(ad, Phylum == "Pseudomonadota")
+
+#Plotting using the new subset
+plot_bar(my_subset, x= "group", fill = "Class", title = "My title") +
+  geom_bar(aes(color = Class, fill = Class), stat = "identity", position = "stack")
+```
+
+```{r ad_barplot_subset_sample, exercise=TRUE, echo=FALSE}
+#Subsetting based on metadata
+my_subset <- subset_samples(ad, group == "AD")
+
+#Plotting using the new subset
+plot_bar(my_subset, x= "sex", fill = "Class", title = "My title") +
+  geom_bar(aes(color = Class, fill = Class), stat = "identity", position = "stack")
+```
+
+```{r ad_barplot1, exercise=TRUE, echo=FALSE}
+
+```
+
+```{r ad_barplot2, exercise=TRUE, echo=FALSE}
+
+```
+
+```{r ad_barplot3, exercise=TRUE, echo=FALSE}
+```
+
+### AD: Alpha diversity template code
+
+
+```{r ad_try_it_plot_richness_end, exercise=TRUE, echo=FALSE}
+# Plot richness for the entire dataset
+plot_richness(ad_counts, x="group", 
+              color="age", 
+              shape="sex", 
+          	  title ="My title",
+              measures="Simpson")
+
+```
+
+```{r ad_Try_it_plot_richness_taxa_subset, exercise=TRUE, echo=FALSE}
+# Plot richness for a subset (by taxa)
+my_subset <- subset_taxa(ad_counts, Phylum == "Pseudomonadota")
+
+plot_richness(my_subset, x="group", 
+              color="age", 
+              shape="sex",
+          	  title ="My title", 
+              measures= "Simpson")
+
+```
+
+
+```{r ad_Try_it_plot_richness_metadata_subset, exercise=TRUE, echo=FALSE}
+# Plot richness for a subset (by metadata)
+my_subset <- subset_samples(ad_counts, sex == "female")
+
+plot_richness(my_subset, x="group", 
+              color="age", 
+              shape="group",
+          	  title ="My title", 
+              measures= "Simpson")
+```
+
+
+```{r ad_alpha_div_1, exercise=TRUE, echo=FALSE}
+
+```
+```{r ad_alpha_div_2, exercise=TRUE, echo=FALSE}
+
+```
+```{r ad_alpha_div_3, exercise=TRUE, echo=FALSE}
+
+```
+
+### AD: Multidimensional analysis template code
+
+
+```{r ad_Try_it_PCoA_end, exercise=TRUE, echo=FALSE}
+ad.pcoa <- ordinate(ad, method="PCoA", distance="bray")
+
+plot_ordination(ad, ad.pcoa, 
+        color = "sex", 
+        shape = "group", 
+        title="My Title")
+```
+
+```{r ad_Try_it_PCoA_blank1, exercise=TRUE, echo=FALSE}
+#Subset by taxa
+ad_subset <- subset_taxa(ad, Phylum == "Pseudomonadota")
+
+#Ordinate based on your subset
+ad.pcoa.subset <- ordinate(ad_subset, method="PCoA", distance="bray")
+
+#Plot the new subsetted ordination with the subsetted phyloseq object
+plot_ordination(ad_subset, ad.pcoa.subset, 
+        color = "age", 
+        shape = "group", 
+        title="My Title")
+```
+
+```{r ad_Try_it_PCoA_subset_metadata, exercise=TRUE, echo=FALSE}
+#Subset by metadata
+ad_subset <- subset_samples(ad, group == "AD")
+
+#Ordinate based on your subset
+ad.pcoa.subset <- ordinate(ad_subset, method="PCoA", distance="bray")
+
+#Plot the new subsetted ordination with the subsetted phyloseq object
+plot_ordination(ad_subset, ad.pcoa.subset, 
+        color = "age", 
+        shape = "sex", 
+        title="My Title")
+```
+
+
+
+```{r ad_pcoa_1, exercise=TRUE, echo=FALSE}
+
+```
+```{r ad_pcoa_2, exercise=TRUE, echo=FALSE}
+
+```
+```{r ad_pcoa_3, exercise=TRUE, echo=FALSE}
+
+```
+
+### AD: Differential abundance template code
+
+#### What's different here?
+
+These code chunks have had some slight modifications as the AD dataset is zero-inflated. When more zeros are included in a dataset than normal, we have to handle the statistics differently. We have taken care of all the important changes for you here so you don't have to worry about them!
+
+#### Differential abundance for a categorical variable (zero-inflated)
+
+```{r ad_DESeq2_example, exercise=TRUE, echo=TRUE}
+# Differential expression for a categorical data in the 0-inflated AD dataset
+
+# STEP 1: Convert the phyloseq object to a DESeq2 object and tell R the experimental design 
+my_DESeq2 <- phyloseq_to_deseq2(ad_counts, design = ~ group)
+
+# STEP 2: Select the groups to compare
+my_comparison <- c("group", "control", "AD")
+
+# STEP 3: Run the differential abundance analysis at the chosen p-value
+Significant_DEseq2_ASVs <- Differential_Abundance_AltGeo(ad_counts, my_DESeq2, my_comparison, 0.05)
+
+# STEP 4: Retrieve the list of ASVs with a significant difference in abundance between the chosen groups
+Significant_DEseq2_ASVs
+
+# STEP 5: Plot the results with your chosen x axis and legend
+ggplot(Significant_DEseq2_ASVs, aes(x = Phylum, y=log2FoldChange, color= Class)) + geom_point(size=3, position = "jitter") +
+  theme(axis.text.x = element_text(angle = -90, hjust = 0, vjust=0.5))+
+  ggtitle("my title here")
+```
+
+```{r ad_da_1, exercise=TRUE, echo=FALSE}
+
+```
+```{r ad_da_2, exercise=TRUE, echo=FALSE}
+```
+
+
+#### Differential abundance for a continuous variable (zero-inflated)
+
+:::{.attention_box_pause}
+:::{.attention_header_box_pause}
+:::{.attention_title}
+#### **Getting an error?**
+:::
+:::
+::: {.attention_content}
+
+If you see this:
+
+<span style="color: red;">
+Error in dimnames(x) <- dn : length of 'dimnames' [1] not equal to array extent
+</span>
+
+It means 0 ASVs were found to be significantly differentially abundant! You can try to push that p-adj filter of 0.05 higher, but these ASVs will have an increased chance of being attributed to pure chance. Still, we've left this code here so you can see for yourself how changing that filter changes your results...how high do you have to push it until you start to see some differentially abundant ASVs and what does that mean for your research question?
+:::
+:::
+
+```{r ad_Try_it_DA_continuous, exercise=TRUE, echo=FALSE}
+# Differential expression for continuous data in the 0-inflated AD dataset
+
+# STEP 1: Convert the phyloseq object to a DESeq2 object and tell R the experimental design
+my_DESeq2 <- phyloseq_to_deseq2(ad_counts, design = ~ age)
+
+# STEP 2: Select the groups to compare
+name_for_comparison <-"age"
+
+# STEP 3: Run the differential abundance analysis at the chosen p-value
+
+Significant_DEseq2_ASVs<-Differential_Abundance_ContinuousAltGeo(ad_counts, my_DESeq2, name_for_comparison, 0.05)
+
+# STEP 4: Retrieve the list of ASVs with a significant difference in abundance between the chosen groups
+Significant_DEseq2_ASVs
+
+# STEP 5: Plot the results with your chosen x axis and legend
+ggplot(Significant_DEseq2_ASVs, aes(x = Phylum, y=log2FoldChange, color= Class)) + geom_point(size=3, position = "jitter") +
+  theme(axis.text.x = element_text(angle = -90, hjust = 0, vjust=0.5))+
+  ggtitle("my title here")
+
+```
+
+
 
 ## Meet the OC study
 
-These data are from **Influence of menstrual cycle and oral contraception on taxonomic composition and gas production in the gut microbiome** by Terrazas et al. (2025). For convenience's sake we will refer to it as our OC study.
+
+:::{.attention_box_pause}
+:::{.attention_header_box_pause}
+:::{.attention_title}
+#### **A word of caution about this dataset**
+:::
+:::
+::: {.attention_content}
+
+This dataset is more complicated than the others we have available due to the vast number of variables measured and pockets of missing data throughout. We've created a much higher number of objects to work with to try and get around this limitation, but working with this data will remain challenging.
+
+Simultaneously, because there are so many objects and they all differ in how they need to be analyzed, we do not provide template code for each of them. Thank you for your understanding.
+
+Note that here, ASVs take the format ASV_#, rather than the ASV# format that the MISO data used.
+
+:::
+:::
+
+These data are from **Influence of menstrual cycle and oral contraception on taxonomic composition and gas production in the gut microbiome by Terrazas et al. (2025)**. For convenience's sake we will refer to it as our OC (oral contraceptives) study.
 
 This study compared the microbiomes of women who were on OC and those who were not (a history of at least 3 months without taking an OC). 
 
@@ -782,21 +1422,22 @@ oc_agefirstOCuse_counts
 
 
 ```{r oc_block1, exercise=TRUE, echo=FALSE}
-
+#Getting a list of unique metadata values for a given variable
+unique(data.frame(sample_data(oc)[, "subject"]))
 
 ```
-
 
 ```{r oc_block2, exercise=TRUE, echo=FALSE}
-
-
+#Get counts for an ASV_1 in sample 1
+otu_table(oc_counts)[1,"ASV_1"]
 ```
-
 
 ```{r oc_block3, exercise=TRUE, echo=FALSE}
-
+#Get counts for an ASV, for samples 1 through 5.
+otu_table(oc_counts)[1:5, "ASV_1"]
 
 ```
+
 ```{r oc_block4, exercise=TRUE, echo=FALSE}
 
 
@@ -810,6 +1451,198 @@ oc_agefirstOCuse_counts
 
 ```
 
+### OC: Barplot template code
+
+```{r oc_barplot, exercise=TRUE, echo=FALSE}
+#Barplots for the whole dataset
+plot_bar(oc, x="subject", fill = "Phylum", title = "My title") +
+  geom_bar(aes(color = Phylum, fill = Phylum), stat = "identity", position = "stack")
+```
+
+```{r oc_barplot_subset_taxa, exercise=TRUE, echo=FALSE}
+#Subsetting based on a taxa
+my_subset <- subset_taxa(oc, Phylum == "Firmicutes")
+
+#Plotting using the new subset
+plot_bar(my_subset, x= "subject", fill = "Class", title = "My title") +
+  geom_bar(aes(color = Class, fill = Class), stat = "identity", position = "stack")
+```
+
+```{r oc_barplot_subset_sample, exercise=TRUE, echo=FALSE}
+#Subsetting based on metadata
+my_subset <- subset_samples(oc, treatment == "Control")
+
+#Plotting using the new subset
+plot_bar(my_subset, x= "subject", fill = "Class", title = "My title") +
+  geom_bar(aes(color = Class, fill = Class), stat = "identity", position = "stack")
+```
+
+```{r oc_barplot1, exercise=TRUE, echo=FALSE}
+
+```
+
+```{r oc_barplot2, exercise=TRUE, echo=FALSE}
+
+```
+
+```{r oc_barplot3, exercise=TRUE, echo=FALSE}
+```
+
+### OC: Alpha diversity template code
+
+
+```{r oc_try_it_plot_richness_end, exercise=TRUE, echo=FALSE}
+# Plot richness for the entire dataset
+plot_richness(oc_counts, x="subject", 
+              color="treatment", 
+              shape="diet", 
+          	  title ="My title",
+              measures="Simpson")
+
+```
+
+```{r oc_Try_it_plot_richness_taxa_subset, exercise=TRUE, echo=FALSE}
+# Plot richness for a subset (by taxa)
+my_subset <- subset_taxa(oc_counts, Phylum == "Firmicutes")
+
+plot_richness(my_subset, x="subject", 
+              color="ethnicity", 
+              shape="diet",
+          	  title ="My title", 
+              measures= "Simpson")
+
+```
+
+```{r oc_Try_it_plot_richness_metadata_subset, exercise=TRUE, echo=FALSE}
+# Plot richness for a subset (by metadata)
+my_subset <- subset_samples(oc_counts, treatment == "Control")
+
+plot_richness(my_subset, x="subject", 
+              color="ethnicity", 
+              shape="diet",
+          	  title ="My title", 
+              measures= "Simpson")
+
+```
+
+```{r oc_alpha_div_1, exercise=TRUE, echo=FALSE}
+
+```
+```{r oc_alpha_div_2, exercise=TRUE, echo=FALSE}
+
+```
+```{r oc_alpha_div_3, exercise=TRUE, echo=FALSE}
+
+```
+
+### OC: Multidimensional analysis template code
+
+
+```{r oc_Try_it_PCoA_end, exercise=TRUE, echo=FALSE}
+oc.pcoa <- ordinate(oc, method="PCoA", distance="bray")
+
+plot_ordination(oc, oc.pcoa, 
+        color = "treatment", 
+        shape = "diet", 
+        title="My Title")
+```
+
+```{r oc_Try_it_PCoA_blank1, exercise=TRUE, echo=FALSE}
+#Subset by taxa
+oc_subset <- subset_taxa(oc, Phylum == "Firmicutes")
+
+#Ordinate based on your subset
+oc.pcoa.subset <- ordinate(oc_subset, method="PCoA", distance="bray")
+
+#Plot the new subsetted ordination with the subsetted phyloseq object
+plot_ordination(oc_subset, oc.pcoa.subset, 
+        color = "treatment", 
+        shape = "diet", 
+        title="My Title")
+```
+
+```{r oc_Try_it_PCoA_subset_metadata, exercise=TRUE, echo=FALSE}
+#Subset by metadata
+oc_subset <- subset_samples(oc, treatment == "Control")
+
+#Ordinate based on your subset
+oc.pcoa.subset <- ordinate(oc_subset, method="PCoA", distance="bray")
+
+#Plot the new subsetted ordination with the subsetted phyloseq object
+plot_ordination(oc_subset, oc.pcoa.subset, 
+        color = "treatment", 
+        shape = "diet", 
+        title="My Title")
+```
+
+```{r oc_pcoa_1, exercise=TRUE, echo=FALSE}
+
+```
+```{r oc_pcoa_2, exercise=TRUE, echo=FALSE}
+
+```
+```{r oc_pcoa_3, exercise=TRUE, echo=FALSE}
+
+```
+
+### OC: Differential abundance template code
+
+#### What's different here?
+
+These code chunks have had some slight modifications as the OC dataset is zero-inflated. When more zeros are included in a dataset than normal, we have to handle the statistics differently. We have taken care of all the important changes for you here so you don't have to worry about them!
+
+#### Differential abundance for a categorical variable (zero-inflated)
+
+```{r OC_DESeq2_example, exercise=TRUE, echo=TRUE}
+# Differential expression for a categorical data in the 0-inflated OC dataset
+
+# STEP 1: Convert the phyloseq object to a DESeq2 object and tell R the experimental design 
+my_DESeq2 <- phyloseq_to_deseq2(oc_counts, design = ~ treatment)
+
+# STEP 2: Select the groups to compare
+my_comparison <- c("treatment", "Control", "User")
+
+# STEP 3: Run the differential abundance analysis at the chosen p-value
+Significant_DEseq2_ASVs <- Differential_Abundance_AltGeo(oc_counts, my_DESeq2, my_comparison, 0.05)
+
+# STEP 4: Retrieve the list of ASVs with a significant difference in abundance between the chosen groups
+Significant_DEseq2_ASVs
+
+# STEP 5: Plot the results with your chosen x axis and legend
+ggplot(Significant_DEseq2_ASVs, aes(x = Phylum, y=log2FoldChange, color= Class)) + geom_point(size=3, position = "jitter") +
+  theme(axis.text.x = element_text(angle = -90, hjust = 0, vjust=0.5))+
+  ggtitle("my title here")
+```
+
+```{r oc_da_categorical, exercise=TRUE, echo=FALSE}
+
+```
+
+#### Differential abundance for a continuous variable (zero-inflated)
+
+```{r OC_Try_it_DA_continuous0inf, exercise=TRUE, echo=FALSE}
+# STEP 1: Convert the phyloseq object to a DESeq2 object and tell R the experimental design
+my_DESeq2 <- phyloseq_to_deseq2(oc_dosage_counts, design = ~ totalyearsonOC)
+
+# STEP 2: Select the groups to compare
+name_for_comparison <-"totalyearsonOC"
+
+# STEP 3: Run the differential abundance analysis at the chosen p-value
+Significant_DEseq2_ASVs<-Differential_Abundance_ContinuousAltGeo(oc_dosage_counts, my_DESeq2, name_for_comparison, 0.05)
+
+# STEP 4: Retrieve the list of ASVs with a significant difference in abundance between the chosen groups
+Significant_DEseq2_ASVs
+
+# STEP 5: Plot the results with your chosen x axis and legend
+ggplot(Significant_DEseq2_ASVs, aes(x = Phylum, y=log2FoldChange, color= Class)) + geom_point(size=3, position = "jitter") +
+  theme(axis.text.x = element_text(angle = -90, hjust = 0, vjust=0.5))+
+  ggtitle("my title here")
+```
+
+```{r oc_da_continuous, exercise=TRUE, echo=FALSE}
+
+```
+
 ## Bar plots
 - **Objective**: Vizualize the microbial composition of samples
 - **Best for questions like**: What microbial taxa are dominant across samples? What drives differences in microbial composition between conditions?
@@ -819,14 +1652,15 @@ oc_agefirstOCuse_counts
 
 ### Bar plot code template
 
+### MISO: Barplot template code
 
-```{r barplot, exercise=TRUE, echo=FALSE}
+```{r barplottab_miso_barplot, exercise=TRUE, echo=FALSE}
 #Barplots for the whole dataset
 plot_bar(miso, x="subject", fill = "Phylum", title = "My title") +
   geom_bar(aes(color = Phylum, fill = Phylum), stat = "identity", position = "stack")
 ```
 
-```{r barplot_subset_taxa, exercise=TRUE, echo=FALSE}
+```{r barplottab_miso_barplot_subset_taxa, exercise=TRUE, echo=FALSE}
 #Subsetting based on a taxa
 my_subset <- subset_taxa(miso, Phylum == "Firmicutes")
 
@@ -835,7 +1669,7 @@ plot_bar(my_subset, x= "subject", fill = "Class", title = "My title") +
   geom_bar(aes(color = Class, fill = Class), stat = "identity", position = "stack")
 ```
 
-```{r barplot_subset_sample, exercise=TRUE, echo=FALSE}
+```{r barplottab_miso_barplot_subset_sample, exercise=TRUE, echo=FALSE}
 #Subsetting based on metadata
 my_subset <- subset_samples(miso, gender == "F")
 
@@ -844,22 +1678,94 @@ plot_bar(my_subset, x= "subject", fill = "Class", title = "My title") +
   geom_bar(aes(color = Class, fill = Class), stat = "identity", position = "stack")
 ```
 
-```{r try_it_out_barplot1, exercise=TRUE, echo=FALSE}
+```{r barplottab_try_it_out_barplot_miso, exercise=TRUE, echo=FALSE}
 
 ```
 
-```{r try_it_out_barplot2, exercise=TRUE, echo=FALSE}
+### FeFiFo: Barplot template code
 
+```{r barplottab_fefifo_barplot, exercise=TRUE, echo=FALSE}
+#Barplots for the whole dataset
+plot_bar(fefifo, x="subject", fill = "Phylum", title = "My title") +
+  geom_bar(aes(color = Phylum, fill = Phylum), stat = "identity", position = "stack")
 ```
 
-```{r try_it_out_barplot3, exercise=TRUE, echo=FALSE}
+```{r barplottab_fefifo_barplot_subset_taxa, exercise=TRUE, echo=FALSE}
+#Subsetting based on a taxa
+my_subset <- subset_taxa(fefifo, Phylum == "Firmicutes")
 
+#Plotting using the new subset
+plot_bar(my_subset, x= "subject", fill = "Class", title = "My title") +
+  geom_bar(aes(color = Class, fill = Class), stat = "identity", position = "stack")
 ```
+
+```{r barplottab_fefifo_barplot_subset_sample, exercise=TRUE, echo=FALSE}
+#Subsetting based on metadata
+my_subset <- subset_samples(fefifo, gender == "Female")
+
+#Plotting using the new subset
+plot_bar(my_subset, x= "subject", fill = "Class", title = "My title") +
+  geom_bar(aes(color = Class, fill = Class), stat = "identity", position = "stack")
+```
+
 ```{r try_it_out_barplot4, exercise=TRUE, echo=FALSE}
 
 ```
+
+### AD: Barplot template code
+
+```{r barplottab_ad_barplot, exercise=TRUE, echo=FALSE}
+#Barplots for the whole dataset
+plot_bar(ad, x="group", fill = "Phylum", title = "My title") +
+  geom_bar(aes(color = Phylum, fill = Phylum), stat = "identity", position = "stack")
+```
+
+```{r barplottab_ad_barplot_subset_taxa, exercise=TRUE, echo=FALSE}
+#Subsetting based on a taxa
+my_subset <- subset_taxa(ad, Phylum == "Pseudomonadota")
+
+#Plotting using the new subset
+plot_bar(my_subset, x= "group", fill = "Class", title = "My title") +
+  geom_bar(aes(color = Class, fill = Class), stat = "identity", position = "stack")
+```
+
+```{r barplottab_ad_barplot_subset_sample, exercise=TRUE, echo=FALSE}
+#Subsetting based on metadata
+my_subset <- subset_samples(ad, group == "AD")
+
+#Plotting using the new subset
+plot_bar(my_subset, x= "sex", fill = "Class", title = "My title") +
+  geom_bar(aes(color = Class, fill = Class), stat = "identity", position = "stack")
+```
+
 ```{r try_it_out_barplot5, exercise=TRUE, echo=FALSE}
 
+```
+
+### OC: Barplot template code
+
+```{r barplottab_oc_barplot, exercise=TRUE, echo=FALSE}
+#Barplots for the whole dataset
+plot_bar(oc, x="subject", fill = "Phylum", title = "My title") +
+  geom_bar(aes(color = Phylum, fill = Phylum), stat = "identity", position = "stack")
+```
+
+```{r barplottab_oc_barplot_subset_taxa, exercise=TRUE, echo=FALSE}
+#Subsetting based on a taxa
+my_subset <- subset_taxa(oc, Phylum == "Firmicutes")
+
+#Plotting using the new subset
+plot_bar(my_subset, x= "subject", fill = "Class", title = "My title") +
+  geom_bar(aes(color = Class, fill = Class), stat = "identity", position = "stack")
+```
+
+```{r barplottab_oc_barplot_subset_sample, exercise=TRUE, echo=FALSE}
+#Subsetting based on metadata
+my_subset <- subset_samples(oc, treatment == "Control")
+
+#Plotting using the new subset
+plot_bar(my_subset, x= "subject", fill = "Class", title = "My title") +
+  geom_bar(aes(color = Class, fill = Class), stat = "identity", position = "stack")
 ```
 ```{r try_it_out_barplot6, exercise=TRUE, echo=FALSE}
 
@@ -874,51 +1780,169 @@ plot_bar(my_subset, x= "subject", fill = "Class", title = "My title") +
 - **Data format**: Because we want to include rare species in our analysis, we will use our raw data, which is in counts.
 
 
-### Alpha diversity code template
+### MISO: Alpha diversity template code
 
-```{r try_it_plot_richness_end, exercise=TRUE, echo=FALSE}
+
+```{r alphatab_miso_try_it_plot_richness_end, exercise=TRUE, echo=FALSE}
 # Plot richness for the entire dataset
 plot_richness(miso_counts, x="subject", 
               color="diet", 
               shape="diet", 
-          	  title ="My title",
+              title ="My title",
               measures="Simpson")
 
 ```
 
-```{r Try_it_plot_richness_metadata_subset, exercise=TRUE, echo=FALSE}
-# Plot richness for a subset (by metadata)
-my_subset <- subset_samples(miso_counts, gender == "F")
 
-plot_richness(my_subset, x="timepoint", 
-              color="subject", 
-              shape="diet",
-          	  title ="My title", 
-              measures= "Simpson")
-```
-
-```{r Try_it_plot_richness_taxa_subset, exercise=TRUE, echo=FALSE}
+```{r alphatab_miso_Try_it_plot_richness_taxa_subset, exercise=TRUE, echo=FALSE}
 # Plot richness for a subset (by taxa)
 my_subset <- subset_taxa(miso_counts, Phylum == "Firmicutes")
 
 plot_richness(my_subset, x="timepoint", 
               color="subject", 
               shape="diet",
-          	  title ="My title", 
+              title ="My title", 
               measures= "Simpson")
 
 ```
 
-```{r Try_it_plot_richness_blank3, exercise=TRUE, echo=FALSE}
+```{r alphatab_miso_Try_it_plot_richness_metadata_subset, exercise=TRUE, echo=FALSE}
+# Plot richness for a subset (by metadata)
+my_subset <- subset_samples(miso_counts, gender == "F")
+
+plot_richness(my_subset, x="timepoint", 
+              color="subject", 
+              shape="diet",
+              title ="My title", 
+              measures= "Simpson")
+```
+
+```{r alphatab_miso_alpha_div_1, exercise=TRUE, echo=FALSE}
 
 ```
-```{r Try_it_plot_richness_blank4, exercise=TRUE, echo=FALSE}
+
+
+### FeFiFo: Alpha diversity template code
+
+
+```{r alphatab_fefifo_try_it_plot_richness_end, exercise=TRUE, echo=FALSE}
+# Plot richness for the entire dataset
+plot_richness(fefifo_counts, x="subject", 
+              color="diet", 
+              shape="diet", 
+              title ="My title",
+              measures="Simpson")
 
 ```
-```{r Try_it_plot_richness_blank5, exercise=TRUE, echo=FALSE}
+
+```{r alphatab_fefifo_Try_it_plot_richness_taxa_subset, exercise=TRUE, echo=FALSE}
+# Plot richness for a subset (by taxa)
+my_subset <- subset_taxa(fefifo_counts, Phylum == "Firmicutes")
+
+plot_richness(my_subset, x="timepoint", 
+              color="subject", 
+              shape="diet",
+              title ="My title", 
+              measures= "Simpson")
 
 ```
-```{r Try_it_plot_richness_blank6, exercise=TRUE, echo=FALSE}
+
+```{r alphatab_fefifo_Try_it_plot_richness_metadata_subset, exercise=TRUE, echo=FALSE}
+# Plot richness for a subset (by metadata)
+my_subset <- subset_samples(fefifo_counts, gender == "Female")
+
+plot_richness(my_subset, x="timepoint", 
+              color="subject", 
+              shape="diet",
+              title ="My title", 
+              measures= "Simpson")
+```
+```{r alphatab_fefifo_alpha_div_1, exercise=TRUE, echo=FALSE}
+
+```
+
+### AD: Alpha diversity template code
+
+
+```{r alphatab_ad_try_it_plot_richness_end, exercise=TRUE, echo=FALSE}
+# Plot richness for the entire dataset
+plot_richness(ad_counts, x="group", 
+              color="age", 
+              shape="sex", 
+              title ="My title",
+              measures="Simpson")
+
+```
+
+
+```{r alphatab_ad_Try_it_plot_richness_taxa_subset, exercise=TRUE, echo=FALSE}
+# Plot richness for a subset (by taxa)
+my_subset <- subset_taxa(ad_counts, Phylum == "Pseudomonadota")
+
+plot_richness(my_subset, x="group", 
+              color="age", 
+              shape="sex",
+              title ="My title", 
+              measures= "Simpson")
+
+```
+
+
+```{r alphatab_ad_Try_it_plot_richness_metadata_subset, exercise=TRUE, echo=FALSE}
+# Plot richness for a subset (by metadata)
+my_subset <- subset_samples(ad_counts, sex == "female")
+
+plot_richness(my_subset, x="group", 
+              color="age", 
+              shape="group",
+              title ="My title", 
+              measures= "Simpson")
+```
+
+```{r alphatab_ad_alpha_div_1, exercise=TRUE, echo=FALSE}
+
+```
+
+
+### OC: Alpha diversity template code
+
+
+```{r alphatab_oc_try_it_plot_richness_end, exercise=TRUE, echo=FALSE}
+# Plot richness for the entire dataset
+plot_richness(oc_counts, x="subject", 
+              color="treatment", 
+              shape="diet", 
+              title ="My title",
+              measures="Simpson")
+
+```
+
+```{r alphatab_oc_Try_it_plot_richness_taxa_subset, exercise=TRUE, echo=FALSE}
+# Plot richness for a subset (by taxa)
+my_subset <- subset_taxa(oc_counts, Phylum == "Firmicutes")
+
+plot_richness(my_subset, x="subject", 
+              color="ethnicity", 
+              shape="diet",
+              title ="My title", 
+              measures= "Simpson")
+
+```
+
+
+```{r alphatab_oc_Try_it_plot_richness_metadata_subset, exercise=TRUE, echo=FALSE}
+# Plot richness for a subset (by metadata)
+my_subset <- subset_samples(oc_counts, treatment == "Control")
+
+plot_richness(my_subset, x="subject", 
+              color="ethnicity", 
+              shape="diet",
+              title ="My title", 
+              measures= "Simpson")
+```
+
+
+```{r alphatab_oc_alpha_div_1, exercise=TRUE, echo=FALSE}
 
 ```
 
@@ -933,34 +1957,24 @@ plot_richness(my_subset, x="timepoint",
 
 ### How to interpret
 
-Samples that cluster together have more in common than samples that are farther apart.
+* Samples that cluster together have more in common than samples that are farther apart. 
+* Each axis has a percent value that relates to what percent of variance in the dataset is explained by the relationships sored in those principal comonents.
 
-### Multidimensional analysis (PCoA) code template
 
-```{r Try_it_PCoA_end, exercise=TRUE, echo=FALSE}
+### MISO: Multidimensional analysis template code
+
+
+```{r multidimtab_miso_Try_it_PCoA_end, exercise=TRUE, echo=FALSE}
 miso.pcoa <- ordinate(miso, method="PCoA", distance="bray")
 
 plot_ordination(miso, miso.pcoa, 
-        color = "subject", 
-        shape = "diet", 
-        title="My Title")
+                color = "subject", 
+                shape = "diet", 
+                title="My Title")
 ```
 
-```{r Try_it_PCoA_subset_metadata, exercise=TRUE, echo=FALSE}
-#Subset by metadata
-miso_subset <- subset_samples(miso, gender == "F")
 
-#Ordinate based on your subset
-miso.pcoa.subset <- ordinate(miso_subset, method="PCoA", distance="bray")
-
-#Plot the new subsetted ordination with the subsetted phyloseq object
-plot_ordination(miso_subset, miso.pcoa.subset, 
-        color = "subject", 
-        shape = "diet", 
-        title="My Title")
-```
-
-```{r Try_it_PCoA_blank1, exercise=TRUE, echo=FALSE}
+```{r multidimtab_miso_Try_it_PCoA_blank1, exercise=TRUE, echo=FALSE}
 #Subset by taxa
 miso_subset <- subset_taxa(miso, Phylum == "Firmicutes")
 
@@ -969,26 +1983,161 @@ miso.pcoa.subset <- ordinate(miso_subset, method="PCoA", distance="bray")
 
 #Plot the new subsetted ordination with the subsetted phyloseq object
 plot_ordination(miso_subset, miso.pcoa.subset, 
-        color = "subject", 
-        shape = "diet", 
-        title="My Title")
+                color = "subject", 
+                shape = "diet", 
+                title="My Title")
 ```
 
 
-```{r Try_it_PCoA_blank2, exercise=TRUE, echo=FALSE}
+```{r multidimtab_miso_Try_it_PCoA_subset_metadata, exercise=TRUE, echo=FALSE}
+#Subset by metadata
+miso_subset <- subset_samples(miso, gender == "F")
+
+#Ordinate based on your subset
+miso.pcoa.subset <- ordinate(miso_subset, method="PCoA", distance="bray")
+
+#Plot the new subsetted ordination with the subsetted phyloseq object
+plot_ordination(miso_subset, miso.pcoa.subset, 
+                color = "subject", 
+                shape = "diet", 
+                title="My Title")
+```
+
+```{r multidimtab_miso_pcoa_1, exercise=TRUE, echo=FALSE}
 
 ```
 
-```{r Try_it_PCoA_blank3, exercise=TRUE, echo=FALSE}
+
+### FeFiFo: Multidimensional analysis template code
+
+
+```{r multidimtab_fefifo_Try_it_PCoA_end, exercise=TRUE, echo=FALSE}
+fefifo.pcoa <- ordinate(fefifo, method="PCoA", distance="bray")
+
+plot_ordination(fefifo, fefifo.pcoa, 
+                color = "subject", 
+                shape = "diet", 
+                title="My Title")
+```
+
+
+```{r multidimtab_fefifo_Try_it_PCoA_blank1, exercise=TRUE, echo=FALSE}
+#Subset by taxa
+fefifo_subset <- subset_taxa(fefifo, Phylum == "Firmicutes")
+
+#Ordinate based on your subset
+fefifo.pcoa.subset <- ordinate(fefifo_subset, method="PCoA", distance="bray")
+
+#Plot the new subsetted ordination with the subsetted phyloseq object
+plot_ordination(fefifo_subset, fefifo.pcoa.subset, 
+                color = "subject", 
+                shape = "diet", 
+                title="My Title")
+```
+
+```{r multidimtab_fefifo_Try_it_PCoA_subset_metadata, exercise=TRUE, echo=FALSE}
+#Subset by metadata
+fefifo_subset <- subset_samples(fefifo, gender == "Female")
+
+#Ordinate based on your subset
+fefifo.pcoa.subset <- ordinate(fefifo_subset, method="PCoA", distance="bray")
+
+#Plot the new subsetted ordination with the subsetted phyloseq object
+plot_ordination(fefifo_subset, fefifo.pcoa.subset, 
+                color = "subject", 
+                shape = "diet", 
+                title="My Title")
+```
+```{r multidimtab_fefifo_pcoa_1, exercise=TRUE, echo=FALSE}
 
 ```
-```{r Try_it_PCoA_blank4, exercise=TRUE, echo=FALSE}
+
+### AD: Multidimensional analysis template code
+
+
+```{r multidimtab_ad_Try_it_PCoA_end, exercise=TRUE, echo=FALSE}
+ad.pcoa <- ordinate(ad, method="PCoA", distance="bray")
+
+plot_ordination(ad, ad.pcoa, 
+                color = "sex", 
+                shape = "group", 
+                title="My Title")
+```
+
+
+```{r multidimtab_ad_Try_it_PCoA_blank1, exercise=TRUE, echo=FALSE}
+#Subset by taxa
+ad_subset <- subset_taxa(ad, Phylum == "Pseudomonadota")
+
+#Ordinate based on your subset
+ad.pcoa.subset <- ordinate(ad_subset, method="PCoA", distance="bray")
+
+#Plot the new subsetted ordination with the subsetted phyloseq object
+plot_ordination(ad_subset, ad.pcoa.subset, 
+                color = "age", 
+                shape = "group", 
+                title="My Title")
+```
+
+```{r multidimtab_ad_Try_it_PCoA_subset_metadata, exercise=TRUE, echo=FALSE}
+#Subset by metadata
+ad_subset <- subset_samples(ad, group == "AD")
+
+#Ordinate based on your subset
+ad.pcoa.subset <- ordinate(ad_subset, method="PCoA", distance="bray")
+
+#Plot the new subsetted ordination with the subsetted phyloseq object
+plot_ordination(ad_subset, ad.pcoa.subset, 
+                color = "age", 
+                shape = "sex", 
+                title="My Title")
+```
+```{r multidimtab_ad_pcoa_1, exercise=TRUE, echo=FALSE}
 
 ```
-```{r Try_it_PCoA_blank5, exercise=TRUE, echo=FALSE}
 
+
+
+```{r multidimtab_oc_Try_it_PCoA_end, exercise=TRUE, echo=FALSE}
+oc.pcoa <- ordinate(oc, method="PCoA", distance="bray")
+
+plot_ordination(oc, oc.pcoa, 
+                color = "treatment", 
+                shape = "diet", 
+                title="My Title")
 ```
-```{r Try_it_PCoA_blank6, exercise=TRUE, echo=FALSE}
+
+
+```{r multidimtab_oc_Try_it_PCoA_blank1, exercise=TRUE, echo=FALSE}
+#Subset by taxa
+oc_subset <- subset_taxa(oc, Phylum == "Firmicutes")
+
+#Ordinate based on your subset
+oc.pcoa.subset <- ordinate(oc_subset, method="PCoA", distance="bray")
+
+#Plot the new subsetted ordination with the subsetted phyloseq object
+plot_ordination(oc_subset, oc.pcoa.subset, 
+                color = "treatment", 
+                shape = "diet", 
+                title="My Title")
+```
+
+
+```{r multidimtab_oc_Try_it_PCoA_subset_metadata, exercise=TRUE, echo=FALSE}
+#Subset by metadata
+oc_subset <- subset_samples(oc, treatment == "User")
+
+#Ordinate based on your subset
+oc.pcoa.subset <- ordinate(oc_subset, method="PCoA", distance="bray")
+
+#Plot the new subsetted ordination with the subsetted phyloseq object
+plot_ordination(oc_subset, oc.pcoa.subset, 
+                color = "ethnicity", 
+                shape = "diet", 
+                title="My Title")
+```
+
+```{r multidimtab_oc_pcoa_1, exercise=TRUE, echo=FALSE}
 
 ```
 
@@ -1029,10 +2178,12 @@ Please refer to the code chunks below with examples for those specific functions
 :::
 
 
-### Differential abundance code template
+### MISO: Differential abundance template code
 
-```{r DESeq2_example, exercise=TRUE, echo=TRUE}
+#### Differential abundance for a categorical variable in the MISO dataset
 
+```{r deseqtab_miso_DESeq2_example, exercise=TRUE, echo=TRUE}
+# Differential abundance for a categorical variable
 # STEP 1: Convert the phyloseq object to a DESeq2 object and tell R the experimental design 
 my_miso_DESeq2 <- phyloseq_to_deseq2(miso_counts, design = ~ diet)
 
@@ -1046,46 +2197,18 @@ Significant_DEseq2_ASVs<-Differential_Abundance(miso_counts, my_miso_DESeq2, my_
 Significant_DEseq2_ASVs
 
 # STEP 5: Plot the results with your chosen x axis and legend
-ggplot(Significant_DEseq2_ASVs, aes(x = Phylum, y=log2FoldChange, color= Class)) + geom_point(size=3, position = "jitter") +
+ggplot(Significant_DEseq2_ASVs, aes(x = Phylum, y=log2FoldChange, color= Class, shape = Order)) + geom_point(size=3, position = "jitter") +
   theme(axis.text.x = element_text(angle = -90, hjust = 0, vjust=0.5))+
   ggtitle("my title here")
 
 ```
-
-```{r Try_it_DA_blank1, exercise=TRUE, echo=FALSE}
-
-```
-
-```{r Try_it_DA_blank2, exercise=TRUE, echo=FALSE}
+```{r deseqtab_miso_da_2, exercise=TRUE, echo=FALSE}
 
 ```
+#### Differential abundance for a continuous variable in the MISO dataset
 
-```{r Try_it_DA_blank3, exercise=TRUE, echo=FALSE}
-
-```
-
-```{r Try_it_DA_blank4, exercise=TRUE, echo=FALSE}
-
-```
-
-```{r Try_it_DA_blank5, exercise=TRUE, echo=FALSE}
-
-```
-
-```{r Try_it_DA_blank6, exercise=TRUE, echo=FALSE}
-
-```
-
-### Differential abundance for continuous data code template
-
-#### What's different with continuous data?
-
-- **Interpreting the log2FoldChange**: In this case, the log2FoldChange is the difference in abundance for every unit increase of the design factor. In the example below, log2FoldChange represents the amount of change in the ASV's abundance for every year the subject grows older (since age is measured in years in the dataset).
-- **Changes in the code**: We do not need to specify groups for comparison. Notice how in step 2 we simply provide the continuous variable we are interested in.
-
-
-```{r Try_it_DA_continuous, exercise=TRUE, echo=FALSE}
-
+```{r deseqtab_miso_Try_it_DA_continuous, exercise=TRUE, echo=FALSE}
+# Differential abundance for a continuous variable
 # STEP 1: Convert the phyloseq object to a DESeq2 object and tell R the experimental design
 my_miso_DESeq2 <- phyloseq_to_deseq2(miso_counts, design = ~ age)
 
@@ -1099,52 +2222,31 @@ Significant_DEseq2_ASVs<-Differential_Abundance_Continuous(miso_counts, my_miso_
 Significant_DEseq2_ASVs
 
 # STEP 5: Plot the results with your chosen x axis and legend
-ggplot(Significant_DEseq2_ASVs, aes(x = Phylum, y=log2FoldChange, color= Class, shape = Order)) + geom_point(size=6) +
+ggplot(Significant_DEseq2_ASVs, aes(x = Phylum, y=log2FoldChange, color= Class, shape = Order)) + geom_point(size=3, position = "jitter") +
   theme(axis.text.x = element_text(angle = -90, hjust = 0, vjust=0.5))+
-  ggtitle("My title")
+  ggtitle("my title here")
 
 ```
 
-```{r Try_it_DA_Continuous_blank1, exercise=TRUE, echo=FALSE}
+```{r deseqtab_miso_da_1, exercise=TRUE, echo=FALSE}
 
 ```
 
-```{r Try_it_DA_Continuous_blank2, exercise=TRUE, echo=FALSE}
+### FeFiFo: Differential abundance template code
 
-```
+#### Differential abundance for a categorical variable (zero-inflated)
 
-```{r Try_it_DA_Continuous_blank3, exercise=TRUE, echo=FALSE}
+```{r deseqtab_fefifo_DESeq2_example, exercise=TRUE, echo=TRUE}
+# Differential expression for a categorical data in the 0-inflated FeFiFo dataset
 
-```
-
-```{r Try_it_DA_Continuous_blank4, exercise=TRUE, echo=FALSE}
-
-```
-
-```{r Try_it_DA_Continuous_blank5, exercise=TRUE, echo=FALSE}
-
-```
-
-```{r Try_it_DA_Continuous_blank6, exercise=TRUE, echo=FALSE}
-
-```
-
-### Differential abundance for 0-inflated data code template
-
-#### What's different with 0-inflated data?
-
-- **What's going on underneath?**: We have too many ASVs with 0 counts in our dataset. DESeq2 was originally created for RNA-seq data, where this phenomenon is much rarer than in microbiome data. We will use a slightly different statistical approach in this function to get around this problem.
-
-
-```{r Try_it_DA_zero-inf, exercise=TRUE, echo=FALSE}
 # STEP 1: Convert the phyloseq object to a DESeq2 object and tell R the experimental design 
-my_ad_DESeq2 <- phyloseq_to_deseq2(ad_counts, design = ~group)
+my_DESeq2 <- phyloseq_to_deseq2(fefifo_counts, design = ~diet)
 
 # STEP 2: Select the groups to compare
-my_comparison <- c("group", "AD", "control")
+my_comparison <- c("diet", "Fermented", "Fiber")
 
 # STEP 3: Run the differential abundance analysis at the chosen p-value
-Significant_DEseq2_ASVs <- Differential_Abundance_AltGeo(ad_counts, my_ad_DESeq2, my_comparison, 0.05)
+Significant_DEseq2_ASVs <- Differential_Abundance_AltGeo(fefifo_counts, my_DESeq2, my_comparison, 0.05)
 
 # STEP 4: Retrieve the list of ASVs with a significant difference in abundance between the chosen groups
 Significant_DEseq2_ASVs
@@ -1155,38 +2257,146 @@ ggplot(Significant_DEseq2_ASVs, aes(x = Phylum, y=log2FoldChange, color= Class))
   ggtitle("my title here")
 ```
 
-```{r Try_it_DA_zero-inf_blank1, exercise=TRUE, echo=FALSE}
+```{r deseqtab_fefifo_da_1, exercise=TRUE, echo=FALSE}
 
 ```
 
-```{r Try_it_DA_zero-inf_blank2, exercise=TRUE, echo=FALSE}
+#### Differential abundance for a continuous variable (zero-inflated)
+
+```{r deseqtab_fefifo_Try_it_DA_continuous, exercise=TRUE, echo=FALSE}
+# Differential expression for continuous data in the 0-inflated FeFiFo dataset
+
+# STEP 1: Convert the phyloseq object to a DESeq2 object and tell R the experimental design
+my_DESeq2 <- phyloseq_to_deseq2(fefifo_counts, design = ~ age)
+
+# STEP 2: Select the groups to compare
+name_for_comparison <-"age"
+
+# STEP 3: Run the differential abundance analysis at the chosen p-value
+Significant_DEseq2_ASVs<-Differential_Abundance_ContinuousAltGeo(fefifo_counts, my_DESeq2, name_for_comparison, 0.05)
+
+# STEP 4: Retrieve the list of ASVs with a significant difference in abundance between the chosen groups
+Significant_DEseq2_ASVs
+
+# STEP 5: Plot the results with your chosen x axis and legend
+ggplot(Significant_DEseq2_ASVs, aes(x = Phylum, y=log2FoldChange, color= Class)) + geom_point(size=3, position = "jitter") +
+  theme(axis.text.x = element_text(angle = -90, hjust = 0, vjust=0.5))+
+  ggtitle("my title here")
 
 ```
 
-```{r Try_it_DA_zero-inf_blank3, exercise=TRUE, echo=FALSE}
+```{r deseqtab_fefifo_da_3, exercise=TRUE, echo=FALSE}
 
 ```
 
-```{r Try_it_DA_zero-inf_blank4, exercise=TRUE, echo=FALSE}
+
+
+### AD: Differential abundance template code
+
+#### Differential abundance for a categorical variable (zero-inflated)
+
+```{r deseqtab_ad_DESeq2_example, exercise=TRUE, echo=TRUE}
+# Differential expression for a categorical data in the 0-inflated AD dataset
+
+# STEP 1: Convert the phyloseq object to a DESeq2 object and tell R the experimental design 
+my_DESeq2 <- phyloseq_to_deseq2(ad_counts, design = ~ group)
+
+# STEP 2: Select the groups to compare
+my_comparison <- c("group", "control", "AD")
+
+# STEP 3: Run the differential abundance analysis at the chosen p-value
+Significant_DEseq2_ASVs <- Differential_Abundance_AltGeo(ad_counts, my_DESeq2, my_comparison, 0.05)
+
+# STEP 4: Retrieve the list of ASVs with a significant difference in abundance between the chosen groups
+Significant_DEseq2_ASVs
+
+# STEP 5: Plot the results with your chosen x axis and legend
+ggplot(Significant_DEseq2_ASVs, aes(x = Phylum, y=log2FoldChange, color= Class)) + geom_point(size=3, position = "jitter") +
+  theme(axis.text.x = element_text(angle = -90, hjust = 0, vjust=0.5))+
+  ggtitle("my title here")
+```
+
+```{r deseqtab_ad_da_1, exercise=TRUE, echo=FALSE}
 
 ```
 
-```{r Try_it_DA_zero-inf_blank5, exercise=TRUE, echo=FALSE}
+
+#### Differential abundance for a continuous variable (zero-inflated)
+
+:::{.attention_box_pause}
+:::{.attention_header_box_pause}
+:::{.attention_title}
+#### **Getting an error?**
+:::
+:::
+::: {.attention_content}
+
+If you see this:
+
+<span style="color: red;">
+Error in dimnames(x) <- dn : length of 'dimnames' [1] not equal to array extent
+</span>
+
+It means 0 ASVs were found to be significantly differentially abundant! You can try to push that p-adj filter of 0.05 higher, but these ASVs will have an increased chance of being attributed to pure chance. Still, we've left this code here so you can see for yourself how changing that filter changes your results...how high do you have to push it until you start to see some differentially abundant ASVs?
+:::
+:::
+  
+```{r deseqtab_ad_Try_it_DA_continuous, exercise=TRUE, echo=FALSE}
+# Differential expression for continuous data in the 0-inflated AD dataset
+
+# STEP 1: Convert the phyloseq object to a DESeq2 object and tell R the experimental design
+my_DESeq2 <- phyloseq_to_deseq2(ad_counts, design = ~ age)
+
+# STEP 2: Select the groups to compare
+name_for_comparison <-"age"
+
+# STEP 3: Run the differential abundance analysis at the chosen p-value
+
+Significant_DEseq2_ASVs<-Differential_Abundance_ContinuousAltGeo(ad_counts, my_DESeq2, name_for_comparison, 0.05)
+
+# STEP 4: Retrieve the list of ASVs with a significant difference in abundance between the chosen groups
+Significant_DEseq2_ASVs
+
+# STEP 5: Plot the results with your chosen x axis and legend
+ggplot(Significant_DEseq2_ASVs, aes(x = Phylum, y=log2FoldChange, color= Class)) + geom_point(size=3, position = "jitter") +
+  theme(axis.text.x = element_text(angle = -90, hjust = 0, vjust=0.5))+
+  ggtitle("my title here")
+
+```
+```{r deseqtab_ad_da_2, exercise=TRUE, echo=FALSE}
 
 ```
 
-```{r Try_it_DA_zero-inf_blank6, exercise=TRUE, echo=FALSE}
+### OC: Differential abundance template code
+
+#### Differential abundance for a categorical variable (zero-inflated)
+
+```{r deseqtab_OC_DESeq2_example, exercise=TRUE, echo=TRUE}
+# Differential expression for a categorical data in the 0-inflated OC dataset
+
+# STEP 1: Convert the phyloseq object to a DESeq2 object and tell R the experimental design 
+my_DESeq2 <- phyloseq_to_deseq2(oc_counts, design = ~ treatment)
+
+# STEP 2: Select the groups to compare
+my_comparison <- c("treatment", "Control", "User")
+
+# STEP 3: Run the differential abundance analysis at the chosen p-value
+Significant_DEseq2_ASVs <- Differential_Abundance_AltGeo(oc_counts, my_DESeq2, my_comparison, 0.05)
+
+# STEP 4: Retrieve the list of ASVs with a significant difference in abundance between the chosen groups
+Significant_DEseq2_ASVs
+
+# STEP 5: Plot the results with your chosen x axis and legend
+ggplot(Significant_DEseq2_ASVs, aes(x = Phylum, y=log2FoldChange, color= Class)) + geom_point(size=3, position = "jitter") +
+  theme(axis.text.x = element_text(angle = -90, hjust = 0, vjust=0.5))+
+  ggtitle("my title here")
+```
+```{r deseqtab_oc_da_1, exercise=TRUE, echo=FALSE}
 
 ```
+#### Differential abundance for a continuous variable (zero-inflated)
 
-### Differential abundance with continuous variables for 0-inflated data code template
-
-#### What's different here?
-
-- **How does this function differ from the above**: If you're here, that means you have a 0-inflated dataset AND are exploring the data using a continuous variable. 
-- **Changes in the code**: This code is identical to the 0-inflated data code; we have changed the underlying function to handle 0-inflated data but these changes are invisible to you.
-
-```{r Try_it_DA_continuous0inf, exercise=TRUE, echo=FALSE}
+```{r deseqtab_OC_Try_it_DA_continuous0inf, exercise=TRUE, echo=FALSE}
 # STEP 1: Convert the phyloseq object to a DESeq2 object and tell R the experimental design
 my_DESeq2 <- phyloseq_to_deseq2(oc_dosage_counts, design = ~ totalyearsonOC)
 
@@ -1204,28 +2414,7 @@ ggplot(Significant_DEseq2_ASVs, aes(x = Phylum, y=log2FoldChange, color= Class))
   theme(axis.text.x = element_text(angle = -90, hjust = 0, vjust=0.5))+
   ggtitle("my title here")
 ```
-
-```{r Try_it_DA_continuous0inf_blank1, exercise=TRUE, echo=FALSE}
-
-```
-
-```{r Try_it_DA_continuous0inf_blank2, exercise=TRUE, echo=FALSE}
-
-```
-
-```{r Try_it_DA_continuous0inf_blank3, exercise=TRUE, echo=FALSE}
-
-```
-
-```{r Try_it_DA_continuous0inf_blank4, exercise=TRUE, echo=FALSE}
-
-```
-
-```{r Try_it_DA_continuous0inf_blank5, exercise=TRUE, echo=FALSE}
-
-```
-
-```{r Try_it_DA_continuous0inf_blank6, exercise=TRUE, echo=FALSE}
+```{r deseqtab_oc_da_2, exercise=TRUE, echo=FALSE}
 
 ```
 
