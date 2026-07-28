@@ -2420,10 +2420,9 @@ ggplot(Significant_DEseq2_ASVs, aes(x = Phylum, y=log2FoldChange, color= Class))
 
 ## Common errors
 
-No significant genes found
-No datapoint on the DESeq2 graph - missing NA?
-Warning: Removed 3 rows containing missing values or values outside the scale range
-(`geom_point()`).
+* **Every gene contains at least one zero, cannot compute log geometric means:** This can be one of two issues. First the, dataset has an overabundance of zeroes which can complicate statistical processing, so the typical differential abundance code cannot be used. Use one of the differential abundance templates for zero-inflated data. Second, converting the phyloseq object to a DESeq2 object has introduced many zeros. DESeq2 expects count data and converts non-count data to integers. If you are trying to use an object that has proportion data (Example: miso), all those values under 0.5 will be set to zero! To fix this, confirm you are using count data (Example: miso_counts)
+
+* **Error in dimnames(x) <- dn : length of 'dimnames' [1] not equal to array extent:** 0 ASVs were found to be significantly differentially abundant! You can try to push that p-adj filter of 0.05 higher, but these ASVs will have an increased chance of being attributed to pure chance. Still, we've left this code here so you can see for yourself how changing that filter changes your results...how high do you have to push it until you start to see some differentially abundant ASVs?
 
 ## Works cited
 
