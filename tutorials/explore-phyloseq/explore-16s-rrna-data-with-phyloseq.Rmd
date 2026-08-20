@@ -617,7 +617,13 @@ quiz(caption = "Changing the phyloseq graph",
 Use the following code blocks and example code to explore the data.
 
 ```{r try_it_out_1, exercise=TRUE, echo=FALSE}
-#Subsetting based on a group
+#Barplots for the whole dataset
+plot_bar(miso, x="subject", fill = "Phylum", title = "My title") +
+  geom_bar(aes(color = Phylum, fill = Phylum), stat = "identity", position = "stack")
+```
+
+```{r try_it_out_2, exercise=TRUE, echo=FALSE}
+#Subsetting based on a taxa
 my_subset <- subset_taxa(miso, Phylum == "Firmicutes")
 
 #Plotting using the new subset
@@ -625,12 +631,13 @@ plot_bar(my_subset, x= "subject", fill = "Class", title = "My title") +
   geom_bar(aes(color = Class, fill = Class), stat = "identity", position = "stack")
 ```
 
-```{r try_it_out_2, exercise=TRUE, echo=FALSE}
-
-```
-
 ```{r try_it_out_3, exercise=TRUE, echo=FALSE}
+#Subsetting based on metadata
+my_subset <- subset_samples(miso, gender == "F")
 
+#Plotting using the new subset
+plot_bar(my_subset, x= "subject", fill = "Class", title = "My title") +
+  geom_bar(aes(color = Class, fill = Class), stat = "identity", position = "stack")
 ```
 
 ```{r try_it_out_4, exercise=TRUE, echo=FALSE}

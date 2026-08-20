@@ -1157,15 +1157,9 @@ plotAcrossRegions("FBgn#######")
 ```
 
 
-### plotAcrossRegions the for organ dataset
-
-- Use the correct function for your organ of choice
-- MGI IDs take the format ENSMUSG########### 
-
-
 ### plotAcrossRegions for the mouse organ dataset
 
-- Multiple functions are available to compare the variation of a gene's expression across different organs
+- Use the correct function for your organ of choice
 - MGI IDs take the format ENSMUSG###########
 
 #### plotAcrossBrain
