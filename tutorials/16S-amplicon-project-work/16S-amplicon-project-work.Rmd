@@ -424,7 +424,7 @@ tv <- rmarkdown::metadata$output$`learnr::tutorial`$version
 #### Version: `r tv`
 
 ## Meet MISO
-These data are from **Impact of a 7-day homogeneous diet on interpersonal variation in human gut microbiomes and metabolomes by Guthrie et al. (2022)**. 
+These data are from [**Impact of a 7-day homogeneous diet on interpersonal variation in human gut microbiomes and metabolomes by Guthrie et al. (2022)**](https://www.cell.com/cell-host-microbe/fulltext/S1931-3128(22)00263-3). 
 
 It's difficult to capture the mechanisms and effects of diet on the gut microbiome given the sheer number of variables involved. The microbiome individuality and stability over time (MISO) study aimed to explore the connection between diet, microbiome, and metabolites by looking at the effect of feeding a standardized diet to people over 7 days. 
 
@@ -727,7 +727,7 @@ ggplot(Significant_DEseq2_ASVs, aes(x = Phylum, y=log2FoldChange, color= Class, 
 
 ## Meet FeFiFo
 
-These data are from **Gut-microbiota-targeted diets modulate human immune status by Wastyk et al. (2021)**. We call this the FeFiFo study because the experimental design includes *fe*rmented and *fi*ber-rich *fo*od treatment groups!
+These data are from [**Gut-microbiota-targeted diets modulate human immune status by Wastyk et al. (2021)**](https://pubmed.ncbi.nlm.nih.gov/34256014/). We call this the FeFiFo study because the experimental design includes *fe*rmented and *fi*ber-rich *fo*od treatment groups!
 
 This study looked at the effect of either high fiber or fermented foods. Rather than controlling diet entirely through standardized portions, participants were allowed to select what foods they ate so long as these foods were high in fiber or were fermented. These less restrictive guidelines are meant to reflect life more realistically than the MISO study, as given the choice, most people will decide to have more variety in their diets. Additional metadata was collected from participants including ethnicity, relationship status, employment status, and education level.
 
@@ -1032,7 +1032,7 @@ ggplot(Significant_DEseq2_ASVs, aes(x = Phylum, y=log2FoldChange, color= Class))
 
 ## Meet the Alzheimer's study
 
-These data are from **Gut microbiota is altered in patients with Alzheimer’s disease by Zhuang et al. (2018)**. For convenience's sake we will refer to it as the AD (Alzheimer's disease) study.
+These data are from [**Gut microbiota is altered in patients with Alzheimer’s disease by Zhuang et al. (2018)**](https://journals.sagepub.com/doi/abs/10.3233/JAD-180176). For convenience's sake we will refer to it as the AD (Alzheimer's disease) study.
 
 This study compares the gut microbiomes of subjects with a clinical diagnosis of Alzheimer’s disease with "healthy" age and sex matched individuals. While we can't control for all health conditions, the study attempted to limit the "healthy" subjects to participants who match all the following:
 
@@ -1353,7 +1353,7 @@ Note that here, ASVs take the format ASV_#, rather than the ASV# format that the
 :::
 :::
 
-These data are from **Influence of menstrual cycle and oral contraception on taxonomic composition and gas production in the gut microbiome by Terrazas et al. (2025)**. For convenience's sake we will refer to it as our OC (oral contraceptives) study.
+  These data are from [**Influence of menstrual cycle and oral contraception on taxonomic composition and gas production in the gut microbiome by Terrazas et al. (2025)**](https://www.microbiologyresearch.org/content/journal/jmm/10.1099/jmm.0.001987). For convenience's sake we will refer to it as our OC (oral contraceptives) study.
 
 This study compared the microbiomes of women who were on OC and those who were not (a history of at least 3 months without taking an OC). 
 
@@ -2097,6 +2097,8 @@ plot_ordination(ad_subset, ad.pcoa.subset,
 ```
 
 
+### OC: Multidimensional analysis template code
+
 
 ```{r multidimtab_oc_Try_it_PCoA_end, exercise=TRUE, echo=FALSE}
 oc.pcoa <- ordinate(oc, method="PCoA", distance="bray")
@@ -2338,6 +2340,8 @@ Error in dimnames(x) <- dn : length of 'dimnames' [1] not equal to array extent
 </span>
 
 It means 0 ASVs were found to be significantly differentially abundant! You can try to push that p-adj filter of 0.05 higher, but these ASVs will have an increased chance of being attributed to pure chance. Still, we've left this code here so you can see for yourself how changing that filter changes your results...how high do you have to push it until you start to see some differentially abundant ASVs?
+
+What does this mean for your research question?
 :::
 :::
   
@@ -2422,7 +2426,7 @@ ggplot(Significant_DEseq2_ASVs, aes(x = Phylum, y=log2FoldChange, color= Class))
 
 * **Every gene contains at least one zero, cannot compute log geometric means:** This can be one of two issues. First the, dataset has an overabundance of zeroes which can complicate statistical processing, so the typical differential abundance code cannot be used. Use one of the differential abundance templates for zero-inflated data. Second, converting the phyloseq object to a DESeq2 object has introduced many zeros. DESeq2 expects count data and converts non-count data to integers. If you are trying to use an object that has proportion data (Example: miso), all those values under 0.5 will be set to zero! To fix this, confirm you are using count data (Example: miso_counts)
 
-* **Error in dimnames(x) <- dn : length of 'dimnames' [1] not equal to array extent:** 0 ASVs were found to be significantly differentially abundant! You can try to push that p-adj filter of 0.05 higher, but these ASVs will have an increased chance of being attributed to pure chance. Still, we've left this code here so you can see for yourself how changing that filter changes your results...how high do you have to push it until you start to see some differentially abundant ASVs?
+* **Error in dimnames(x) <- dn : length of 'dimnames' [1] not equal to array extent:** 0 ASVs were found to be significantly differentially abundant! You can try to push that p-adj filter of 0.05 higher, but these ASVs will have an increased chance of being attributed to pure chance. Still, we've left this code here so you can see for yourself how changing that filter changes your results...how high do you have to push it until you start to see some differentially abundant ASVs? What does this mean for your research question?
 
 ## Works cited
 

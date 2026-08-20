@@ -819,7 +819,7 @@ quiz(caption = "Using DESeq2 to examine differential abundance",
 
 ```
 
-## Template code
+## Try it out!
 
 
 ### Alpha Diversity
@@ -851,8 +851,8 @@ my_subset <- subset_taxa(miso_counts, Phylum == "Firmicutes")
 plot_richness(my_subset, x="timepoint", 
               color="subject", 
               shape="diet",
-          	  title ="fill in the blank", 
-              measures= "My title")
+          	  title ="My title", 
+              measures= "Simpson")
 
 ```
 ```{r Try_it_plot_richness_blank2, exercise=TRUE, echo=FALSE}
