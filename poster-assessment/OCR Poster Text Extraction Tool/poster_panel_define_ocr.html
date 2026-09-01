@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Poster Panel OCR</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #1a1a2e; color: #fff; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+        .header { background: #16213e; padding: 8px 15px; display: flex; align-items: center; gap: 12px; flex-shrink: 0; border-bottom: 1px solid #333; }
+        .header h1 { font-size: 1rem; color: #00d4ff; }
+        .header-controls { display: flex; gap: 6px; margin-left: auto; align-items: center; }
+        .header-controls label { font-size: 0.75rem; color: #aaa; }
+        input[type="range"] { width: 70px; }
+        .zoom-display { background: #333; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; min-width: 40px; text-align: center; }
+        .btn { padding: 5px 10px; border: none; border-radius: 5px; cursor: pointer; font-size: 0.75rem; transition: all 0.2s; }
+        .btn-primary { background: #00d4ff; color: #000; }
+        .btn-success { background: #28a745; color: #fff; }
+        .btn-secondary { background: #444; color: #fff; }
+        .controls-bar { background: #16213e; padding: 6px 12px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; flex-shrink: 0; border-bottom: 1px solid #333; }
+        .section-buttons { display: flex; gap: 3px; }
+        .section-btn { padding: 4px 6px; border: 2px solid #444; border-radius: 5px; background: #222; color: #fff; cursor: pointer; font-size: 0.7rem; }
+        .section-btn.active { border-width: 3px; padding: 3px 5px; }
+        .upscale-slider { display: flex; align-items: center; gap: 4px; margin-left: 10px; }
+        .upscale-slider label { font-size: 0.7rem; color: #aaa; }
+        .upscale-slider input { width: 50px; }
+        .upscale-display { background: #333; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; }
+        .main-container { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-height: 0; }
+        .image-area { flex: 1; position: relative; overflow: auto; background: #0a0a15; min-height: 300px; }
+        .image-wrapper { position: absolute; top: 0; left: 0; display: none; }
+        #posterCanvas { display: block; cursor: crosshair; }
+        .upload-area { position: absolute; top: 0; left: 0; right: 0; bottom: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #0a0a15; gap: 12px; }
+        .upload-area.hidden { display: none; }
+        .upload-area svg { width: 50px; height: 50px; fill: #444; }
+        .upload-area p { color: #666; font-size: 0.9rem; }
+        .upload-btn { padding: 8px 16px; background: #00d4ff; color: #000; border: none; border-radius: 5px; font-size: 0.85rem; cursor: pointer; }
+        #fileInput { display: none; }
+        .sidebar { background: #16213e; display: flex; flex-shrink: 0; height: 200px; border-top: 1px solid #333; }
+        .sidebar-section { flex: 1; padding: 10px; border-right: 1px solid #333; overflow-y: auto; }
+        .sidebar-section:last-child { border-right: none; }
+        .sidebar-section h3 { font-size: 0.8rem; color: #00d4ff; margin-bottom: 6px; }
+        .panel-list { display: flex; flex-direction: column; gap: 4px; }
+        .panel-item { display: flex; align-items: center; gap: 4px; padding: 4px; background: #1a1a2e; border-radius: 5px; font-size: 0.7rem; }
+        .panel-item .panel-num { background: #333; width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.65rem; }
+        .panel-item select { flex: 1; padding: 2px; border-radius: 3px; border: 1px solid #444; background: #222; color: #fff; font-size: 0.7rem; }
+        .panel-item .remove-btn { padding: 2px 5px; background: #dc3545; border: none; border-radius: 3px; color: #fff; cursor: pointer; font-size: 0.65rem; }
+        .controls { display: flex; gap: 4px; margin-top: 6px; }
+        .controls .btn { flex: 1; }
+        .output-section { min-width: 180px; max-width: 280px; }
+        .output-section pre { background: #1a1a2e; padding: 6px; border-radius: 5px; font-size: 0.65rem; white-space: pre-wrap; max-height: 80px; overflow-y: auto; }
+        .ocr-status { margin-top: 6px; padding: 4px; border-radius: 5px; font-size: 0.7rem; text-align: center; }
+        .ocr-status.loading { background: #1a3a5c; display: none; }
+        .ocr-status.success { background: #1a4a3c; display: none; }
+        .ocr-status.error { background: #4a1a2e; color: #ff6b6b; display: none; }
+        .ocr-status.visible { display: block; }
+        .version-toggle { display: flex; gap: 3px; margin-bottom: 6px; }
+        .version-btn { flex: 1; padding: 4px; border: 2px solid #444; border-radius: 4px; background: #222; color: #fff; cursor: pointer; font-size: 0.7rem; }
+        .version-btn.active { border-color: #00d4ff; background: #1a3a5c; }
+        .download-buttons { display: flex; gap: 3px; margin-top: 6px; }
+        .download-buttons .btn { flex: 1; font-size: 0.7rem; padding: 4px 6px; }
+        .empty-state { color: #666; font-size: 0.75rem; text-align: center; padding: 8px; }
+        #debug { position: fixed; bottom: 210px; right: 10px; background: #000; padding: 8px; font-size: 11px; color: #0f0; z-index: 1000; max-width: 400px; display: none; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📄 Poster Panel OCR</h1>
+        <div class="header-controls">
+            <button class="btn btn-secondary" onclick="zoomOut()">➖</button>
+            <input type="range" id="zoomSlider" min="10" max="400" value="100">
+            <button class="btn btn-secondary" onclick="zoomIn()">➕</button>
+            <span class="zoom-display" id="zoomDisplay">100%</span>
+        </div>
+    </div>
+    
+    <div class="controls-bar">
+        <button class="btn btn-primary" id="uploadBtn">📤 Upload</button>
+        <input type="file" id="fileInput" accept="image/*">
+        <div class="section-buttons">
+            <button class="section-btn active" data-type="title" style="border-color:#e74c3c;">Title</button>
+            <button class="section-btn" data-type="authors" style="border-color:#e67e22;">Authors</button>
+            <button class="section-btn" data-type="abstract" style="border-color:#1abc9c;">Abstract</button>
+            <button class="section-btn" data-type="introduction" style="border-color:#f1c40f;">Intro</button>
+            <button class="section-btn" data-type="methods" style="border-color:#2ecc71;">Methods</button>
+            <button class="section-btn" data-type="results" style="border-color:#3498db;">Results</button>
+            <button class="section-btn" data-type="discussion" style="border-color:#9b59b6;">Discussion</button>
+            <button class="section-btn" data-type="references" style="border-color:#34495e;">Refs</button>
+            <button class="section-btn" data-type="other" style="border-color:#e91e63;">Other</button>
+        </div>
+        <button class="btn btn-secondary" onclick="undoLast()">↩️ Undo</button>
+        <button class="btn btn-secondary" onclick="clearAllPanels()">🗑️ Clear</button>
+        <div class="upscale-slider">
+            <label>Upscale:</label>
+            <input type="range" id="upscaleSlider" min="1" max="8" value="4">
+            <span class="upscale-display" id="upscaleDisplay">4x</span>
+        </div>
+        <input type="text" id="outputFilename" placeholder="output.txt" style="padding:4px;border-radius:4px;border:1px solid #444;background:#222;color:#fff;font-size:0.75rem;width:100px;">
+        <button class="btn btn-success" id="runOcrBtn" onclick="runOcr()" disabled>🚀 Run OCR</button>
+    </div>
+    
+    <div class="main-container">
+        <div class="image-area" id="imageArea">
+            <div class="upload-area" id="uploadArea">
+                <svg viewBox="0 0 24 24"><path d="M19 7v2.99s-1.99.01-2 0V7h-3s.01-1.99 0-2h3V2h2v3h3v2h-3zm-3 4V8h-3V5H5c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2v-8h-3zM5 19l3-4 2.25 3 3.25-4.5L17 19H5z"/></svg>
+                <p>Drop poster image here or click to upload</p>
+                <button class="upload-btn" id="uploadBtn2">📤 Upload Poster</button>
+            </div>
+            <div class="image-wrapper" id="imageWrapper">
+                <canvas id="posterCanvas"></canvas>
+            </div>
+        </div>
+        
+        <div class="sidebar">
+            <div class="sidebar-section">
+                <h3>📋 Panels (<span id="panelCount">0</span>)</h3>
+                <div class="panel-list" id="panelList">
+                    <p class="empty-state">No panels drawn yet</p>
+                </div>
+                <div class="controls">
+                    <button class="btn btn-secondary" onclick="undoLast()">↩️ Undo</button>
+                    <button class="btn btn-secondary" onclick="clearAllPanels()">🗑️ Clear</button>
+                </div>
+            </div>
+            <div class="sidebar-section output-section">
+                <h3>📄 Results</h3>
+                <div class="version-toggle">
+                    <button class="version-btn active" id="origBtn" onclick="showVersion('original')">Original</button>
+                    <button class="version-btn" id="cleanBtn" onclick="showVersion('cleaned')">Cleaned</button>
+                </div>
+                <pre id="ocrResults">Run OCR to see results...</pre>
+                <div class="ocr-status" id="ocrStatus"></div>
+                <div class="download-buttons">
+                    <button class="btn btn-secondary" id="downloadOrigBtn" onclick="downloadOriginal()" disabled>📥 Original</button>
+                    <button class="btn btn-secondary" id="downloadCleanBtn" onclick="downloadCleaned()" disabled>📥 Cleaned</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="debug"></div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+    <script>
+        const COLORS = {
+            title:'#e74c3c', authors:'#e67e22', abstract:'#1abc9c', introduction:'#f1c40f',
+            methods:'#2ecc71', results:'#3498db', discussion:'#9b59b6',
+            references:'#34495e', other:'#e91e63'
+        };
+        const NAMES = {
+            title:'Title', authors:'Authors', abstract:'Abstract', introduction:'Introduction',
+            methods:'Methods', results:'Results', discussion:'Discussion',
+            references:'References', other:'Other'
+        };
+        const state = {
+            image:null, zoom:100, panX:0, panY:0, upscale:4,
+            currentType:'introduction', isDrawing:false, startX:0, startY:0,
+            isPanning:false, panels:[], currentVersion:'original',
+            originalText:'', cleanedText:'', currentFilename:''
+        };
+        const canvas = document.getElementById('posterCanvas');
+        const ctx = canvas.getContext('2d');
+        const imageWrapper = document.getElementById('imageWrapper');
+        const imageArea = document.getElementById('imageArea');
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+        const debug = document.getElementById('debug');
+        
+        let debugVisible = false;
+        document.addEventListener('keydown', e => {
+            if (e.key === 'd' && e.ctrlKey) { debugVisible = !debugVisible; debug.style.display = debugVisible ? 'block' : 'none'; e.preventDefault(); }
+        });
+        
+        function log(msg) {
+            if (debugVisible) debug.innerHTML = msg + '<br>' + debug.innerHTML.substring(0, 500);
+            console.log(msg);
+        }
+        
+        // Section buttons
+        document.querySelectorAll('.section-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.section-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                state.currentType = btn.dataset.type;
+            });
+        });
+        
+        // Upscale slider
+        document.getElementById('upscaleSlider').addEventListener('input', e => {
+            state.upscale = parseInt(e.target.value);
+            document.getElementById('upscaleDisplay').textContent = state.upscale + 'x';
+        });
+        
+        // Upload handlers
+        function triggerFileInput() { fileInput.click(); }
+        document.getElementById('uploadBtn').addEventListener('click', triggerFileInput);
+        document.getElementById('uploadBtn2').addEventListener('click', triggerFileInput);
+        uploadArea.addEventListener('click', e => { if (e.target === uploadArea || e.target.tagName === 'P') triggerFileInput(); });
+        fileInput.addEventListener('change', e => { if (e.target.files && e.target.files.length > 0) handleFile(e.target.files[0]); });
+        uploadArea.addEventListener('dragover', e => { e.preventDefault(); uploadArea.style.borderColor = '#00d4ff'; });
+        uploadArea.addEventListener('dragleave', e => { e.preventDefault(); uploadArea.style.borderColor = '#333'; });
+        uploadArea.addEventListener('drop', e => { e.preventDefault(); uploadArea.style.borderColor = '#333'; if (e.dataTransfer.files.length > 0) handleFile(e.dataTransfer.files[0]); });
+        
+        function handleFile(file) {
+            if (!file.type.startsWith('image/')) { alert('Please select an image file.'); return; }
+            let baseName = file.name.replace(/\.[^.]+$/, '');
+            state.currentFilename = baseName;
+            document.getElementById('outputFilename').value = baseName + '.txt';
+            
+            const reader = new FileReader();
+            reader.onload = e => {
+                const img = new Image();
+                img.onload = () => {
+                    state.image = img;
+                    state.panels = [];
+                    state.panX = 0; state.panY = 0;
+                    const maxW = imageArea.clientWidth - 20;
+                    const maxH = imageArea.clientHeight - 20;
+                    const fitZoom = Math.min(100, Math.min((maxW / img.width) * 100, (maxH / img.height) * 100));
+                    state.zoom = Math.max(10, fitZoom);
+                    document.getElementById('zoomSlider').value = state.zoom;
+                    document.getElementById('zoomDisplay').textContent = Math.round(state.zoom) + '%';
+                    uploadArea.classList.add('hidden');
+                    imageWrapper.style.display = 'block';
+                    reloadCanvas();
+                    document.getElementById('runOcrBtn').disabled = false;
+                    log('Image loaded: ' + img.width + 'x' + img.height + ' at zoom=' + state.zoom + '%');
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+        
+        function reloadCanvas() {
+            const scale = state.zoom / 100;
+            const displayW = Math.round(state.image.width * scale);
+            const displayH = Math.round(state.image.height * scale);
+            // KEY FIX: Set canvas internal resolution to match CSS size for proper coordinate tracking
+            canvas.width = displayW;
+            canvas.height = displayH;
+            canvas.style.width = displayW + 'px';
+            canvas.style.height = displayH + 'px';
+            ctx.imageSmoothingEnabled = true;
+            ctx.imageSmoothingQuality = 'high';
+            ctx.drawImage(state.image, 0, 0, displayW, displayH);
+            log('reloadCanvas: img=' + state.image.width + 'x' + state.image.height + ' display=' + displayW + 'x' + displayH + ' zoom=' + state.zoom + '%');
+            drawAllPanels();
+        }
+        
+        function zoomIn() {
+            state.zoom = Math.min(400, state.zoom + 25);
+            document.getElementById('zoomSlider').value = state.zoom;
+            document.getElementById('zoomDisplay').textContent = Math.round(state.zoom) + '%';
+            reloadCanvas();
+        }
+        
+        function zoomOut() {
+            state.zoom = Math.max(10, state.zoom - 25);
+            document.getElementById('zoomSlider').value = state.zoom;
+            document.getElementById('zoomDisplay').textContent = Math.round(state.zoom) + '%';
+            reloadCanvas();
+        }
+        
+        document.getElementById('zoomSlider').addEventListener('input', e => {
+            state.zoom = parseInt(e.target.value);
+            document.getElementById('zoomDisplay').textContent = Math.round(state.zoom) + '%';
+            reloadCanvas();
+        });
+        
+        function getPos(e) {
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            // Get canvas rect to calculate position relative to canvas
+            const canvasRect = canvas.getBoundingClientRect();
+            // Position relative to canvas
+            const displayX = clientX - canvasRect.left;
+            const displayY = clientY - canvasRect.top;
+            // Convert from display space to IMAGE space coordinates
+            const scale = 100 / state.zoom;
+            const imageX = displayX * scale;
+            const imageY = displayY * scale;
+            log('getPos: client=' + clientX + ',' + clientY + ' display=' + displayX + ',' + displayY + ' image=' + imageX + ',' + imageY + ' zoom=' + state.zoom + '%');
+            return { x: imageX, y: imageY };
+        }
+        
+        canvas.addEventListener('mousedown', e => {
+            if (e.button === 1) {
+                state.isPanning = true;
+                state.startX = e.clientX - state.panX;
+                state.startY = e.clientY - state.panY;
+                e.preventDefault();
+            } else if (e.button === 0) {
+                state.isDrawing = true;
+                const pos = getPos(e);
+                state.startX = pos.x; state.startY = pos.y;
+                log('mousedown: startX=' + state.startX + ' startY=' + state.startY);
+            }
+        });
+        
+        canvas.addEventListener('mousemove', e => {
+            if (state.isPanning) {
+                state.panX = e.clientX - state.startX;
+                state.panY = e.clientY - state.startY;
+                imageWrapper.style.transform = `translate(${state.panX}px, ${state.panY}px)`;
+            } else if (state.isDrawing) {
+                const pos = getPos(e);
+                reloadCanvas();
+                drawPanelPreview(state.startX, state.startY, pos.x, pos.y);
+            }
+        });
+        
+        window.addEventListener('mouseup', e => {
+            if (state.isPanning) { state.isPanning = false; }
+            if (state.isDrawing) {
+                state.isDrawing = false;
+                const pos = getPos(e);
+                const x1 = Math.min(state.startX, pos.x), y1 = Math.min(state.startY, pos.y);
+                const x2 = Math.max(state.startX, pos.x), y2 = Math.max(state.startY, pos.y);
+                log('mouseup: x1=' + x1 + ' y1=' + y1 + ' x2=' + x2 + ' y2=' + y2);
+                if (x2 - x1 > 10 && y2 - y1 > 10) {
+                    state.panels.push({x1, y1, x2, y2, type: state.currentType});
+                    updatePanelList();
+                }
+                reloadCanvas();
+            }
+        });
+        
+        canvas.addEventListener('wheel', e => {
+            if (e.ctrlKey || e.metaKey) { e.preventDefault(); if (e.deltaY < 0) zoomIn(); else zoomOut(); }
+        }, {passive: false});
+        
+        function drawPanelPreview(x1, y1, x2, y2) {
+            // Convert image space to display space
+            const scale = state.zoom / 100;
+            const dx1 = x1 * scale, dy1 = y1 * scale, dx2 = x2 * scale, dy2 = y2 * scale;
+            ctx.strokeStyle = COLORS[state.currentType];
+            ctx.lineWidth = 3;
+            ctx.setLineDash([5, 5]);
+            ctx.strokeRect(dx1, dy1, dx2 - dx1, dy2 - dy1);
+            ctx.setLineDash([]);
+            ctx.fillStyle = COLORS[state.currentType] + '40';
+            ctx.fillRect(dx1, dy1, dx2 - dx1, dy2 - dy1);
+        }
+        
+        function drawAllPanels() {
+            const scale = state.zoom / 100;
+            state.panels.forEach((panel, i) => {
+                // Convert image space to display space
+                const dx1 = panel.x1 * scale, dy1 = panel.y1 * scale, dx2 = panel.x2 * scale, dy2 = panel.y2 * scale;
+                ctx.strokeStyle = COLORS[panel.type];
+                ctx.lineWidth = 3;
+                ctx.strokeRect(dx1, dy1, dx2 - dx1, dy2 - dy1);
+                ctx.fillStyle = COLORS[panel.type] + '30';
+                ctx.fillRect(dx1, dy1, dx2 - dx1, dy2 - dy1);
+                ctx.fillStyle = 'rgba(0,0,0,0.7)';
+                ctx.fillRect(dx1, dy1, 120, 20);
+                ctx.fillStyle = COLORS[panel.type];
+                ctx.font = 'bold 12px sans-serif';
+                ctx.fillText((i + 1) + '. ' + (NAMES[panel.type] || panel.type), dx1 + 5, dy1 + 14);
+            });
+        }
+        
+        function updatePanelList() {
+            const list = document.getElementById('panelList');
+            document.getElementById('panelCount').textContent = state.panels.length;
+            if (state.panels.length === 0) { list.innerHTML = '<p class="empty-state">No panels drawn yet</p>'; return; }
+            list.innerHTML = state.panels.map((p, i) => 
+                '<div class="panel-item">' +
+                    '<span class="panel-num" style="background:' + COLORS[p.type] + '">' + (i + 1) + '</span>' +
+                    '<select onchange="changePanelType(' + i + ', this.value)">' +
+                        Object.keys(NAMES).map(t => '<option value="' + t + '"' + (p.type === t ? ' selected' : '') + '>' + NAMES[t] + '</option>').join('') +
+                    '</select>' +
+                    '<button class="remove-btn" onclick="removePanel(' + i + ')">✕</button>' +
+                '</div>'
+            ).join('');
+        }
+        
+        function changePanelType(index, type) { state.panels[index].type = type; reloadCanvas(); }
+        function removePanel(index) { state.panels.splice(index, 1); updatePanelList(); reloadCanvas(); }
+        function undoLast() { if (state.panels.length > 0) { state.panels.pop(); updatePanelList(); reloadCanvas(); } }
+        function clearAllPanels() { state.panels = []; updatePanelList(); reloadCanvas(); }
+        
+        function showVersion(version) {
+            state.currentVersion = version;
+            document.getElementById('origBtn').classList.toggle('active', version === 'original');
+            document.getElementById('cleanBtn').classList.toggle('active', version === 'cleaned');
+            document.getElementById('ocrResults').textContent = version === 'original' ? state.originalText : state.cleanedText;
+        }
+        
+        async function runOcr() {
+            if (state.panels.length === 0) { alert('Please draw at least one panel first.'); return; }
+            const status = document.getElementById('ocrStatus');
+            status.className = 'ocr-status loading visible';
+            status.textContent = 'Initializing OCR...';
+            document.getElementById('runOcrBtn').disabled = true;
+            document.getElementById('ocrResults').textContent = 'Processing panels...';
+            try {
+                const Tesseract = window.Tesseract;
+                const results = [];
+                for (let i = 0; i < state.panels.length; i++) {
+                    status.textContent = 'Processing panel ' + (i + 1) + '/' + state.panels.length + '...';
+                    const panel = state.panels[i];
+                    // Panel coordinates are already in IMAGE SPACE (from getPos)
+                    // Use them directly - no scale conversion needed
+                    const x1 = Math.max(0, Math.round(panel.x1));
+                    const y1 = Math.max(0, Math.round(panel.y1));
+                    const x2 = Math.min(state.image.width, Math.round(panel.x2));
+                    const y2 = Math.min(state.image.height, Math.round(panel.y2));
+                    const width = x2 - x1, height = y2 - y1;
+                    if (width <= 0 || height <= 0) continue;
+                    
+                    // Create upscaled canvas for OCR
+                    const upscaleFactor = state.upscale;
+                    const tempCanvas = document.createElement('canvas');
+                    tempCanvas.width = width * upscaleFactor;
+                    tempCanvas.height = height * upscaleFactor;
+                    const tempCtx = tempCanvas.getContext('2d');
+                    tempCtx.imageSmoothingEnabled = true;
+                    tempCtx.imageSmoothingQuality = 'high';
+                    tempCtx.fillStyle = '#ffffff';
+                    tempCtx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
+                    tempCtx.drawImage(state.image, x1, y1, width, height, 0, 0, tempCanvas.width, tempCanvas.height);
+                    const dataUrl = tempCanvas.toDataURL('image/png');
+                    
+                    const result = await Tesseract.recognize(dataUrl, 'eng', {
+                        logger: m => { if (m.status === 'recognizing text') status.textContent = 'Panel ' + (i + 1) + '/' + state.panels.length + ': ' + Math.round(m.progress * 100) + '%'; }
+                    });
+                    results.push({panel: i + 1, type: panel.type, label: NAMES[panel.type] || panel.type, text: result.data.text.trim()});
+                }
+                
+                // Build original text
+                let originalText = 'RESEARCH POSTER OCR RESULTS\n' + '='.repeat(80) + '\n\n';
+                const seenTypes = [];
+                results.forEach(r => {
+                    if (!seenTypes.includes(r.type)) {
+                        seenTypes.push(r.type);
+                        originalText += '='.repeat(80) + '\nSECTION: ' + r.label.toUpperCase() + '\n' + '='.repeat(80) + '\n\n' + r.text + '\n\n';
+                    } else {
+                        originalText += r.text + '\n\n';
+                    }
+                });
+                state.originalText = originalText.trim();
+                
+                // Build cleaned text
+                let cleanedText = 'RESEARCH POSTER OCR RESULTS\n' + '='.repeat(80) + '\n\n';
+                seenTypes.length = 0;
+                results.forEach(r => {
+                    if (!seenTypes.includes(r.type)) {
+                        seenTypes.push(r.type);
+                        cleanedText += '='.repeat(80) + '\nSECTION: ' + r.label.toUpperCase() + '\n' + '='.repeat(80) + '\n\n' + cleanOcrText(r.text) + '\n\n';
+                    } else {
+                        cleanedText += cleanOcrText(r.text) + '\n\n';
+                    }
+                });
+                state.cleanedText = cleanedText.trim();
+                
+                showVersion('original');
+                status.className = 'ocr-status success visible';
+                status.textContent = 'Done! ' + state.panels.length + ' panels (' + state.upscale + 'x upscale)';
+                document.getElementById('downloadOrigBtn').disabled = false;
+                document.getElementById('downloadCleanBtn').disabled = false;
+            } catch (error) {
+                status.className = 'ocr-status error visible';
+                status.textContent = 'Error: ' + error.message;
+                document.getElementById('ocrResults').textContent = 'Error: ' + error.message;
+            }
+            document.getElementById('runOcrBtn').disabled = false;
+        }
+        
+        function cleanOcrText(text) {
+            if (!text || text.length === 0) return text;
+            let cleaned = text;
+            // Fix specific known OCR errors FIRST (order matters!)
+            const fixes = [
+                ['-\n', ''],
+                ['|', 'I'],
+                ['\\midgut', 'midgut'],
+                ['confrol', 'control'],
+                ['communicafion', 'communication'],
+                ['communicafon', 'communication'],
+                ['thend', 'trend'],
+                ['frend', 'trend'],
+                ['Demeathylase', 'Demethylase'],
+                ['Flybase', 'FlyBase'],
+                ['FlyBase', 'FlyBase'],
+                ['microblota', 'microbiota'],
+                ['poges', 'pages'],
+                ['oufsism', 'autism'],
+            ];
+            fixes.forEach(([f, r]) => { cleaned = cleaned.split(f).join(r); });
+            // Fix t→f substitutions ONLY in known scientific terms
+            cleaned = cleaned.replace(/communicafion/g, 'communication');
+            cleaned = cleaned.replace(/communicafon/g, 'communication');
+            cleaned = cleaned.replace(/controll/g, 'control');
+            // Fix malformed FlyBase gene IDs: FBgn followed by OCR-corrupted digits
+            cleaned = cleaned.replace(/FBgn(\d+)/g, (m, digits) => {
+                // Ensure 7-digit format
+                while (digits.length < 7) digits = '0' + digits;
+                return 'FBgn' + digits;
+            });
+            cleaned = cleaned.replace(/%(\d)/g, '$1');  // Remove % before digits
+            cleaned = cleaned.replace(/o(?=\d)/g, '0');  // o→0 before digits in gene IDs
+            cleaned = cleaned.replace(/O(?=\d)/g, '0');  // O→0 before digits in gene IDs
+            // Fix DESeq and ClusterProfiler
+            cleaned = cleaned.replace(/\bDESeq\?*\b/gi, 'DESeq2');
+            cleaned = cleaned.replace(/\bClustr\s*Profiler\b/gi, 'ClusterProfiler');
+            // Remove standalone decorative characters/lines
+            cleaned = cleaned.replace(/^=+\s*$/gm, '');
+            cleaned = cleaned.replace(/^[\s\-–—*#]+$/gm, '');
+            // Fix word splits (hyphen at end of line)
+            cleaned = cleaned.replace(/(\w)-\s+/g, '$1');
+            // Fix double spaces
+            cleaned = cleaned.replace(/\s{2,}/g, ' ').trim();
+            return cleaned;
+        }
+        
+        function getOutputFilename() {
+            const name = document.getElementById('outputFilename').value.trim();
+            if (name) return name;
+            if (state.currentFilename) return state.currentFilename + '.txt';
+            return 'output.txt';
+        }
+        
+        function downloadOriginal() {
+            downloadText(state.originalText, getOutputFilename());
+        }
+        
+        function downloadCleaned() {
+            let filename = getOutputFilename();
+            const parts = filename.split('.');
+            if (parts.length > 1) {
+                filename = parts.slice(0, -1).join('.') + '_cleaned.' + parts[parts.length - 1];
+            } else {
+                filename = filename + '_cleaned';
+            }
+            downloadText(state.cleanedText, filename);
+        }
+        
+        function downloadText(text, filename) {
+            if (!text) return;
+            const blob = new Blob([text], {type: 'text/plain'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a'); a.href = url; a.download = filename; a.click();
+            URL.revokeObjectURL(url);
+        }
+    </script>
+</body>
+</html>

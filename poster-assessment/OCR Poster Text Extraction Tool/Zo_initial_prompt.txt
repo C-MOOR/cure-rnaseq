@@ -1,0 +1,13 @@
+I am a researcher trying to extract the text from student research posters.
+I have uploaded the posters to a folder titled “C-MOOR SP26 Poster OER Analysis”, and created a folder called “C-MOOR Poster OCR - Instance 2” where I want the results to go.
+Please read the following pages and use the internet to look up more resources to better understand the format of a scientific research poster:
+1) https://www.posternerd.com/sciposters-templates?srsltid=AfmBOoqy_TH0MKU2mSGEBKh25QhuVmv1jwGA2rucr6KLf0OiKuZrGNhe – use this link to browse through different styles of research posters. Notice how the posters all have different colors, layouts, and font choices, each with its own style of communicating the standard research format (Abstract (optional), Introduction, Methods, Results, Discussion).
+2) https://libguides.lib.cwu.edu/c.php?g=1014481&p=7347859 
+3) https://ohiostate.pressbooks.pub/scientificposterguide/chapter/scientific-posters/ 
+Each research poster has a title in the largest font at the top of the poster. Below this title is usually the author’s names and institutions in a smaller font. There may be logos that also contain text. 
+Headers separate out different panels of the poster into different content sections. 
+I would like you to build a script that does the following:
+1) Looks at a research poster and identifies the panels that contain the introduction, methods, results, and discussion. To help do this, there are some common characteristics of what to look for. Generally, posters contain information in discrete columns. Find those columns, and then look to see whether the column contains multiple panels in it (ex. introduction and methods in the left column). 
+2) Run an OCR to extract the text from each panel. Because panels do not run the entire width of the poster, the OCR will need to be run within a given area of the poster for each section. Only use OCR to extract these key sections and ignore the title, authors’ names and affiliations, logos, references, and acknowledgements. 
+3) Create a results text file with the OCR text that is named the same name as the original poster. 
+Once you have a script, please test it out on the Otala poster and show me the results.
