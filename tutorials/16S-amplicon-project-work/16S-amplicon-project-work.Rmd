@@ -88,8 +88,8 @@ if (file.exists(file_path)) {
   miso_counts <- readRDS("/home/idies/workspace/c_moor_data/16s-amplicon-data/miso/MISO_16S.clean.rds")
   
   #Alcohol
-  alc <- readRDS( "/home/idies/workspace/c_moor_data/16s-amplicon-data/alc/alc.rds" )
-  alc_counts <- readRDS("/home/idies/workspace/c_moor_data/16s-amplicon-data/alc/alc_counts.rds")
+  alc <- readRDS( "/home/idies/workspace/c_moor_data/16s-amplicon-data/alc/alc.RDS" )
+  alc_counts <- readRDS("/home/idies/workspace/c_moor_data/16s-amplicon-data/alc/alc_counts.RDS")
   
   
   #Oral contraceptives 
