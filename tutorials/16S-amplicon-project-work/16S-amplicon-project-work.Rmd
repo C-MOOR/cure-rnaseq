@@ -87,6 +87,11 @@ if (file.exists(file_path)) {
   miso <- readRDS( "/home/idies/workspace/c_moor_data/16s-amplicon-data/miso/MISO_16S.prop.clean.rds" )
   miso_counts <- readRDS("/home/idies/workspace/c_moor_data/16s-amplicon-data/miso/MISO_16S.clean.rds")
   
+  #Alcohol
+  alc <- readRDS( "/home/idies/workspace/c_moor_data/16s-amplicon-data/alc/alc.rds" )
+  alc_counts <- readRDS("/home/idies/workspace/c_moor_data/16s-amplicon-data/alc/alc_counts.rds")
+  
+  
   #Oral contraceptives 
   oc <- readRDS( "/home/idies/workspace/c_moor_data/16s-amplicon-data/oc/oc.RDS" )
   oc_counts <- readRDS( "/home/idies/workspace/c_moor_data/16s-amplicon-data/oc/oc_counts.RDS" )
@@ -1377,7 +1382,7 @@ Notice that the variables for the study and subjects are in lowercase. Recall th
 
 **This is a large dataset! Please be patient while making your figures!**
 
-### MISO phyloseq objects
+### Alcohol phyloseq objects
 
 ```{r alc_objects, exercise=TRUE, echo=FALSE}
 #A phyloseq object containing the normalized (proportions) data
