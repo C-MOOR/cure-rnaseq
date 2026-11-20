@@ -1330,7 +1330,275 @@ ggplot(Significant_DEseq2_ASVs, aes(x = Phylum, y=log2FoldChange, color= Class))
   ggtitle("my title here")
 
 ```
+## Meet the Alcohol study
 
+These data come from [Characterization of gut microbiota composition and functions in patients with chronic alcohol overconsumption by Bjørkhaug et al. (2019)](https://doi.org/10.1080/19490976.2019.1580097) and look at the impact of alcohol consumption on the human gut microbiome. Subjects were recruited from hospitalizations for unrelated conditions or a substance abuse project - note that the substance abuse project was not described as being exclusive to substance abuse. Some of the subjects from this project reported no alcohol use. 
+
+
+![](images/alcohol_variables.png){width=100%}
+<p class=caption> **Metadata variables for the study on alcohol overconsumption by Bjørkhaug et al. (2019)**: Figure edited by Sayumi York (July 11, 2025)</p>
+
+Subjects could fall into one of three experimental groups, two of which were defined by the study. The third group was created by us to allow us to take advantage of the data from subjects who did not fall into either original group. Category definitions are split by sex and use grams of (presumably pure) alcohol consumed per day: 
+
+**For men:**
+- Control: Less than 10 grams of alcohol consumed per day
+- Intermediate: 10-40 grams of alcohol consumed per day
+- Overconsumption: More than 40 grams of alcohol consumed per day
+
+**For women:**
+- Control: Less than 5 grams of alcohol consumed per day
+- Intermediate: 5-20 grams of alcohol consumed per day
+- Overconsumption: More than 20 grams of alcohol consumed per day
+
+Note that these are based on daily levels of consumption and measure present-day activities. While the study noted no prior history of binge drinking for the control group, no timeline is given for what present day means and whether other forms of overconsumption were included in these exclusion factors. The study also does not make a note of what kind of alcohol and what timespan the drinks were consumed so be careful not assume a standard kind of drink or timeline was consistent across subjects.
+
+Subject IDs are denoted K for control subjects recruited through non-related hospitalizations while F is used for subjects recruited through the substance abuse program. While analyzing these data we should also remember that these other health conditions could also be impacting the gut microbiome even if they were not directly related to gastrointestinal distress, although we don't have information about who has what additional condition.  
+
+### Metadata variables
+
+Notice that the variables for the study and subjects are in lowercase. Recall that R is case sensitive.
+
+
+|Variable|What is it?|Factors|
+|:----|--------------|----:|
+|sample_id|a unique id given to the participant by C-MOOR|contains information about sex and group|
+|orig_id|a unique id given to the participant by the original research team|Begins with either K (hospital recruitment) or F (substance abuse project recruitment)|
+|age|The age in years of the subject|55-85|
+|sex|The gender of the subject|male, female| 
+|gramperday|How much alcohol the subject consumes per day in grams on average|0-399|
+|group|categories of consumption based on the original study + a new intermediate group|control, intermediate, overconsumption|
+
+
+### Some research ideas to get you started
+
+- While this study allows control subjects to consume a low amount of alcohol per week, the World Health Organization (WHO) and the United States government have recognized alcohol as a carcinogen for which there is no "safe" level of consumption. In addition to subjects by group we also have access to data on their individual amounts of consumption. Consider how even a little bit of alcohol consumption might change the gut microbiome compared to individuals who are completely abstinent from alcohol consumption. Is there a distinct difference between consumers and non-consumers, or is there a more gradient like pattern as consumption increases?
+- Alcohol consumption can lead to other health issues such as nausea or dehydration. How do your results compare with common hangover symptoms? Is there a common microbiome between them or do different microbiomes lead to the same symptoms? 
+- GLP-1s have been linked to reducing substance abuse and cravings. Alcohol consumption has both a physical and psychological impact. How does the gut mircobiome compare with other addictions or relate to the gut-brain axis? 
+
+**This is a large dataset! Please be patient while making your figures!**
+
+### MISO phyloseq objects
+
+```{r alc_objects, exercise=TRUE, echo=FALSE}
+#A phyloseq object containing the normalized (proportions) data
+alc
+
+#A phyloseq object containing the data as raw counts
+alc_counts
+
+```
+
+```{r alc_block1, exercise=TRUE, echo=FALSE}
+#Getting a list of unique metadata values for a given variable
+unique(data.frame(sample_data(alc)[, "sample_id"]))
+
+```
+
+```{r alc_block2, exercise=TRUE, echo=FALSE}
+#Get counts for an ASV by sequence in sample 1
+otu_table(alc_counts)[1,"GATCAGCCTATGGGATGCAGCAGTGGGGAATCTTCCGCAATGGGCGAAAGCCTGACGGAGCAACGCCGCGTGAGTGATGACGGCCTTCGGGTTGTAAAACTCTGTGATCCGGGACGAAAAGGCAGAGTGCGAAGAACAAACTGCATTGACGGTACCGGAAAAGCAAGCCACGGCTAACTACGTGCCAGCAGCCGCGGTAATACGTAGGTGGCAAGCGTTGTCCGGAATTATTGGGCGTAAAGCGCGCGCAGGCGGCTTCCCAAGTCCCTCTTAAAAGTGCGGGGCTTAACCCCGTGATGGGAAGGAAACTGGGAAGCTGGAGTATCGGAGAGGAAAGTGGAATTCCTAGTGTAGCGGTGAAATGCGTAGAGATTAGGAAGAACACCGGTGGCGAAGGCGACTTTCTGGACGAAAACTGACGCTGAGGCGCGAAAGCGTGGGGAGCAAACAGGATTAGATACCCAAGTAGTCCCGTACG"]
+```
+
+```{r alc_block3, exercise=TRUE, echo=FALSE}
+#Get counts for an ASV by sequence, for samples 1 through 5.
+otu_table(alc_counts)[1:5, "GATCAGCCTATGGGATGCAGCAGTGGGGAATCTTCCGCAATGGGCGAAAGCCTGACGGAGCAACGCCGCGTGAGTGATGACGGCCTTCGGGTTGTAAAACTCTGTGATCCGGGACGAAAAGGCAGAGTGCGAAGAACAAACTGCATTGACGGTACCGGAAAAGCAAGCCACGGCTAACTACGTGCCAGCAGCCGCGGTAATACGTAGGTGGCAAGCGTTGTCCGGAATTATTGGGCGTAAAGCGCGCGCAGGCGGCTTCCCAAGTCCCTCTTAAAAGTGCGGGGCTTAACCCCGTGATGGGAAGGAAACTGGGAAGCTGGAGTATCGGAGAGGAAAGTGGAATTCCTAGTGTAGCGGTGAAATGCGTAGAGATTAGGAAGAACACCGGTGGCGAAGGCGACTTTCTGGACGAAAACTGACGCTGAGGCGCGAAAGCGTGGGGAGCAAACAGGATTAGATACCCAAGTAGTCCCGTACG"]
+
+```
+
+### Alcohol: Barplot template code
+
+
+```{r alc_barplot, exercise=TRUE, echo=FALSE}
+#Barplots for the whole dataset
+plot_bar(alc, x="group", fill = "Phylum", title = "My title") +
+  geom_bar(aes(color = Phylum, fill = Phylum), stat = "identity", position = "stack")
+```
+
+```{r alc_barplot_subset_taxa, exercise=TRUE, echo=FALSE}
+#Subsetting based on a taxa
+my_subset <- subset_taxa(alc, Phylum == "Firmicutes")
+
+#Plotting using the new subset
+plot_bar(my_subset, x= "group", fill = "Class", title = "My title") +
+  geom_bar(aes(color = Class, fill = Class), stat = "identity", position = "stack")
+```
+
+```{r alc_barplot_subset_sample, exercise=TRUE, echo=FALSE}
+#Subsetting based on metadata
+my_subset <- subset_samples(alc, group == "control")
+
+#Plotting using the new subset
+plot_bar(my_subset, x= "sex", fill = "Class", title = "My title") +
+  geom_bar(aes(color = Class, fill = Class), stat = "identity", position = "stack")
+```
+
+```{r alcohol_barplot_2, exercise=TRUE, echo=FALSE}
+
+```
+```{r alcohol_barplot_3, exercise=TRUE, echo=FALSE}
+```
+```{r alcohol_barplot_4, exercise=TRUE, echo=FALSE}
+```
+
+### Alcohol: Alpha diversity template code
+
+
+```{r alc_try_it_plot_richness_end, exercise=TRUE, echo=FALSE}
+# Plot richness for the entire dataset
+plot_richness(alc_counts, x="gramperday", 
+              color="group", 
+              shape="sex", 
+          	  title ="My title",
+              measures="Simpson")
+
+```
+
+```{r alc_Try_it_plot_richness_taxa_subset, exercise=TRUE, echo=FALSE}
+# Plot richness for a subset (by taxa)
+my_subset <- subset_taxa(alc_counts, Phylum == "Firmicutes")
+
+plot_richness(my_subset, x="gramperday", 
+              color="group", 
+              shape="sex",
+          	  title ="My title", 
+              measures= "Simpson")
+
+```
+
+
+```{r alc_Try_it_plot_richness_metadata_subset, exercise=TRUE, echo=FALSE}
+# Plot richness for a subset (by metadata)
+my_subset <- subset_samples(alc_counts, sex == "female")
+
+plot_richness(my_subset, x="gramperday", 
+              color="group", 
+              shape="sex",
+          	  title ="My title", 
+              measures= "Simpson")
+```
+
+
+```{r alc_alpha_div_1, exercise=TRUE, echo=FALSE}
+
+```
+```{r alc_alpha_div_2, exercise=TRUE, echo=FALSE}
+
+```
+```{r alc_alpha_div_3, exercise=TRUE, echo=FALSE}
+
+```
+
+### Alcohol: Multidimensional analysis template code
+
+```{r alc_Try_it_PCoA_end, exercise=TRUE, echo=FALSE}
+alc.pcoa <- ordinate(alc, method="PCoA", distance="bray")
+
+plot_ordination(alc, alc.pcoa, 
+        color = "sex", 
+        shape = "group", 
+        title="My Title")
+```
+
+```{r alc_Try_it_PCoA_blank1, exercise=TRUE, echo=FALSE}
+#Subset by taxa
+alc_subset <- subset_taxa(alc, Phylum == "Firmicutes")
+
+#Ordinate based on your subset
+alc.pcoa.subset <- ordinate(alc_subset, method="PCoA", distance="bray")
+
+#Plot the new subsetted ordination with the subsetted phyloseq object
+plot_ordination(alc_subset, alc.pcoa.subset, 
+        color = "age", 
+        shape = "group", 
+        title="My Title")
+```
+
+```{r alc_Try_it_PCoA_subset_metadata, exercise=TRUE, echo=FALSE}
+#Subset by metadata
+alc_subset <- subset_samples(alc, group == "overconsumption")
+
+#Ordinate based on your subset
+alc.pcoa.subset <- ordinate(alc_subset, method="PCoA", distance="bray")
+
+#Plot the new subsetted ordination with the subsetted phyloseq object
+plot_ordination(alc_subset, alc.pcoa.subset, 
+        color = "age", 
+        shape = "sex", 
+        title="My Title")
+```
+
+
+```{r alc_multi_1, exercise=TRUE, echo=FALSE}
+
+```
+```{r alc_multi_2, exercise=TRUE, echo=FALSE}
+
+```
+```{r alc_multi_3, exercise=TRUE, echo=FALSE}
+
+```
+
+### Alcohol: Differential abundance
+
+#### What's different here?
+
+These code chunks have had some slight modifications as this dataset is zero-inflated. When more zeros are included in a dataset than normal, we have to handle the statistics differently. We have taken care of all the important changes for you here so you don't have to worry about them!
+
+#### Differential abundance for a categorical variable (zero-inflated)
+
+```{r alc_DESeq2_example, exercise=TRUE, echo=TRUE}
+# Differential expression for a categorical data in the 0-inflated AD dataset
+
+# STEP 1: Convert the phyloseq object to a DESeq2 object and tell R the experimental design 
+my_DESeq2 <- phyloseq_to_deseq2(alc_counts, design = ~ group)
+
+# STEP 2: Select the groups to compare
+my_comparison <- c("group", "overconsumption", "control")
+
+# STEP 3: Run the differential abundance analysis at the chosen p-value
+Significant_DEseq2_ASVs <- Differential_Abundance_AltGeo(alc_counts, my_DESeq2, my_comparison, 0.05)
+
+# STEP 4: Retrieve the list of ASVs with a significant difference in abundance between the chosen groups
+Significant_DEseq2_ASVs
+
+# STEP 5: Plot the results with your chosen x axis and legend
+ggplot(Significant_DEseq2_ASVs, aes(x = Phylum, y=log2FoldChange, color= Class)) + geom_point(size=3, position = "jitter") +
+  theme(axis.text.x = element_text(angle = -90, hjust = 0, vjust=0.5))+
+  ggtitle("my title here")
+```
+
+```{r alc_da_1, exercise=TRUE, echo=FALSE}
+
+```
+```{r alc_da_2, exercise=TRUE, echo=FALSE}
+```
+
+
+#### Differential abundance for a continuous variable (zero-inflated)
+
+
+```{r alc_Try_it_DA_continuous, exercise=TRUE, echo=FALSE}
+# Differential expression for continuous data in the 0-inflated AD dataset
+
+# STEP 1: Convert the phyloseq object to a DESeq2 object and tell R the experimental design
+my_DESeq2 <- phyloseq_to_deseq2(alc_counts, design = ~ age)
+
+# STEP 2: Select the groups to compare
+name_for_comparison <-"age"
+
+# STEP 3: Run the differential abundance analysis at the chosen p-value
+
+Significant_DEseq2_ASVs<-Differential_Abundance_ContinuousAltGeo(alc_counts, my_DESeq2, name_for_comparison, 0.05)
+
+# STEP 4: Retrieve the list of ASVs with a significant difference in abundance between the chosen groups
+Significant_DEseq2_ASVs
+
+# STEP 5: Plot the results with your chosen x axis and legend
+ggplot(Significant_DEseq2_ASVs, aes(x = Phylum, y=log2FoldChange, color= Class)) + geom_point(size=3, position = "jitter") +
+  theme(axis.text.x = element_text(angle = -90, hjust = 0, vjust=0.5))+
+  ggtitle("my title here")
+
+```
 
 
 ## Meet the OC study
@@ -1742,6 +2010,36 @@ plot_bar(my_subset, x= "sex", fill = "Class", title = "My title") +
 
 ```
 
+### Alcohol: Barplot template code
+
+
+```{r alc_barplot_try, exercise=TRUE, echo=FALSE}
+#Barplots for the whole dataset
+plot_bar(alc, x="group", fill = "Phylum", title = "My title") +
+  geom_bar(aes(color = Phylum, fill = Phylum), stat = "identity", position = "stack")
+```
+
+```{r alc_barplot_subset_taxa_try, exercise=TRUE, echo=FALSE}
+#Subsetting based on a taxa
+my_subset <- subset_taxa(alc, Phylum == "Firmicutes")
+
+#Plotting using the new subset
+plot_bar(my_subset, x= "group", fill = "Class", title = "My title") +
+  geom_bar(aes(color = Class, fill = Class), stat = "identity", position = "stack")
+```
+
+```{r alc_barplot_subset_sample_try, exercise=TRUE, echo=FALSE}
+#Subsetting based on metadata
+my_subset <- subset_samples(alc, group == "control")
+
+#Plotting using the new subset
+plot_bar(my_subset, x= "sex", fill = "Class", title = "My title") +
+  geom_bar(aes(color = Class, fill = Class), stat = "identity", position = "stack")
+```
+```{r try_it_out_barplot7, exercise=TRUE, echo=FALSE}
+
+```
+
 ### OC: Barplot template code
 
 ```{r barplottab_oc_barplot, exercise=TRUE, echo=FALSE}
@@ -1904,6 +2202,47 @@ plot_richness(my_subset, x="group",
 ```
 
 
+### Alcohol: Alpha diversity template code
+
+
+```{r alc_try_it_plot_richness_end_try, exercise=TRUE, echo=FALSE}
+# Plot richness for the entire dataset
+plot_richness(alc_counts, x="gramperday", 
+              color="group", 
+              shape="sex", 
+          	  title ="My title",
+              measures="Simpson")
+
+```
+
+```{r alc_Try_it_plot_richness_taxa_subset_try, exercise=TRUE, echo=FALSE}
+# Plot richness for a subset (by taxa)
+my_subset <- subset_taxa(alc_counts, Phylum == "Firmicutes")
+
+plot_richness(my_subset, x="gramperday", 
+              color="group", 
+              shape="sex",
+          	  title ="My title", 
+              measures= "Simpson")
+
+```
+
+
+```{r alc_Try_it_plot_richness_metadata_subset_try, exercise=TRUE, echo=FALSE}
+# Plot richness for a subset (by metadata)
+my_subset <- subset_samples(alc_counts, sex == "female")
+
+plot_richness(my_subset, x="gramperday", 
+              color="group", 
+              shape="sex",
+          	  title ="My title", 
+              measures= "Simpson")
+```
+
+
+```{r alc_alpha_div_1_try, exercise=TRUE, echo=FALSE}
+
+```
 ### OC: Alpha diversity template code
 
 
@@ -2096,6 +2435,49 @@ plot_ordination(ad_subset, ad.pcoa.subset,
 
 ```
 
+### Alcohol: Multidimensional analysis template code
+
+```{r alc_Try_it_PCoA_end_try, exercise=TRUE, echo=FALSE}
+alc.pcoa <- ordinate(alc, method="PCoA", distance="bray")
+
+plot_ordination(alc, alc.pcoa, 
+        color = "sex", 
+        shape = "group", 
+        title="My Title")
+```
+
+```{r alc_Try_it_PCoA_blank1_try, exercise=TRUE, echo=FALSE}
+#Subset by taxa
+alc_subset <- subset_taxa(alc, Phylum == "Firmicutes")
+
+#Ordinate based on your subset
+alc.pcoa.subset <- ordinate(alc_subset, method="PCoA", distance="bray")
+
+#Plot the new subsetted ordination with the subsetted phyloseq object
+plot_ordination(alc_subset, alc.pcoa.subset, 
+        color = "age", 
+        shape = "group", 
+        title="My Title")
+```
+
+```{r alc_Try_it_PCoA_subset_metadata_try, exercise=TRUE, echo=FALSE}
+#Subset by metadata
+alc_subset <- subset_samples(alc, group == "overconsumption")
+
+#Ordinate based on your subset
+alc.pcoa.subset <- ordinate(alc_subset, method="PCoA", distance="bray")
+
+#Plot the new subsetted ordination with the subsetted phyloseq object
+plot_ordination(alc_subset, alc.pcoa.subset, 
+        color = "age", 
+        shape = "sex", 
+        title="My Title")
+```
+
+
+```{r alc_multi_1_try, exercise=TRUE, echo=FALSE}
+
+```
 
 ### OC: Multidimensional analysis template code
 
@@ -2370,6 +2752,70 @@ ggplot(Significant_DEseq2_ASVs, aes(x = Phylum, y=log2FoldChange, color= Class))
 ```{r deseqtab_ad_da_2, exercise=TRUE, echo=FALSE}
 
 ```
+
+
+### Alcohol: Differential abundance
+
+#### What's different here?
+
+These code chunks have had some slight modifications as this dataset is zero-inflated. When more zeros are included in a dataset than normal, we have to handle the statistics differently. We have taken care of all the important changes for you here so you don't have to worry about them!
+
+#### Differential abundance for a categorical variable (zero-inflated)
+
+```{r alc_DESeq2_example_try, exercise=TRUE, echo=TRUE}
+# Differential expression for a categorical data in the 0-inflated AD dataset
+
+# STEP 1: Convert the phyloseq object to a DESeq2 object and tell R the experimental design 
+my_DESeq2 <- phyloseq_to_deseq2(alc_counts, design = ~ group)
+
+# STEP 2: Select the groups to compare
+my_comparison <- c("group", "overconsumption", "control")
+
+# STEP 3: Run the differential abundance analysis at the chosen p-value
+Significant_DEseq2_ASVs <- Differential_Abundance_AltGeo(alc_counts, my_DESeq2, my_comparison, 0.05)
+
+# STEP 4: Retrieve the list of ASVs with a significant difference in abundance between the chosen groups
+Significant_DEseq2_ASVs
+
+# STEP 5: Plot the results with your chosen x axis and legend
+ggplot(Significant_DEseq2_ASVs, aes(x = Phylum, y=log2FoldChange, color= Class)) + geom_point(size=3, position = "jitter") +
+  theme(axis.text.x = element_text(angle = -90, hjust = 0, vjust=0.5))+
+  ggtitle("my title here")
+```
+
+```{r alc_da_1_try, exercise=TRUE, echo=FALSE}
+
+```
+
+
+#### Differential abundance for a continuous variable (zero-inflated)
+
+
+```{r alc_Try_it_DA_continuous_try, exercise=TRUE, echo=FALSE}
+# Differential expression for continuous data in the 0-inflated AD dataset
+
+# STEP 1: Convert the phyloseq object to a DESeq2 object and tell R the experimental design
+my_DESeq2 <- phyloseq_to_deseq2(alc_counts, design = ~ age)
+
+# STEP 2: Select the groups to compare
+name_for_comparison <-"age"
+
+# STEP 3: Run the differential abundance analysis at the chosen p-value
+
+Significant_DEseq2_ASVs<-Differential_Abundance_ContinuousAltGeo(alc_counts, my_DESeq2, name_for_comparison, 0.05)
+
+# STEP 4: Retrieve the list of ASVs with a significant difference in abundance between the chosen groups
+Significant_DEseq2_ASVs
+
+# STEP 5: Plot the results with your chosen x axis and legend
+ggplot(Significant_DEseq2_ASVs, aes(x = Phylum, y=log2FoldChange, color= Class)) + geom_point(size=3, position = "jitter") +
+  theme(axis.text.x = element_text(angle = -90, hjust = 0, vjust=0.5))+
+  ggtitle("my title here")
+
+```
+```{r alc_da_2_try, exercise=TRUE, echo=FALSE}
+```
+
 
 ### OC: Differential abundance template code
 
